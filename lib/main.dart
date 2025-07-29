@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/onboarding_screen.dart';
+import 'screens/auth_screen.dart'; // <-- Import AuthScreen
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       home: const OnboardingScreen(),
       routes: {
         '/home': (context) => const HomeScreen(),
+        '/auth': (context) => const AuthScreen(), // <-- Tambahkan ini
       },
       debugShowCheckedModeBanner: false,
     );
