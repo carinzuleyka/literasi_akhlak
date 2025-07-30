@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/onboarding_screen.dart';
-import 'screens/auth_screen.dart'; // <-- Import AuthScreen
+import 'screens/auth_screen.dart';
+import 'screens/home_screen.dart'; // Gunakan file home_screen.dart milikmu
 
 void main() {
   runApp(const MyApp());
@@ -17,32 +18,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto',
       ),
-      home: const OnboardingScreen(),
+      home: const OnboardingScreen(), // Halaman pertama saat app dibuka
       routes: {
         '/home': (context) => const HomeScreen(),
-        '/auth': (context) => const AuthScreen(), // <-- Tambahkan ini
+        '/auth': (context) => const AuthScreen(),
       },
       debugShowCheckedModeBanner: false,
-    );
-  }
-}
-
-// Placeholder home screen
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Social Mate'),
-      ),
-      body: const Center(
-        child: Text(
-          'Welcome to Social Mate!',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
     );
   }
 }

@@ -13,23 +13,23 @@ class User {
 class AuthService {
   // Simulasi login
   static Future<bool> signIn(String nisOrEmail, String password) async {
-    // Simulate API call delay
     await Future.delayed(const Duration(seconds: 1));
-    
-    // Simple validation - in real app, this would be API call
-    return nisOrEmail.isNotEmpty && password.isNotEmpty;
+
+    // Ganti sesuai data dummy kamu
+    if (nisOrEmail == '1001' && password == '1234') {
+      return true;
+    }
+
+    return false;
   }
-  
+
   // Simulasi register
   static Future<bool> signUp({
     required String fullName,
     required String email,
     required String password,
   }) async {
-    // Simulate API call delay
     await Future.delayed(const Duration(seconds: 1));
-    
-    // Simple validation - in real app, this would be API call
     return fullName.isNotEmpty && 
            email.contains('@') && 
            password.length >= 6;
