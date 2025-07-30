@@ -306,7 +306,7 @@ class _AuthScreenState extends State<AuthScreen>
               );
             },
             child: const Text(
-              'Lupa Password?',
+              'Lupa Passwod?',
               style: TextStyle(
                 color: Colors.blue,
                 fontSize: 14,
