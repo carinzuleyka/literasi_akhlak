@@ -28,7 +28,7 @@ class NotificationScreen extends StatelessWidget {
             child: ListTile(
               leading: const CircleAvatar(
                 backgroundColor: Color(0xFF4A90E2),
-                child: Icon(Icons.notifications, color: Colors.white),
+                child: Icon(Icons.notifications, color: Colors.white),                
               ),
               title: Text(
                 notification['title']!,
