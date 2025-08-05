@@ -36,10 +36,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   int _selectedIndex = 0; 
   final List<String> categories = [
     'Semua',
+    'Artikel',
     'Resensi Buku',
     'Resensi Film',
-    'Olahraga',
-    'Teknologi'
   ];
 
   final Map<String, List<Map<String, dynamic>>> categoryData = {
@@ -370,12 +369,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     subtitle: 'Review film terbaru',
                     color: const Color(0xFFFF9500),
                   ),
-                  _buildCreatePostOption(
-                    icon: Icons.sports_outlined,
-                    title: 'Olahraga',
-                    subtitle: 'Tips & tutorial olahraga',
-                    color: const Color(0xFFFF3B30),
-                  ),
                 ],
               ),
             ),
@@ -645,7 +638,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             Text(
                               selectedCategoryIndex == 0
                                   ? 'Artikel Terbaru'
-                                  : 'Artikel ${categories[selectedCategoryIndex]}',
+                                  : '${categories[selectedCategoryIndex]}',
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,

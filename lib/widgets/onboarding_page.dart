@@ -36,7 +36,7 @@ class OnboardingPageWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     const Text(
-                      'SOCIAL MATE',
+                      'BacainSebelas',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

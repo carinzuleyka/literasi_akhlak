@@ -55,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                         ),
                       ),
                       const Text(
-                        'Kriston Watshon',
+                        'Nabilla Dewi',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
@@ -112,7 +112,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              'Kriston Watshon',
+                              'Nabilla Dewi',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
@@ -121,7 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '@kriston_watshon',
+                              '@Nabilla_Dewi',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey[600],
@@ -549,16 +549,16 @@ class ProfileSettingsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   // Form Fields
-                  _buildTextField('Nama', 'Kriston Watshon'),
+                  _buildTextField('Nama', 'Nabilla Dewi'),
                   const SizedBox(height: 16),
-                  _buildTextField('Email', 'kriston@gmail.com'),
+                  _buildTextField('Email', 'nabilaryti@gmail.com'),
                   const SizedBox(height: 16),
                   _buildTextField('Kelas', '12 RPL 2'),
                   const SizedBox(height: 16),
-                  _buildTextField('No Telp', '+62 812 3456 7890'),
+                  _buildTextField('No Telp', '+62 8952 2208 1197 '),
                 ],
               ),
-            ),
+            )
           ],
         ),
       ),
