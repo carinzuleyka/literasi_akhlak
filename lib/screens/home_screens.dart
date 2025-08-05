@@ -57,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'likes': 245,
         'comments': 42,
         'readTime': '5 min',
+        'isLiked': false,
       },
       {
         'type': 'text',
@@ -66,6 +67,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             'Baru saja menyelesaikan buku "Atomic Habits" dan wow! Sangat merekomendasikan untuk yang ingin membangun kebiasaan baik. Ada yang sudah baca?',
         'likes': 89,
         'comments': 23,
+        'isLiked': false,
       },
     ],
     'Resensi Buku': [
@@ -82,6 +84,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'likes': 456,
         'comments': 128,
         'readTime': '8 min',
+        'isLiked': false,
       },
     ],
     'Resensi Film': [
@@ -98,6 +101,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'likes': 178,
         'comments': 67,
         'readTime': '8 min',
+        'isLiked': false,
       },
       {
         'type': 'article',
@@ -112,6 +116,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'likes': 234,
         'comments': 89,
         'readTime': '9 min',
+        'isLiked': false,
       },
       {
         'type': 'text',
@@ -121,6 +126,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             'Baru nonton "Everything Everywhere All at Once" dan... speechless! 🎬✨ Film yang benar-benar out of the box. Rating: 10/10!',
         'likes': 167,
         'comments': 45,
+        'isLiked': false,
       },
     ],
     'Olahraga': [
@@ -137,6 +143,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'likes': 245,
         'comments': 42,
         'readTime': '5 min',
+        'isLiked': false,
       },
       {
         'type': 'article',
@@ -151,6 +158,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'likes': 189,
         'comments': 56,
         'readTime': '6 min',
+        'isLiked': false,
       },
     ],
     'Teknologi': [
@@ -167,6 +175,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'likes': 456,
         'comments': 128,
         'readTime': '12 min',
+        'isLiked': false,
       },
       {
         'type': 'text',
@@ -176,6 +185,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             'Flutter 3.19 baru keluar dengan performance improvements yang significant! 🚀 Ada yang udah coba?',
         'likes': 234,
         'comments': 67,
+        'isLiked': false,
       },
     ],
   };
@@ -202,6 +212,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void dispose() {
     _animationController.dispose();
     super.dispose();
+  }
+
+  void _toggleLike(int index) {
+    setState(() {
+      filteredArticles[index]['isLiked'] = !filteredArticles[index]['isLiked'];
+      if (filteredArticles[index]['isLiked']) {
+        filteredArticles[index]['likes']++;
+      } else {
+        filteredArticles[index]['likes']--;
+      }
+    });
+  }
+
+  void _showCommentsModal(int index) {
+    final article = filteredArticles[index];
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => CommentsModal(
+        username: article['username'],
+        title: article['title'] ?? article['content'],
+        comments: article['comments'],
+        onAddComment: () {
+          setState(() {
+            filteredArticles[index]['comments']++;
+          });
+        },
+      ),
+    );
   }
 
   Widget buildCategoryTab(String label, int index) {
@@ -248,12 +288,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  
   void _onItemTapped(int index) {
+    if (index == 2) {
+      // Posting - handle create post
+      _showCreatePostDialog();
+      return;
+    }
+    
     setState(() {
       _selectedIndex = index;
     });
-    if (index == 3) { 
+    
+    if (index == 4) { // Profile tab
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const ProfileScreen()),
@@ -261,6 +307,130 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         setState(() {});
       });
     }
+    // TODO: Implement navigation for other tabs (Buku, Video)
+  }
+
+  void _showCreatePostDialog() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.6,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 8),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                'Buat Postingan',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                padding: const EdgeInsets.all(20),
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                children: [
+                  _buildCreatePostOption(
+                    icon: Icons.article_outlined,
+                    title: 'Artikel',
+                    subtitle: 'Tulis artikel atau review',
+                    color: const Color(0xFF4A90E2),
+                  ),
+                  _buildCreatePostOption(
+                    icon: Icons.menu_book_outlined,
+                    title: 'Resensi Buku',
+                    subtitle: 'Review buku favorit',
+                    color: const Color(0xFF34C759),
+                  ),
+                  _buildCreatePostOption(
+                    icon: Icons.movie_outlined,
+                    title: 'Resensi Film',
+                    subtitle: 'Review film terbaru',
+                    color: const Color(0xFFFF9500),
+                  ),
+                  _buildCreatePostOption(
+                    icon: Icons.sports_outlined,
+                    title: 'Olahraga',
+                    subtitle: 'Tips & tutorial olahraga',
+                    color: const Color(0xFFFF3B30),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCreatePostOption({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+  }) {
+    return InkWell(
+      onTap: () {
+        Navigator.pop(context);
+        // TODO: Navigate to create post screen based on type
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withOpacity(0.3)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 32, color: color),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey[600],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -307,7 +477,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 ),
                                 const SizedBox(width: 12),
                                 const Text(
-                                  'SOCIAL MATE',
+                                  'BacainSebelas',
                                   style: TextStyle(
                                     fontSize: 26,
                                     fontWeight: FontWeight.bold,
@@ -370,7 +540,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   ),
                                 ),
                                 const SizedBox(width: 12),
-                                // Ubah dari sini
                                 GestureDetector(
                                   onTap: () {
                                     Navigator.push(
@@ -387,7 +556,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     ),
                                   ),
                                 ),
-                               
                               ],
                             ),
                           ],
@@ -538,8 +706,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             likes: article['likes'],
                             comments: article['comments'],
                             readTime: article['readTime'],
+                            isLiked: article['isLiked'],
                             isClickable: categories[selectedCategoryIndex] == 'Resensi Film' ||
                                 categories[selectedCategoryIndex] == 'Olahraga',
+                            onLike: () => _toggleLike(articleIndex),
+                            onComment: () => _showCommentsModal(articleIndex),
                           );
                         } else {
                           return ArticleTextCard(
@@ -548,8 +719,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             content: article['content'],
                             likes: article['likes'],
                             comments: article['comments'],
+                            isLiked: article['isLiked'],
                             isClickable: categories[selectedCategoryIndex] == 'Resensi Film' ||
                                 categories[selectedCategoryIndex] == 'Olahraga',
+                            onLike: () => _toggleLike(articleIndex),
+                            onComment: () => _showCommentsModal(articleIndex),
                           );
                         }
                       },
@@ -574,10 +748,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-       
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
-        
           selectedItemColor: const Color(0xFF4A90E2),
           unselectedItemColor: Colors.grey,
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
@@ -587,17 +759,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
               activeIcon: Icon(Icons.home),
-              label: 'Beranda',
+              label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.explore_outlined),
-              activeIcon: Icon(Icons.explore),
-              label: 'Jelajah',
+              icon: Icon(Icons.menu_book_outlined),
+              activeIcon: Icon(Icons.menu_book),
+              label: 'Buku',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.add_circle_outline),
-              activeIcon: Icon(Icons.add_circle),
+              icon: Icon(Icons.add_circle_outline, size: 32),
+              activeIcon: Icon(Icons.add_circle, size: 32),
               label: 'Posting',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.play_circle_outline),
+              activeIcon: Icon(Icons.play_circle),
+              label: 'Video',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
@@ -607,12 +784,243 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Implement post creation
-        },
-        backgroundColor: const Color(0xFF4A90E2),
-        child: const Icon(Icons.edit, color: Colors.white),
+    );
+  }
+}
+
+class CommentsModal extends StatefulWidget {
+  final String username;
+  final String title;
+  final int comments;
+  final VoidCallback onAddComment;
+
+  const CommentsModal({
+    Key? key,
+    required this.username,
+    required this.title,
+    required this.comments,
+    required this.onAddComment,
+  }) : super(key: key);
+
+  @override
+  State<CommentsModal> createState() => _CommentsModalState();
+}
+
+class _CommentsModalState extends State<CommentsModal> {
+  final TextEditingController _commentController = TextEditingController();
+  final List<Map<String, dynamic>> _commentsList = [
+    {
+      'username': 'Bayu Resnadi',
+      'comment': 'Ini Adalah Contoh Teknik Smash Olahraga Bola Voli',
+      'time': '2 jam',
+      'likes': 2,
+      'isLiked': false,
+    },
+    {
+      'username': 'Akmal Zains',
+      'comment': 'Ini Adalah Contoh Teknik Smash Olahraga Bola Voli',
+      'time': '1 jam',
+      'likes': 2,
+      'isLiked': false,
+    },
+  ];
+
+  void _addComment() {
+    if (_commentController.text.trim().isNotEmpty) {
+      setState(() {
+        _commentsList.insert(0, {
+          'username': 'You',
+          'comment': _commentController.text.trim(),
+          'time': 'Sekarang',
+          'likes': 0,
+          'isLiked': false,
+        });
+      });
+      _commentController.clear();
+      widget.onAddComment();
+    }
+  }
+
+  void _toggleCommentLike(int index) {
+    setState(() {
+      _commentsList[index]['isLiked'] = !_commentsList[index]['isLiked'];
+      if (_commentsList[index]['isLiked']) {
+        _commentsList[index]['likes']++;
+      } else {
+        _commentsList[index]['likes']--;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.85,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      child: Column(
+        children: [
+          // Handle bar
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          // Header
+          Container(
+            padding: const EdgeInsets.all(20),
+            child: const Text(
+              'Komentar',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          // Comments list
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemCount: _commentsList.length,
+              itemBuilder: (context, index) {
+                final comment = _commentsList[index];
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundImage: NetworkImage(
+                          'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              comment['username'],
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              comment['comment'],
+                              style: TextStyle(
+                                color: Colors.grey[700],
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              comment['time'],
+                              style: TextStyle(
+                                color: Colors.grey[500],
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          InkWell(
+                            onTap: () => _toggleCommentLike(index),
+                            child: Icon(
+                              comment['isLiked'] ? Icons.favorite : Icons.favorite_border,
+                              size: 20,
+                              color: comment['isLiked'] ? Colors.red : Colors.grey[600],
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            comment['likes'].toString(),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          // Comment input
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                top: BorderSide(color: Colors.grey[200]!),
+              ),
+            ),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 16,
+                  backgroundImage: NetworkImage(
+                    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextField(
+                    controller: _commentController,
+                    decoration: InputDecoration(
+                      hintText: 'Tambahkan Komentar Anda',
+                      hintStyle: TextStyle(color: Colors.grey[500]),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: BorderSide(color: Colors.grey[300]!),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: BorderSide(color: Colors.grey[300]!),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: const BorderSide(color: Color(0xFF4A90E2)),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                InkWell(
+                  onTap: _addComment,
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF4A90E2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.send,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -830,6 +1238,9 @@ class ArticleCard extends StatelessWidget {
   final int comments;
   final String readTime;
   final bool isClickable;
+  final bool isLiked;
+  final VoidCallback onLike;
+  final VoidCallback onComment;
 
   const ArticleCard({
     Key? key,
@@ -843,6 +1254,9 @@ class ArticleCard extends StatelessWidget {
     required this.comments,
     required this.readTime,
     this.isClickable = false,
+    required this.isLiked,
+    required this.onLike,
+    required this.onComment,
   }) : super(key: key);
 
   @override
@@ -986,11 +1400,26 @@ class ArticleCard extends StatelessWidget {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    _buildActionButton(Icons.favorite_border, likes.toString()),
+                    _buildActionButton(
+                      isLiked ? Icons.favorite : Icons.favorite_border,
+                      likes.toString(),
+                      isLiked ? Colors.red : Colors.grey[600]!,
+                      onLike,
+                    ),
                     const SizedBox(width: 24),
-                    _buildActionButton(Icons.chat_bubble_outline, comments.toString()),
+                    _buildActionButton(
+                      Icons.chat_bubble_outline,
+                      comments.toString(),
+                      Colors.grey[600]!,
+                      onComment,
+                    ),
                     const SizedBox(width: 24),
-                    _buildActionButton(Icons.share_outlined, 'Bagikan'),
+                    _buildActionButton(
+                      Icons.share_outlined,
+                      'Bagikan',
+                      Colors.grey[600]!,
+                      () {},
+                    ),
                     const Spacer(),
                     IconButton(
                       onPressed: () {
@@ -1036,23 +1465,21 @@ class ArticleCard extends StatelessWidget {
     return card;
   }
 
-  Widget _buildActionButton(IconData icon, String label) {
+  Widget _buildActionButton(IconData icon, String label, Color color, VoidCallback onTap) {
     return InkWell(
-      onTap: () {
-        // TODO: Implement action button functionality
-      },
+      onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 20, color: Colors.grey[600]),
+            Icon(icon, size: 20, color: color),
             const SizedBox(width: 6),
             Text(
               label,
               style: TextStyle(
-                color: Colors.grey[600],
+                color: color,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -1070,6 +1497,9 @@ class ArticleTextCard extends StatelessWidget {
   final int likes;
   final int comments;
   final bool isClickable;
+  final bool isLiked;
+  final VoidCallback onLike;
+  final VoidCallback onComment;
 
   const ArticleTextCard({
     Key? key,
@@ -1079,6 +1509,9 @@ class ArticleTextCard extends StatelessWidget {
     required this.likes,
     required this.comments,
     this.isClickable = false,
+    required this.isLiked,
+    required this.onLike,
+    required this.onComment,
   }) : super(key: key);
 
   @override
@@ -1149,11 +1582,26 @@ class ArticleTextCard extends StatelessWidget {
           const SizedBox(height: 16),
           Row(
             children: [
-              _buildActionButton(Icons.favorite_border, likes.toString()),
+              _buildActionButton(
+                isLiked ? Icons.favorite : Icons.favorite_border,
+                likes.toString(),
+                isLiked ? Colors.red : Colors.grey[600]!,
+                onLike,
+              ),
               const SizedBox(width: 24),
-              _buildActionButton(Icons.chat_bubble_outline, comments.toString()),
+              _buildActionButton(
+                Icons.chat_bubble_outline,
+                comments.toString(),
+                Colors.grey[600]!,
+                onComment,
+              ),
               const SizedBox(width: 24),
-              _buildActionButton(Icons.share_outlined, 'Bagikan'),
+              _buildActionButton(
+                Icons.share_outlined,
+                'Bagikan',
+                Colors.grey[600]!,
+                () {},
+              ),
               const Spacer(),
               IconButton(
                 onPressed: () {
@@ -1192,23 +1640,21 @@ class ArticleTextCard extends StatelessWidget {
     return card;
   }
 
-  Widget _buildActionButton(IconData icon, String label) {
+  Widget _buildActionButton(IconData icon, String label, Color color, VoidCallback onTap) {
     return InkWell(
-      onTap: () {
-        // TODO: Implement action button functionality
-      },
+      onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 20, color: Colors.grey[600]),
+            Icon(icon, size: 20, color: color),
             const SizedBox(width: 6),
             Text(
               label,
               style: TextStyle(
-                color: Colors.grey[600],
+                color: color,
                 fontWeight: FontWeight.w500,
               ),
             ),
