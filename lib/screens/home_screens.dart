@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'notification_screen.dart';
 import 'profile_screen.dart'; 
+import 'video_screen.dart'; // Add this import
 
 void main() {
   runApp(const MyApp());
@@ -298,15 +299,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       _selectedIndex = index;
     });
     
-    if (index == 4) { // Profile tab
+    if (index == 3) { // Video tab - UPDATED LINE
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const VideoScreen()),
+      ).then((_) {
+        setState(() {
+          _selectedIndex = 0; // Reset to home after returning
+        });
+      });
+    } else if (index == 4) { // Profile tab
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const ProfileScreen()),
       ).then((_) {
-        setState(() {});
+        setState(() {
+          _selectedIndex = 0; // Reset to home after returning
+        });
       });
     }
-    // TODO: Implement navigation for other tabs (Buku, Video)
+    // TODO: Implement navigation for Buku tab (index == 1)
   }
 
   void _showCreatePostDialog() {
