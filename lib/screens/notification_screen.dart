@@ -7,9 +7,9 @@ class NotificationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Data dummy untuk notifikasi
     final List<Map<String, String>> notifications = [
-      {'title': 'Komentar Baru', 'message': 'Kriston Watson mengomentari artikel Anda!', 'time': '1 jam lalu'},
-      {'title': 'Like Baru', 'message': 'Sarah Johnson menyukai artikel Anda!', 'time': '2 jam lalu'},
-      {'title': 'Mendekati Batas', 'message': 'Hampir kehabisan kuota notifikasi harian!', 'time': '3 jam lalu'},
+      {'title': 'Komentar Baru', 'message': 'Carin mengomentari artikel Anda!', 'time': '1 jam lalu'},
+      {'title': 'Like Baru', 'message': 'Johan menyukai artikel Anda!', 'time': '2 jam lalu'},
+      {'title': 'Postingan Baru', 'message': 'Sarah mengunggah video baru', 'time': '1 hari lalu'},
     ];
 
     return Scaffold(

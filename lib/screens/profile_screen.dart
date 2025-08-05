@@ -129,7 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Google Certified UX/UI Designer',
+                              'Pelajar',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey[500],
@@ -551,9 +551,9 @@ class ProfileSettingsScreen extends StatelessWidget {
                   // Form Fields
                   _buildTextField('Nama', 'Kriston Watshon'),
                   const SizedBox(height: 16),
-                  _buildTextField('Email', 'kriston@example.com'),
+                  _buildTextField('Email', 'kriston@gmail.com'),
                   const SizedBox(height: 16),
-                  _buildTextField('Kelas', 'XII IPA 1'),
+                  _buildTextField('Kelas', '12 RPL 2'),
                   const SizedBox(height: 16),
                   _buildTextField('No Telp', '+62 812 3456 7890'),
                 ],
@@ -780,7 +780,7 @@ class AboutAppScreen extends StatelessWidget {
                       border: Border.all(color: Colors.grey[300]!),
                     ),
                     child: const Text(
-                      'Aplikasi pembelajaran interaktif yang dirancang khusus untuk siswa SMA. Menyediakan berbagai fitur seperti materi pembelajaran, kuis, diskusi, dan tracking progress belajar. Dengan interface yang user-friendly dan konten yang berkualitas, aplikasi ini membantu siswa mencapai potensi akademik terbaik mereka.',
+                      'BacainSebelas adalah aplikasi literasi akhlak yang dikembangkan oleh siswa/i SMK sebagai wadah untuk memperluas wawasan, menumbuhkan minat baca, serta mempererat nilai-nilai akhlak mulia melalui artikel, resensi buku, dan video edukatif. Dengan fitur interaktif dan komunitas literasi, pengguna dapat belajar bersama, berdiskusi, dan menemukan inspirasi setiap hari.',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.black87,
