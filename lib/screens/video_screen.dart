@@ -10,6 +10,7 @@ class VideoScreen extends StatefulWidget {
 class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  int _selectedIndex = 3; // Set to 3 since this is the Video tab
   
   // Sample video data
   final List<Map<String, dynamic>> videos = [
@@ -159,6 +160,151 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
     );
   }
 
+  void _onItemTapped(int index) {
+    if (index == 2) {
+      // Posting - handle create post
+      _showCreatePostDialog();
+      return;
+    }
+    
+    if (index == 3) {
+      // Already on Video tab, do nothing
+      return;
+    }
+    
+    setState(() {
+      _selectedIndex = index;
+    });
+    
+    if (index == 0) { // Home tab
+      Navigator.pop(context); // Go back to HomeScreen
+    } else if (index == 4) { // Profile tab
+      // TODO: Navigate to ProfileScreen
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => const ProfileScreen()),
+      // );
+    }
+    // TODO: Implement navigation for Buku tab (index == 1)
+  }
+
+  void _showCreatePostDialog() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.6,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 8),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                'Buat Postingan',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                padding: const EdgeInsets.all(20),
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                children: [
+                  _buildCreatePostOption(
+                    icon: Icons.article_outlined,
+                    title: 'Artikel',
+                    subtitle: 'Tulis artikel atau review',
+                    color: const Color(0xFF4A90E2),
+                  ),
+                  _buildCreatePostOption(
+                    icon: Icons.menu_book_outlined,
+                    title: 'Resensi Buku',
+                    subtitle: 'Review buku favorit',
+                    color: const Color(0xFF34C759),
+                  ),
+                  _buildCreatePostOption(
+                    icon: Icons.movie_outlined,
+                    title: 'Resensi Film',
+                    subtitle: 'Review film terbaru',
+                    color: const Color(0xFFFF9500),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCreatePostOption({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+  }) {
+    return InkWell(
+      onTap: () {
+        Navigator.pop(context);
+        // TODO: Navigate to create post screen based on type
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withOpacity(0.3)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 32, color: color),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey[600],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   String _formatNumber(int number) {
     if (number >= 1000) {
       return '${(number / 1000).toStringAsFixed(1)}k';
@@ -256,7 +402,7 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                 // Right side action buttons
                 Positioned(
                   right: 16,
-                  bottom: 100,
+                  bottom: 160, // Adjusted to make room for bottom navigation
                   child: Column(
                     children: [
                       // Like button
@@ -348,7 +494,7 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                 Positioned(
                   left: 16,
                   right: 80,
-                  bottom: 50,
+                  bottom: 110, // Adjusted to make room for bottom navigation
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -412,6 +558,54 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
               ],
             );
           },
+        ),
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          selectedItemColor: const Color(0xFF4A90E2),
+          unselectedItemColor: Colors.grey,
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+          elevation: 0,
+          backgroundColor: Colors.white,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.menu_book_outlined),
+              activeIcon: Icon(Icons.menu_book),
+              label: 'Buku',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add_circle_outline, size: 32),
+              activeIcon: Icon(Icons.add_circle, size: 32),
+              label: 'Posting',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.play_circle_outline),
+              activeIcon: Icon(Icons.play_circle),
+              label: 'Video',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline),
+              activeIcon: Icon(Icons.person),
+              label: 'Profil',
+            ),
+          ],
         ),
       ),
     );
