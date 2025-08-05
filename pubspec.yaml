@@ -22,4 +22,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/
+    - assets/images/asset1.png
+    - assets/images/asset2.png
+    - assets/images/asset3.png
