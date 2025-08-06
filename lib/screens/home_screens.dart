@@ -42,9 +42,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   
   final List<String> categories = [
     'Semua',
-    'Artikel',
+    /*'Artikel',
     'Resensi Buku',
-    'Resensi Film',
+    'Resensi Film',*/
   ];
 
   final Map<String, List<Map<String, dynamic>>> categoryData = {
@@ -79,8 +79,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'readTime': '5 min',
         'isLiked': false,
       },
-    ],
-    'Artikel': [
       {
         'type': 'article',
         'username': 'Vivian',
@@ -96,8 +94,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'readTime': '12 min',
         'isLiked': false,
       },
-    ],
-    'Resensi Buku': [
       {
         'type': 'article',
         'username': 'Ahmad Fadil',
@@ -113,8 +109,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'readTime': '8 min',
         'isLiked': false,
       },
-    ],
-    'Resensi Film': [
       {
         'type': 'article',
         'username': 'Michael',
@@ -146,6 +140,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'isLiked': false,
       },
     ],
+    /*'Artikel': [
+     
+    ],*/
+    /*'Resensi Buku': [
+      
+    ],*/
+    /*'Resensi Film': [
+      
+    ],*/
   };
 
   List<Map<String, dynamic>> get filteredArticles {
