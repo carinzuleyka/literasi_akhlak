@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'notification_screen.dart';
 import 'profile_screen.dart'; 
-import 'video_screen.dart'; // Add this import
+import 'video_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'rating': 4.8,
         'time': '2 jam lalu',
         'description':
-            'Pelajari teknik smash yang digunakan oleh pemain profesional untuk meningkatkan performa permainan bola voli Anda...',
+            'Pelajari teknik smash yang digunakan oleh pemain profesional untuk meningkatkan performa permainan bola voli Anda. Teknik yang tepat meliputi posisi tubuh, timing, dan kekuatan lompatan yang optimal.',
         'likes': 245,
         'comments': 42,
         'readTime': '5 min',
@@ -70,6 +70,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'isLiked': false,
       },
     ],
+    'Artikel': [
+      {
+        'type': 'article',
+        'username': 'Tech Guru',
+        'title': 'AI Revolution: Dampak ChatGPT terhadap Dunia Kerja',
+        'imageUrl':
+            'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=500&h=300&fit=crop',
+        'rating': 4.7,
+        'time': '1 jam lalu',
+        'description':
+            'Analisis mendalam tentang bagaimana AI mengubah landscape pekerjaan dan skill yang perlu disiapkan untuk menghadapi revolusi teknologi ini.',
+        'likes': 456,
+        'comments': 128,
+        'readTime': '12 min',
+        'isLiked': false,
+      },
+    ],
     'Resensi Buku': [
       {
         'type': 'article',
@@ -80,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'rating': 4.9,
         'time': '1 jam lalu',
         'description':
-            'Buku yang mengulas pentingnya akhlak dalam kehidupan sehari-hari berdasarkan Al-Quran dan Hadits. Sangat praktis untuk diterapkan.',
+            'Buku yang mengulas pentingnya akhlak dalam kehidupan sehari-hari berdasarkan Al-Quran dan Hadits. Sangat praktis untuk diterapkan dalam kehidupan modern.',
         'likes': 456,
         'comments': 128,
         'readTime': '8 min',
@@ -97,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'rating': 4.6,
         'time': '2 jam lalu',
         'description':
-            'Denis Villeneuve berhasil menyajikan adaptasi yang luar biasa dari novel Frank Herbert...',
+            'Denis Villeneuve berhasil menyajikan adaptasi yang luar biasa dari novel Frank Herbert. Film ini menggabungkan visual yang memukau dengan storytelling yang mendalam.',
         'likes': 178,
         'comments': 67,
         'readTime': '8 min',
@@ -112,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'rating': 4.8,
         'time': '4 jam lalu',
         'description':
-            'Christopher Nolan kembali menghadirkan film yang complex namun brilliant tentang sang bapak bom atom.',
+            'Christopher Nolan kembali menghadirkan film yang complex namun brilliant tentang sang bapak bom atom. Cinematografi dan performa akting yang luar biasa.',
         'likes': 234,
         'comments': 89,
         'readTime': '9 min',
@@ -126,65 +143,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             'Baru nonton "Everything Everywhere All at Once" dan... speechless! 🎬✨ Film yang benar-benar out of the box. Rating: 10/10!',
         'likes': 167,
         'comments': 45,
-        'isLiked': false,
-      },
-    ],
-    'Olahraga': [
-      {
-        'type': 'article',
-        'username': 'Kriston Watson',
-        'title': 'Teknik Smash Terbaik dalam Bola Voli Professional',
-        'imageUrl':
-            'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=500&h=300&fit=crop',
-        'rating': 4.8,
-        'time': '2 jam lalu',
-        'description':
-            'Pelajari teknik smash yang digunakan oleh pemain profesional untuk meningkatkan performa permainan bola voli Anda...',
-        'likes': 245,
-        'comments': 42,
-        'readTime': '5 min',
-        'isLiked': false,
-      },
-      {
-        'type': 'article',
-        'username': 'Ahmad Fajar',
-        'title': 'Tips Meningkatkan Stamina untuk Lari Marathon',
-        'imageUrl':
-            'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=300&fit=crop',
-        'rating': 4.5,
-        'time': '5 jam lalu',
-        'description':
-            'Program latihan sistematis untuk mempersiapkan diri mengikuti marathon dengan performa terbaik.',
-        'likes': 189,
-        'comments': 56,
-        'readTime': '6 min',
-        'isLiked': false,
-      },
-    ],
-    'Teknologi': [
-      {
-        'type': 'article',
-        'username': 'Tech Guru',
-        'title': 'AI Revolution: Dampak ChatGPT terhadap Dunia Kerja',
-        'imageUrl':
-            'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=500&h=300&fit=crop',
-        'rating': 4.7,
-        'time': '1 jam lalu',
-        'description':
-            'Analisis mendalam tentang bagaimana AI mengubah landscape pekerjaan dan skill yang perlu disiapkan.',
-        'likes': 456,
-        'comments': 128,
-        'readTime': '12 min',
-        'isLiked': false,
-      },
-      {
-        'type': 'text',
-        'username': 'Developer Indo',
-        'time': '3 jam lalu',
-        'content':
-            'Flutter 3.19 baru keluar dengan performance improvements yang significant! 🚀 Ada yang udah coba?',
-        'likes': 234,
-        'comments': 67,
         'isLiked': false,
       },
     ],
@@ -244,6 +202,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
+  void _navigateToDetail(int index) {
+    final article = filteredArticles[index];
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ArticleDetailScreen(
+          username: article['username'],
+          time: article['time'],
+          title: article['title'] ?? '',
+          imageUrl: article['imageUrl'],
+          rating: article['rating']?.toDouble(),
+          description: article['description'] ?? article['content'],
+          likes: article['likes'],
+          comments: article['comments'],
+          readTime: article['readTime'],
+          isTextOnly: article['type'] == 'text',
+        ),
+      ),
+    );
+  }
+
   Widget buildCategoryTab(String label, int index) {
     bool isActive = selectedCategoryIndex == index;
     return GestureDetector(
@@ -290,7 +269,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   void _onItemTapped(int index) {
     if (index == 2) {
-      // Posting - handle create post
       _showCreatePostDialog();
       return;
     }
@@ -299,26 +277,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       _selectedIndex = index;
     });
     
-    if (index == 3) { // Video tab - UPDATED LINE
+    if (index == 3) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const VideoScreen()),
       ).then((_) {
         setState(() {
-          _selectedIndex = 0; // Reset to home after returning
+          _selectedIndex = 0;
         });
       });
-    } else if (index == 4) { // Profile tab
+    } else if (index == 4) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const ProfileScreen()),
       ).then((_) {
         setState(() {
-          _selectedIndex = 0; // Reset to home after returning
+          _selectedIndex = 0;
         });
       });
     }
-    // TODO: Implement navigation for Buku tab (index == 1)
   }
 
   void _showCreatePostDialog() {
@@ -399,7 +376,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return InkWell(
       onTap: () {
         Navigator.pop(context);
-        // TODO: Navigate to create post screen based on type
       },
       borderRadius: BorderRadius.circular(16),
       child: Container(
@@ -616,9 +592,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               ),
                             ),
                             TextButton(
-                              onPressed: () {
-                                // TODO: Implement "Lihat Semua" functionality
-                              },
+                              onPressed: () {},
                               child: const Text('Lihat Semua'),
                             ),
                           ],
@@ -669,15 +643,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         Row(
                           children: [
                             IconButton(
-                              onPressed: () {
-                                // TODO: Implement grid view
-                              },
+                              onPressed: () {},
                               icon: const Icon(Icons.grid_view),
                             ),
                             IconButton(
-                              onPressed: () {
-                                // TODO: Implement list view
-                              },
+                              onPressed: () {},
                               icon: const Icon(Icons.view_list),
                             ),
                           ],
@@ -712,10 +682,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             comments: article['comments'],
                             readTime: article['readTime'],
                             isLiked: article['isLiked'],
-                            isClickable: categories[selectedCategoryIndex] == 'Resensi Film' ||
-                                categories[selectedCategoryIndex] == 'Olahraga',
                             onLike: () => _toggleLike(articleIndex),
                             onComment: () => _showCommentsModal(articleIndex),
+                            onTap: () => _navigateToDetail(articleIndex),
                           );
                         } else {
                           return ArticleTextCard(
@@ -725,10 +694,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             likes: article['likes'],
                             comments: article['comments'],
                             isLiked: article['isLiked'],
-                            isClickable: categories[selectedCategoryIndex] == 'Resensi Film' ||
-                                categories[selectedCategoryIndex] == 'Olahraga',
                             onLike: () => _toggleLike(articleIndex),
                             onComment: () => _showCommentsModal(articleIndex),
+                            onTap: () => _navigateToDetail(articleIndex),
                           );
                         }
                       },
@@ -816,14 +784,14 @@ class _CommentsModalState extends State<CommentsModal> {
   final List<Map<String, dynamic>> _commentsList = [
     {
       'username': 'Bayu Resnadi',
-      'comment': 'Ini Adalah Contoh Teknik Smash Olahraga Bola Voli',
+      'comment': 'Artikel yang sangat informatif! Terima kasih sudah berbagi.',
       'time': '2 jam',
       'likes': 2,
       'isLiked': false,
     },
     {
       'username': 'Akmal Zains',
-      'comment': 'Ini Adalah Contoh Teknik Smash Olahraga Bola Voli',
+      'comment': 'Penjelasannya sangat detail dan mudah dipahami.',
       'time': '1 jam',
       'likes': 2,
       'isLiked': false,
@@ -870,7 +838,6 @@ class _CommentsModalState extends State<CommentsModal> {
       ),
       child: Column(
         children: [
-          // Handle bar
           Container(
             margin: const EdgeInsets.only(top: 8),
             width: 40,
@@ -880,7 +847,6 @@ class _CommentsModalState extends State<CommentsModal> {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          // Header
           Container(
             padding: const EdgeInsets.all(20),
             child: const Text(
@@ -891,7 +857,6 @@ class _CommentsModalState extends State<CommentsModal> {
               ),
             ),
           ),
-          // Comments list
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -903,7 +868,7 @@ class _CommentsModalState extends State<CommentsModal> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 20,
                         backgroundImage: NetworkImage(
                           'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
@@ -966,7 +931,6 @@ class _CommentsModalState extends State<CommentsModal> {
               },
             ),
           ),
-          // Comment input
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -977,7 +941,7 @@ class _CommentsModalState extends State<CommentsModal> {
             ),
             child: Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 16,
                   backgroundImage: NetworkImage(
                     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
@@ -1031,7 +995,7 @@ class _CommentsModalState extends State<CommentsModal> {
   }
 }
 
-class ArticleDetailScreen extends StatelessWidget {
+class ArticleDetailScreen extends StatefulWidget {
   final String username;
   final String time;
   final String title;
@@ -1058,106 +1022,115 @@ class ArticleDetailScreen extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<ArticleDetailScreen> createState() => _ArticleDetailScreenState();
+}
+
+class _ArticleDetailScreenState extends State<ArticleDetailScreen> {
+  bool isLiked = false;
+  late int likesCount;
+  late int commentsCount;
+
+  @override
+  void initState() {
+    super.initState();
+    likesCount = widget.likes;
+    commentsCount = widget.comments;
+  }
+
+  void _toggleLike() {
+    setState(() {
+      isLiked = !isLiked;
+      if (isLiked) {
+        likesCount++;
+      } else {
+        likesCount--;
+      }
+    });
+  }
+
+  void _showCommentsModal() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => CommentsModal(
+        username: widget.username,
+        title: widget.title,
+        comments: commentsCount,
+        onAddComment: () {
+          setState(() {
+            commentsCount++;
+          });
+        },
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: Text(isTextOnly ? 'Text Post' : 'Article Detail'),
+        title: Text(widget.isTextOnly ? 'Detail Post' : 'Detail Artikel'),
         backgroundColor: const Color(0xFF4A90E2),
+        foregroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share, color: Colors.white),
+            onPressed: () {
+              // TODO: Implement share functionality
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.bookmark_border, color: Colors.white),
+            onPressed: () {
+              // TODO: Implement bookmark functionality
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(
-                      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-                    ),
-                    radius: 20,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          username,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          time,
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (!isTextOnly && rating != null)
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.amber.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.star, color: Colors.amber, size: 16),
-                          const SizedBox(width: 4),
-                          Text(
-                            rating.toString(),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              if (!isTextOnly && imageUrl != null)
-                Stack(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (!widget.isTextOnly && widget.imageUrl != null)
+              Container(
+                height: 250,
+                width: double.infinity,
+                child: Stack(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Image.network(
-                        imageUrl!,
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            height: 200,
-                            color: Colors.grey[300],
-                            child: const Center(
-                              child: Icon(Icons.broken_image, size: 50, color: Colors.grey),
-                            ),
-                          );
-                        },
-                      ),
+                    Image.network(
+                      widget.imageUrl!,
+                      height: 250,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 250,
+                          color: Colors.grey[300],
+                          child: const Center(
+                            child: Icon(Icons.broken_image, size: 50, color: Colors.grey),
+                          ),
+                        );
+                      },
                     ),
-                    if (readTime != null)
+                    if (widget.readTime != null)
                       Positioned(
-                        top: 12,
-                        right: 12,
+                        top: 16,
+                        right: 16,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             color: Colors.black.withOpacity(0.7),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(16),
                           ),
                           child: Text(
-                            readTime!,
+                            widget.readTime!,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 12,
@@ -1168,61 +1141,163 @@ class ArticleDetailScreen extends StatelessWidget {
                       ),
                   ],
                 ),
-              const SizedBox(height: 16),
-              if (!isTextOnly)
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2D3748),
-                    height: 1.3,
-                  ),
-                ),
-              if (!isTextOnly) const SizedBox(height: 8),
-              Text(
-                description,
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontSize: 15,
-                  height: 1.4,
-                ),
               ),
-              const SizedBox(height: 16),
-              Row(
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildActionButton(Icons.favorite_border, likes.toString()),
-                  const SizedBox(width: 24),
-                  _buildActionButton(Icons.chat_bubble_outline, comments.toString()),
-                  const SizedBox(width: 24),
-                  _buildActionButton(Icons.share_outlined, 'Bagikan'),
+                  Row(
+                    children: [
+                      const CircleAvatar(
+                        backgroundImage: NetworkImage(
+                          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+                        ),
+                        radius: 24,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.username,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Text(
+                              widget.time,
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (!widget.isTextOnly && widget.rating != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.amber.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.star, color: Colors.amber, size: 18),
+                              const SizedBox(width: 4),
+                              Text(
+                                widget.rating.toString(),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  if (!widget.isTextOnly && widget.title.isNotEmpty)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.title,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2D3748),
+                            height: 1.3,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    ),
+                  Text(
+                    widget.description,
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontSize: 16,
+                      height: 1.6,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(color: Colors.grey[200]!),
+                        bottom: BorderSide(color: Colors.grey[200]!),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        _buildActionButton(
+                          isLiked ? Icons.favorite : Icons.favorite_border,
+                          likesCount.toString(),
+                          isLiked ? Colors.red : Colors.grey[600]!,
+                          _toggleLike,
+                        ),
+                        const SizedBox(width: 32),
+                        _buildActionButton(
+                          Icons.chat_bubble_outline,
+                          commentsCount.toString(),
+                          Colors.grey[600]!,
+                          _showCommentsModal,
+                        ),
+                        const SizedBox(width: 32),
+                        _buildActionButton(
+                          Icons.share_outlined,
+                          'Bagikan',
+                          Colors.grey[600]!,
+                          () {
+                            // TODO: Implement share functionality
+                          },
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () {
+                            // TODO: Implement bookmark functionality
+                          },
+                          icon: const Icon(Icons.bookmark_border),
+                          color: Colors.grey[600],
+                          iconSize: 24,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildActionButton(IconData icon, String label) {
+  Widget _buildActionButton(IconData icon, String label, Color color, VoidCallback onTap) {
     return InkWell(
-      onTap: () {
-        // TODO: Implement action button functionality
-      },
+      onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 20, color: Colors.grey[600]),
+            Icon(icon, size: 22, color: color),
             const SizedBox(width: 6),
             Text(
               label,
               style: TextStyle(
-                color: Colors.grey[600],
+                color: color,
                 fontWeight: FontWeight.w500,
+                fontSize: 14,
               ),
             ),
           ],
@@ -1242,10 +1317,10 @@ class ArticleCard extends StatelessWidget {
   final int likes;
   final int comments;
   final String readTime;
-  final bool isClickable;
   final bool isLiked;
   final VoidCallback onLike;
   final VoidCallback onComment;
+  final VoidCallback onTap;
 
   const ArticleCard({
     Key? key,
@@ -1258,216 +1333,193 @@ class ArticleCard extends StatelessWidget {
     required this.likes,
     required this.comments,
     required this.readTime,
-    this.isClickable = false,
     required this.isLiked,
     required this.onLike,
     required this.onComment,
+    required this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Widget card = Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-                child: Image.network(
-                  imageUrl,
-                  height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      height: 200,
-                      color: Colors.grey[300],
-                      child: const Center(
-                        child: Icon(Icons.broken_image, size: 50, color: Colors.grey),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Positioned(
-                top: 12,
-                right: 12,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.7),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    readTime,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
               children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-                      ),
-                      radius: 20,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            username,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Text(
-                            time,
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.amber.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.star, color: Colors.amber, size: 16),
-                          const SizedBox(width: 4),
-                          Text(
-                            rating.toString(),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2D3748),
-                    height: 1.3,
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                  child: Image.network(
+                    imageUrl,
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        height: 200,
+                        color: Colors.grey[300],
+                        child: const Center(
+                          child: Icon(Icons.broken_image, size: 50, color: Colors.grey),
+                        ),
+                      );
+                    },
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  description,
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 15,
-                    height: 1.4,
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      readTime,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    _buildActionButton(
-                      isLiked ? Icons.favorite : Icons.favorite_border,
-                      likes.toString(),
-                      isLiked ? Colors.red : Colors.grey[600]!,
-                      onLike,
-                    ),
-                    const SizedBox(width: 24),
-                    _buildActionButton(
-                      Icons.chat_bubble_outline,
-                      comments.toString(),
-                      Colors.grey[600]!,
-                      onComment,
-                    ),
-                    const SizedBox(width: 24),
-                    _buildActionButton(
-                      Icons.share_outlined,
-                      'Bagikan',
-                      Colors.grey[600]!,
-                      () {},
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      onPressed: () {
-                        // TODO: Implement bookmark functionality
-                      },
-                      icon: const Icon(Icons.bookmark_border),
-                      color: Colors.grey[600],
-                    ),
-                  ],
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-
-    if (isClickable) {
-      return InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ArticleDetailScreen(
-                username: username,
-                time: time,
-                title: title,
-                imageUrl: imageUrl,
-                rating: rating,
-                description: description,
-                likes: likes,
-                comments: comments,
-                readTime: readTime,
-                isTextOnly: false,
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const CircleAvatar(
+                        backgroundImage: NetworkImage(
+                          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+                        ),
+                        radius: 20,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              username,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Text(
+                              time,
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.amber.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.star, color: Colors.amber, size: 16),
+                            const SizedBox(width: 4),
+                            Text(
+                              rating.toString(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF2D3748),
+                      height: 1.3,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontSize: 15,
+                      height: 1.4,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      _buildActionButton(
+                        isLiked ? Icons.favorite : Icons.favorite_border,
+                        likes.toString(),
+                        isLiked ? Colors.red : Colors.grey[600]!,
+                        onLike,
+                      ),
+                      const SizedBox(width: 24),
+                      _buildActionButton(
+                        Icons.chat_bubble_outline,
+                        comments.toString(),
+                        Colors.grey[600]!,
+                        onComment,
+                      ),
+                      const SizedBox(width: 24),
+                      _buildActionButton(
+                        Icons.share_outlined,
+                        'Bagikan',
+                        Colors.grey[600]!,
+                        () {},
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.bookmark_border),
+                        color: Colors.grey[600],
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          );
-        },
-        borderRadius: BorderRadius.circular(20),
-        child: card,
-      );
-    }
-    return card;
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildActionButton(IconData icon, String label, Color color, VoidCallback onTap) {
@@ -1501,10 +1553,10 @@ class ArticleTextCard extends StatelessWidget {
   final String content;
   final int likes;
   final int comments;
-  final bool isClickable;
   final bool isLiked;
   final VoidCallback onLike;
   final VoidCallback onComment;
+  final VoidCallback onTap;
 
   const ArticleTextCard({
     Key? key,
@@ -1513,136 +1565,113 @@ class ArticleTextCard extends StatelessWidget {
     required this.content,
     required this.likes,
     required this.comments,
-    this.isClickable = false,
     required this.isLiked,
     required this.onLike,
     required this.onComment,
+    required this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Widget card = Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage(
-                  'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
-                ),
-                radius: 20,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      username,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      time,
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 13,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  // TODO: Implement more options
-                },
-                icon: Icon(Icons.more_horiz, color: Colors.grey[600]),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            content,
-            style: const TextStyle(
-              fontSize: 16,
-              height: 1.5,
-              color: Color(0xFF2D3748),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              _buildActionButton(
-                isLiked ? Icons.favorite : Icons.favorite_border,
-                likes.toString(),
-                isLiked ? Colors.red : Colors.grey[600]!,
-                onLike,
+          ],
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const CircleAvatar(
+                  backgroundImage: NetworkImage(
+                    'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
+                  ),
+                  radius: 20,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        username,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        time,
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.more_horiz, color: Colors.grey[600]),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              content,
+              style: const TextStyle(
+                fontSize: 16,
+                height: 1.5,
+                color: Color(0xFF2D3748),
               ),
-              const SizedBox(width: 24),
-              _buildActionButton(
-                Icons.chat_bubble_outline,
-                comments.toString(),
-                Colors.grey[600]!,
-                onComment,
-              ),
-              const SizedBox(width: 24),
-              _buildActionButton(
-                Icons.share_outlined,
-                'Bagikan',
-                Colors.grey[600]!,
-                () {},
-              ),
-              const Spacer(),
-              IconButton(
-                onPressed: () {
-                  // TODO: Implement bookmark functionality
-                },
-                icon: const Icon(Icons.bookmark_border),
-                color: Colors.grey[600],
-              ),
-            ],
-          ),
-        ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                _buildActionButton(
+                  isLiked ? Icons.favorite : Icons.favorite_border,
+                  likes.toString(),
+                  isLiked ? Colors.red : Colors.grey[600]!,
+                  onLike,
+                ),
+                const SizedBox(width: 24),
+                _buildActionButton(
+                  Icons.chat_bubble_outline,
+                  comments.toString(),
+                  Colors.grey[600]!,
+                  onComment,
+                ),
+                const SizedBox(width: 24),
+                _buildActionButton(
+                  Icons.share_outlined,
+                  'Bagikan',
+                  Colors.grey[600]!,
+                  () {},
+                ),
+                const Spacer(),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.bookmark_border),
+                  color: Colors.grey[600],
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
-
-    if (isClickable) {
-      return InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ArticleDetailScreen(
-                username: username,
-                time: time,
-                description: content,
-                likes: likes,
-                comments: comments,
-                isTextOnly: true,
-              ),
-            ),
-          );
-        },
-        borderRadius: BorderRadius.circular(20),
-        child: card,
-      );
-    }
-    return card;
   }
 
   Widget _buildActionButton(IconData icon, String label, Color color, VoidCallback onTap) {
