@@ -53,34 +53,39 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'rating': 4.8,
         'time': '2 jam lalu',
         'description':
-            'Pelajari teknik smash yang digunakan oleh pemain profesional untuk meningkatkan performa permainan bola voli Anda. Teknik yang tepat meliputi posisi tubuh, timing, dan kekuatan lompatan yang optimal.',
+            'Smash adalah salah satu teknik serangan paling mematikan dalam bola voli. Untuk menghasilkan smash yang efektif, seorang pemain harus menguasai tiga aspek penting: lompatan yang presisi, ayunan tangan yang kuat, dan penempatan bola yang akurat.Lompatan harus dilakukan tepat waktu saat bola berada di posisi ideal. Kemudian, ayunan tangan dilakukan dengan kecepatan tinggi dari belakang ke depan, sambil mempertahankan pergelangan tangan yang fleksibel agar bola dapat dipukul tajam ke arah lapangan lawan. Selain kekuatan, pemain juga perlu cerdas dalam menentukan arah smash, misalnya menyasar area kosong atau titik lemah pertahanan lawan.Teknik smash yang baik bukan hanya soal tenaga, tapi juga kombinasi dari ketepatan, strategi, dan koordinasi tim. Tanpa itu, smash tidak akan menghasilkan poin. Oleh karena itu, latihan rutin dan pemahaman taktik sangat diperlukan untuk menciptakan smash yang tak terbendung.',
         'likes': 245,
         'comments': 42,
         'readTime': '5 min',
         'isLiked': false,
       },
       {
-        'type': 'text',
-        'username': 'Sarah Johnson',
+        'type': 'article',
+        'username': 'Sarah',
+        'title': 'Review buku: ATOMIC HABITS',
+        'imageUrl':
+            'https://assets.telkomsel.com/public/2024-10/buku%20atomic%20habits.png',
+        'rating': 4.5,
         'time': '4 jam lalu',
-        'content':
-            'Baru saja menyelesaikan buku "Atomic Habits" dan wow! Sangat merekomendasikan untuk yang ingin membangun kebiasaan baik. Ada yang sudah baca?',
+        'description':
+            'Atomic Habits karya James Clear menjelaskan cara membentuk kebiasaan baik melalui perubahan kecil namun konsisten. Buku ini mengajarkan bahwa perubahan besar berasal dari tindakan sederhana yang dilakukan berulang, bukan dari motivasi sesaat. Konsep seperti "habit stacking" dan “sistem identitas” membuat kita lebih mudah membangun rutinitas positif.Dengan gaya bahasa yang mudah dipahami dan contoh yang relevan, buku ini cocok bagi siapa saja yang ingin jadi lebih produktif, mengubah kebiasaan buruk, atau memperbaiki kualitas hidup. Atomic Habits bukan hanya teori, tapi panduan praktis yang bisa langsung diterapkan dalam kehidupan sehari-hari.',
         'likes': 89,
         'comments': 23,
+        'readTime': '5 min',
         'isLiked': false,
       },
     ],
     'Artikel': [
       {
         'type': 'article',
-        'username': 'Tech Guru',
+        'username': 'Vivian',
         'title': 'AI Revolution: Dampak ChatGPT terhadap Dunia Kerja',
         'imageUrl':
             'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=500&h=300&fit=crop',
         'rating': 4.7,
-        'time': '1 jam lalu',
+        'time': '6 jam lalu',
         'description':
-            'Analisis mendalam tentang bagaimana AI mengubah landscape pekerjaan dan skill yang perlu disiapkan untuk menghadapi revolusi teknologi ini.',
+            'Artificial Intelligence (AI) makin berkembang pesat dan memberi dampak besar di dunia kerja. Banyak pekerjaan manual seperti input data, layanan pelanggan, hingga analisis laporan kini bisa dilakukan oleh mesin dengan cepat dan efisien. Ini membuat perusahaan bisa menghemat biaya dan waktu, tapi di sisi lain menimbulkan kekhawatiran soal pengurangan tenaga kerja manusia.Meski begitu, AI juga menciptakan peluang baru, seperti profesi data analyst, AI developer, hingga AI ethicist. Intinya, dunia kerja sedang bertransformasi, dan manusia harus beradaptasi. Mengasah skill digital, berpikir kritis, dan memahami teknologi menjadi hal penting agar kita tetap relevan di era AI ini.',
         'likes': 456,
         'comments': 128,
         'readTime': '12 min',
@@ -90,14 +95,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     'Resensi Buku': [
       {
         'type': 'article',
-        'username': 'Ustadz Ahmad Fadil',
+        'username': 'Ahmad Fadil',
         'title': 'Review: "Akhlak Mulia" - Panduan Membangun Karakter Islami',
         'imageUrl':
             'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=500&h=300&fit=crop',
         'rating': 4.9,
-        'time': '1 jam lalu',
+        'time': '9 jam lalu',
         'description':
-            'Buku yang mengulas pentingnya akhlak dalam kehidupan sehari-hari berdasarkan Al-Quran dan Hadits. Sangat praktis untuk diterapkan dalam kehidupan modern.',
+            'Buku Akhlak Mulia memberikan panduan sederhana namun menyentuh tentang bagaimana membangun karakter Islami yang kuat. Ditulis berdasarkan Al-Qur’an dan sunnah, buku ini mengulas berbagai nilai seperti jujur, sabar, ikhlas, rendah hati, dan pemaaf—semuanya penting dalam kehidupan sehari-hari.Penjelasannya tidak menggurui, justru penuh ajakan refleksi dan contoh nyata. Buku ini cocok untuk siapa saja yang ingin memperbaiki diri dan meningkatkan kualitas hubungan dengan Allah dan sesama manusia. Sangat direkomendasikan bagi remaja dan dewasa yang ingin memperkuat kepribadian dengan nilai-nilai Islam.',
         'likes': 456,
         'comments': 128,
         'readTime': '8 min',
@@ -107,14 +112,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     'Resensi Film': [
       {
         'type': 'article',
-        'username': 'Michael Chen',
+        'username': 'Michael',
         'title': 'Review Film "Dune: Part Two" - Epik Sci-Fi yang Memukau',
         'imageUrl':
             'https://images.unsplash.com/photo-1489599511024-2d9b2b97c3ab?w=500&h=300&fit=crop',
         'rating': 4.6,
-        'time': '2 jam lalu',
+        'time': '2 hari lalu',
         'description':
-            'Denis Villeneuve berhasil menyajikan adaptasi yang luar biasa dari novel Frank Herbert. Film ini menggabungkan visual yang memukau dengan storytelling yang mendalam.',
+            'Dune: Part Two melanjutkan kisah Paul Atreides di planet gurun Arrakis. Film ini menawarkan perpaduan sempurna antara konflik politik, perjuangan spiritual, dan visual yang sangat memukau. Sutradara Denis Villeneuve berhasil memperdalam cerita dengan lebih emosional dan intens dibanding bagian pertamanya.Karakter-karakter seperti Chani, Stilgar, dan Feyd-Rautha mendapat porsi yang lebih besar, membuat ceritanya lebih hidup. Dari sinematografi hingga scoring, semuanya terasa megah. Dune: Part Two bukan cuma tontonan, tapi pengalaman sinematik yang mendalam dan wajib ditonton bagi pencinta sci-fi dan drama epik..',
         'likes': 178,
         'comments': 67,
         'readTime': '8 min',
@@ -127,22 +132,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'imageUrl':
             'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=500&h=300&fit=crop',
         'rating': 4.8,
-        'time': '4 jam lalu',
+        'time': '3 hari lalu',
         'description':
-            'Christopher Nolan kembali menghadirkan film yang complex namun brilliant tentang sang bapak bom atom. Cinematografi dan performa akting yang luar biasa.',
+            'Oppenheimer adalah film biografi karya Christopher Nolan yang menggambarkan kehidupan J. Robert Oppenheimer, ilmuwan di balik proyek bom atom. Film ini menyajikan alur cerita yang kompleks, penuh dialog intelektual, dan dilema moral tentang kekuatan sains dan tanggung jawab manusia.Cillian Murphy tampil luar biasa sebagai Oppenheimer, menunjukkan sisi jenius sekaligus gelap dari tokoh tersebut. Visual khas Nolan, skoring musik yang menegangkan, dan penggambaran era Perang Dunia membuat film ini terasa sangat kuat. Oppenheimer bukan film aksi biasa, tapi film berpikir yang mengajak kita merenung tentang konsekuensi dari kemajuan ilmu pengetahuan.',
         'likes': 234,
         'comments': 89,
         'readTime': '9 min',
-        'isLiked': false,
-      },
-      {
-        'type': 'text',
-        'username': 'Rio Pratama',
-        'time': '6 jam lalu',
-        'content':
-            'Baru nonton "Everything Everywhere All at Once" dan... speechless! 🎬✨ Film yang benar-benar out of the box. Rating: 10/10!',
-        'likes': 167,
-        'comments': 45,
         'isLiked': false,
       },
     ],
