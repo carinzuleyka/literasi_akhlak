@@ -34,7 +34,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   int selectedCategoryIndex = 0;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-  int _selectedIndex = 0; 
+  int _selectedIndex = 0;
+  
+  // Search controller
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+  
   final List<String> categories = [
     'Semua',
     'Artikel',
@@ -68,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'rating': 4.5,
         'time': '4 jam lalu',
         'description':
-            'Atomic Habits karya James Clear menjelaskan cara membentuk kebiasaan baik melalui perubahan kecil namun konsisten. Buku ini mengajarkan bahwa perubahan besar berasal dari tindakan sederhana yang dilakukan berulang, bukan dari motivasi sesaat. Konsep seperti "habit stacking" dan “sistem identitas” membuat kita lebih mudah membangun rutinitas positif.Dengan gaya bahasa yang mudah dipahami dan contoh yang relevan, buku ini cocok bagi siapa saja yang ingin jadi lebih produktif, mengubah kebiasaan buruk, atau memperbaiki kualitas hidup. Atomic Habits bukan hanya teori, tapi panduan praktis yang bisa langsung diterapkan dalam kehidupan sehari-hari.',
+            'Atomic Habits karya James Clear menjelaskan cara membentuk kebiasaan baik melalui perubahan kecil namun konsisten. Buku ini mengajarkan bahwa perubahan besar berasal dari tindakan sederhana yang dilakukan berulang, bukan dari motivasi sesaat. Konsep seperti "habit stacking" dan "sistem identitas" membuat kita lebih mudah membangun rutinitas positif.Dengan gaya bahasa yang mudah dipahami dan contoh yang relevan, buku ini cocok bagi siapa saja yang ingin jadi lebih produktif, mengubah kebiasaan buruk, atau memperbaiki kualitas hidup. Atomic Habits bukan hanya teori, tapi panduan praktis yang bisa langsung diterapkan dalam kehidupan sehari-hari.',
         'likes': 89,
         'comments': 23,
         'readTime': '5 min',
@@ -102,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'rating': 4.9,
         'time': '9 jam lalu',
         'description':
-            'Buku Akhlak Mulia memberikan panduan sederhana namun menyentuh tentang bagaimana membangun karakter Islami yang kuat. Ditulis berdasarkan Al-Qur’an dan sunnah, buku ini mengulas berbagai nilai seperti jujur, sabar, ikhlas, rendah hati, dan pemaaf—semuanya penting dalam kehidupan sehari-hari.Penjelasannya tidak menggurui, justru penuh ajakan refleksi dan contoh nyata. Buku ini cocok untuk siapa saja yang ingin memperbaiki diri dan meningkatkan kualitas hubungan dengan Allah dan sesama manusia. Sangat direkomendasikan bagi remaja dan dewasa yang ingin memperkuat kepribadian dengan nilai-nilai Islam.',
+            'Buku Akhlak Mulia memberikan panduan sederhana namun menyentuh tentang bagaimana membangun karakter Islami yang kuat. Ditulis berdasarkan Al-Quran dan sunnah, buku ini mengulas berbagai nilai seperti jujur, sabar, ikhlas, rendah hati, dan pemaaf—semuanya penting dalam kehidupan sehari-hari.Penjelasannya tidak menggurui, justru penuh ajakan refleksi dan contoh nyata. Buku ini cocok untuk siapa saja yang ingin memperbaiki diri dan meningkatkan kualitas hubungan dengan Allah dan sesama manusia. Sangat direkomendasikan bagi remaja dan dewasa yang ingin memperkuat kepribadian dengan nilai-nilai Islam.',
         'likes': 456,
         'comments': 128,
         'readTime': '8 min',
@@ -145,7 +150,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   List<Map<String, dynamic>> get filteredArticles {
     String selectedCategory = categories[selectedCategoryIndex];
-    return categoryData[selectedCategory] ?? [];
+    List<Map<String, dynamic>> articles = categoryData[selectedCategory] ?? [];
+    
+    // Apply search filter
+    if (_searchQuery.isNotEmpty) {
+      articles = articles.where((article) {
+        String title = article['title']?.toLowerCase() ?? '';
+        String username = article['username']?.toLowerCase() ?? '';
+        String description = article['description']?.toLowerCase() ?? '';
+        String query = _searchQuery.toLowerCase();
+        
+        return title.contains(query) || 
+               username.contains(query) || 
+               description.contains(query);
+      }).toList();
+    }
+    
+    return articles;
   }
 
   @override
@@ -164,7 +185,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void dispose() {
     _animationController.dispose();
+    _searchController.dispose();
     super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    setState(() {
+      _searchQuery = value;
+    });
+  }
+
+  void _clearSearch() {
+    setState(() {
+      _searchController.clear();
+      _searchQuery = '';
+    });
   }
 
   void _toggleLike(int index) {
@@ -550,11 +585,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             ],
                           ),
                           child: TextField(
+                            controller: _searchController,
+                            onChanged: _onSearchChanged,
                             decoration: InputDecoration(
                               hintText: 'Cari artikel, topik, atau penulis...',
                               hintStyle: TextStyle(color: Colors.grey[600]),
                               prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
-                              suffixIcon: Icon(Icons.filter_list, color: Colors.grey[600]),
+                              suffixIcon: _searchQuery.isNotEmpty 
+                                ? IconButton(
+                                    onPressed: _clearSearch,
+                                    icon: Icon(Icons.clear, color: Colors.grey[600]),
+                                  )
+                                : Icon(Icons.filter_list, color: Colors.grey[600]),
                               contentPadding: const EdgeInsets.symmetric(vertical: 16),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(30),
@@ -617,9 +659,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              selectedCategoryIndex == 0
-                                  ? 'Artikel Terbaru'
-                                  : '${categories[selectedCategoryIndex]}',
+                              _searchQuery.isNotEmpty 
+                                ? 'Hasil Pencarian'
+                                : selectedCategoryIndex == 0
+                                    ? 'Artikel Terbaru'
+                                    : '${categories[selectedCategoryIndex]}',
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -653,51 +697,83 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
                 SliverPadding(
                   padding: const EdgeInsets.all(20),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final articleIndex = index ~/ 2;
-                        if (index.isOdd) {
-                          return const SizedBox(height: 16);
-                        }
-                        if (articleIndex >= filteredArticles.length) {
-                          return null;
-                        }
-                        final article = filteredArticles[articleIndex];
+                  sliver: filteredArticles.isEmpty && _searchQuery.isNotEmpty
+                    ? SliverToBoxAdapter(
+                        child: Container(
+                          padding: const EdgeInsets.all(40),
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.search_off,
+                                size: 64,
+                                color: Colors.grey[400],
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'Tidak ada artikel yang ditemukan',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Coba kata kunci lain atau ubah kategori',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[500],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            final articleIndex = index ~/ 2;
+                            if (index.isOdd) {
+                              return const SizedBox(height: 16);
+                            }
+                            if (articleIndex >= filteredArticles.length) {
+                              return null;
+                            }
+                            final article = filteredArticles[articleIndex];
 
-                        if (article['type'] == 'article') {
-                          return ArticleCard(
-                            username: article['username'],
-                            title: article['title'],
-                            imageUrl: article['imageUrl'],
-                            rating: article['rating'],
-                            time: article['time'],
-                            description: article['description'],
-                            likes: article['likes'],
-                            comments: article['comments'],
-                            readTime: article['readTime'],
-                            isLiked: article['isLiked'],
-                            onLike: () => _toggleLike(articleIndex),
-                            onComment: () => _showCommentsModal(articleIndex),
-                            onTap: () => _navigateToDetail(articleIndex),
-                          );
-                        } else {
-                          return ArticleTextCard(
-                            username: article['username'],
-                            time: article['time'],
-                            content: article['content'],
-                            likes: article['likes'],
-                            comments: article['comments'],
-                            isLiked: article['isLiked'],
-                            onLike: () => _toggleLike(articleIndex),
-                            onComment: () => _showCommentsModal(articleIndex),
-                            onTap: () => _navigateToDetail(articleIndex),
-                          );
-                        }
-                      },
-                      childCount: filteredArticles.length * 2 - 1,
-                    ),
-                  ),
+                            if (article['type'] == 'article') {
+                              return ArticleCard(
+                                username: article['username'],
+                                title: article['title'],
+                                imageUrl: article['imageUrl'],
+                                rating: article['rating'],
+                                time: article['time'],
+                                description: article['description'],
+                                likes: article['likes'],
+                                comments: article['comments'],
+                                readTime: article['readTime'],
+                                isLiked: article['isLiked'],
+                                onLike: () => _toggleLike(articleIndex),
+                                onComment: () => _showCommentsModal(articleIndex),
+                                onTap: () => _navigateToDetail(articleIndex),
+                              );
+                            } else {
+                              return ArticleTextCard(
+                                username: article['username'],
+                                time: article['time'],
+                                content: article['content'],
+                                likes: article['likes'],
+                                comments: article['comments'],
+                                isLiked: article['isLiked'],
+                                onLike: () => _toggleLike(articleIndex),
+                                onComment: () => _showCommentsModal(articleIndex),
+                                onTap: () => _navigateToDetail(articleIndex),
+                              );
+                            }
+                          },
+                          childCount: filteredArticles.length * 2 - 1,
+                        ),
+                      ),
                 ),
               ],
             ),
