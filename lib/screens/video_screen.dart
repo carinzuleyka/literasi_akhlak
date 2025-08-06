@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'profile_screen.dart'; // Make sure this file exists
 
 class VideoScreen extends StatefulWidget {
   const VideoScreen({Key? key}) : super(key: key);
@@ -56,11 +57,12 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
   ];
 
   int currentVideoIndex = 0;
-  PageController _pageController = PageController();
+  late PageController _pageController; // Add late keyword
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(); // Initialize in initState
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -148,7 +150,6 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                 ),
               ),
             ),
-            // Share options would go here
             const Expanded(
               child: Center(
                 child: Text('Share options coming soon...'),
@@ -162,13 +163,11 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
 
   void _onItemTapped(int index) {
     if (index == 2) {
-      // Posting - handle create post
       _showCreatePostDialog();
       return;
     }
     
     if (index == 3) {
-      // Already on Video tab, do nothing
       return;
     }
     
@@ -176,16 +175,15 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
       _selectedIndex = index;
     });
     
-    if (index == 0) { // Home tab
-      Navigator.pop(context); // Go back to HomeScreen
-    } else if (index == 4) { // Profile tab
-      // TODO: Navigate to ProfileScreen
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => const ProfileScreen()),
-      // );
+    if (index == 0) {
+      Navigator.pop(context);
+    } else if (index == 4) {
+      // Make sure ProfileScreen exists and is imported correctly
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ProfileScreen()), // Fixed class name
+      );
     }
-    // TODO: Implement navigation for Buku tab (index == 1)
   }
 
   void _showCreatePostDialog() {
@@ -266,7 +264,6 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
     return InkWell(
       onTap: () {
         Navigator.pop(context);
-        // TODO: Navigate to create post screen based on type
       },
       borderRadius: BorderRadius.circular(16),
       child: Container(
@@ -402,7 +399,7 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                 // Right side action buttons
                 Positioned(
                   right: 16,
-                  bottom: 160, // Adjusted to make room for bottom navigation
+                  bottom: 160,
                   child: Column(
                     children: [
                       // Like button
@@ -494,7 +491,7 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                 Positioned(
                   left: 16,
                   right: 80,
-                  bottom: 110, // Adjusted to make room for bottom navigation
+                  bottom: 110,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -656,6 +653,12 @@ class _VideoCommentsModalState extends State<VideoCommentsModal> {
     },
   ];
 
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
+
   void _addComment() {
     if (_commentController.text.trim().isNotEmpty) {
       setState(() {
@@ -729,7 +732,7 @@ class _VideoCommentsModalState extends State<VideoCommentsModal> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 18,
                         backgroundImage: NetworkImage(
                           'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
@@ -808,7 +811,7 @@ class _VideoCommentsModalState extends State<VideoCommentsModal> {
             ),
             child: Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 16,
                   backgroundImage: NetworkImage(
                     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
