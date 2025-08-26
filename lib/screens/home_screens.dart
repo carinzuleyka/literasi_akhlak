@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
 
-// Placeholder classes to prevent compilation errors
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Profil')),
-      body: const Center(child: Text('Halaman Profil (Placeholder)')),
-    );
-  }
-}
+// HAPUS class ProfileScreen placeholder yang ada di file ini
+// dan TAMBAHKAN import ke file ProfileScreen yang asli:
+import 'profile_screen.dart'; // sesuaikan dengan nama file ProfileScreen kamu
 
+// Placeholder classes lainnya tetap di sini
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({Key? key}) : super(key: key);
   @override
@@ -260,6 +253,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
+  // INI YANG DIPERBAIKI - Navigasi ke ProfileScreen yang asli
   void _onItemTapped(int index) {
     if (index == 2) {
       _showCreatePostDialog();
@@ -281,7 +275,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           });
         });
       } else if (index == 3) {
-        // Corrected navigation to VideoScreen
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const VideoScreen()),
@@ -291,6 +284,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           });
         });
       } else if (index == 4) {
+        // NAVIGASI KE PROFILESCREEN YANG ASLI
+        // Pastikan ProfileScreen sudah diimport dari file yang benar
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const ProfileScreen()),
