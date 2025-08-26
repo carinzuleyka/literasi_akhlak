@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'profile_screen.dart';
 
+
+// HAPUS class ProfileScreen placeholder yang ada di file ini
+// dan TAMBAHKAN import ke file ProfileScreen yang asli:
+import 'profile_screen.dart'; // sesuaikan dengan nama file ProfileScreen kamu
+
+// Placeholder classes lainnya tetap di sini
 // Import statements for other screens
 import 'profile_screen.dart'; // Make sure this points to your actual ProfileScreen file
 
@@ -425,6 +432,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
+  // INI YANG DIPERBAIKI - Navigasi ke ProfileScreen yang asli
   void _onItemTapped(int index) {
     if (index == 2) {
       _showCreatePostDialog();
@@ -455,6 +463,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           });
         });
       } else if (index == 4) {
+        // NAVIGASI KE PROFILESCREEN YANG ASLI
+        // Pastikan ProfileScreen sudah diimport dari file yang benar
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const ProfileScreen()),
