@@ -1,16 +1,7 @@
 import 'package:flutter/material.dart';
 
-// Placeholder classes to prevent compilation errors
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Profil')),
-      body: const Center(child: Text('Halaman Profil (Placeholder)')),
-    );
-  }
-}
+// Import statements for other screens
+import 'profile_screen.dart'; // Make sure this points to your actual ProfileScreen file
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({Key? key}) : super(key: key);
@@ -36,11 +27,146 @@ class VideoScreen extends StatelessWidget {
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({Key? key}) : super(key: key);
+
+  final List<Map<String, dynamic>> categories = const [
+    {
+      'title': 'Akhlak Mahmudah',
+      'count': '245 artikel',
+      'description': 'Artikel tentang akhlak mulia dan karakter islami',
+      'icon': Icons.article,
+      'color': Colors.blue,
+    },
+    {
+      'title': 'Akhlak Kepada Allah',
+      'count': '156 kisah',
+      'description': 'Panduan akhlak dalam beribadah kepada Allah',
+      'icon': Icons.book,
+      'color': Colors.orange,
+    },
+    {
+      'title': 'Akhlak Kepada Sesama',
+      'count': '89 artikel',
+      'description': 'Cara berinteraksi dengan sesama manusia',
+      'icon': Icons.people,
+      'color': Colors.green,
+    },
+    {
+      'title': 'Kisah Teladan',
+      'count': '134 kisah',
+      'description': 'Kisah para nabi, sahabat dan ulama teladan',
+      'icon': Icons.auto_stories,
+      'color': Colors.purple,
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Kategori')),
-      body: const Center(child: Text('Halaman Kategori (Placeholder)')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Semua Kategori',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 0.85,
+          ),
+          itemCount: categories.length,
+          itemBuilder: (context, index) {
+            final category = categories[index];
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CategoryDetailScreen(
+                      categoryName: category['title'],
+                      categoryIcon: category['icon'],
+                      categoryColor: category['color'],
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: (category['color'] as Color).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        category['icon'],
+                        color: category['color'],
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    Text(
+                      category['title'],
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      category['count'],
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      category['description'],
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey[500],
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }
@@ -71,8 +197,50 @@ class CategoryDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(categoryName)),
-      body: Center(child: Text('Detail Kategori (Placeholder) untuk: $categoryName')),
+      appBar: AppBar(
+        title: Text(categoryName),
+        backgroundColor: categoryColor.withOpacity(0.1),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: categoryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  Icon(
+                    categoryIcon,
+                    size: 48,
+                    color: categoryColor,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    categoryName,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Konten dalam kategori ini sedang dalam pengembangan',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -122,14 +290,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   final List<Map<String, dynamic>> categoryItems = [
     {
-      'icon': Icons.sports_tennis,
-      'title': 'Olahraga',
+      'icon': Icons.article,
+      'title': 'Akhlak\nMahmudah',
       'count': 89,
       'color': const Color(0xFF4CAF50),
     },
     {
-      'icon': Icons.checkroom,
-      'title': 'Fashion',
+      'icon': Icons.favorite,
+      'title': 'Akhlak\nKepada Allah',
       'count': 45,
       'color': const Color(0xFF4CAF50),
     },
@@ -144,75 +312,72 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final Map<String, List<Map<String, dynamic>>> categoryData = {
     'Semua': [
       {
-        'type': 'book_review',
-        'username': 'Kristen Watson',
-        'title': 'Atomic Habits - Panduan Membangun Kebiasaan Baik',
-        'author': 'James Clear',
-        'imageUrl': 'https://m.media-amazon.com/images/I/51B7kuGwKVL._SY580_.jpg',
+        'type': 'article',
+        'username': 'Ustadz Ahmad Abdullah',
+        'title': 'Akhlak Mulia Rasulullah SAW - Teladan Terbaik Umat Manusia',
+        'imageUrl': 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=500&h=300&fit=crop',
         'rating': 5.0,
         'comments': 56,
-        'category': 'Resensi Buku',
-        'description': 'Buku yang memberikan panduan praktis untuk membangun kebiasaan baik dan menghilangkan kebiasaan buruk melalui perubahan kecil namun konsisten.',
-      },
-      {
-        'type': 'tips',
-        'username': 'Milkaus',
-        'title': 'Tips Meningkatkan Performa Badminton Untuk Pemula',
-        'imageUrl': 'https://images.unsplash.com/photo-1544737151-6e4b01dce556?w=500&h=300&fit=crop',
-        'rating': 5.0,
-        'comments': 34,
-        'category': 'Tips & Trik',
-        'description': 'Panduan lengkap untuk pemula yang ingin meningkatkan skill badminton dengan teknik dasar yang benar.',
+        'category': 'Kisah Teladan',
+        'description': 'Mempelajari akhlak mulia Rasulullah SAW sebagai teladan dalam kehidupan sehari-hari.',
       },
       {
         'type': 'article',
-        'username': 'Sarah',
-        'title': 'Review buku: ATOMIC HABITS',
-        'imageUrl': 'https://assets.telkomsel.com/public/2024-10/buku%20atomic%20habits.png',
-        'rating': 4.5,
-        'time': '4 jam lalu',
-        'description': 'Atomic Habits karya James Clear menjelaskan cara membentuk kebiasaan baik melalui perubahan kecil namun konsisten.',
+        'username': 'Dr. Siti Aisyah',
+        'title': 'Pentingnya Adab Dalam Islam - Panduan Praktis',
+        'imageUrl': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=300&fit=crop',
+        'rating': 4.8,
+        'comments': 34,
+        'category': 'Artikel Akhlak',
+        'description': 'Panduan lengkap tentang adab dan etika dalam Islam untuk kehidupan yang lebih berkah.',
+      },
+      {
+        'type': 'video',
+        'username': 'Ustadz Muhammad Hafiz',
+        'title': 'Ceramah: Berbakti Kepada Orang Tua',
+        'imageUrl': 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&h=300&fit=crop',
+        'rating': 4.9,
+        'time': '2 jam lalu',
+        'description': 'Video ceramah tentang pentingnya berbakti kepada orang tua dalam ajaran Islam.',
         'likes': 89,
         'comments': 23,
-        'readTime': '5 min',
-        'isLiked': false,
+        'duration': '15 min',
       },
     ],
-    'Artikel': [
+    'Artikel Akhlak': [
       {
         'type': 'article',
-        'username': 'John Doe',
-        'title': 'Cara Efektif Belajar Online di Era Digital',
-        'imageUrl': 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&h=300&fit=crop',
+        'username': 'Dr. Siti Aisyah',
+        'title': 'Pentingnya Adab Dalam Islam - Panduan Praktis',
+        'imageUrl': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=300&fit=crop',
         'rating': 4.8,
         'comments': 42,
-        'category': 'Edukasi',
-        'description': 'Tips dan strategi untuk memaksimalkan pembelajaran online dengan berbagai platform dan tools yang tersedia.',
+        'category': 'Artikel Akhlak',
+        'description': 'Panduan lengkap tentang adab dan etika dalam Islam untuk kehidupan yang lebih berkah.',
       },
     ],
-    'Resensi Buku': [
+    'Kisah Teladan': [
       {
-        'type': 'book_review',
-        'username': 'Book Lover',
-        'title': 'The 7 Habits of Highly Effective People',
-        'author': 'Stephen Covey',
-        'imageUrl': 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1421842784i/36072.jpg',
-        'rating': 4.9,
+        'type': 'article',
+        'username': 'Ustadz Ahmad Abdullah',
+        'title': 'Akhlak Mulia Rasulullah SAW - Teladan Terbaik Umat Manusia',
+        'imageUrl': 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=500&h=300&fit=crop',
+        'rating': 5.0,
         'comments': 78,
-        'category': 'Resensi Buku',
-        'description': 'Buku klasik tentang pengembangan diri yang mengajarkan 7 kebiasaan untuk mencapai efektivitas dalam kehidupan.',
+        'category': 'Kisah Teladan',
+        'description': 'Mempelajari akhlak mulia Rasulullah SAW sebagai teladan dalam kehidupan sehari-hari.',
       },
     ],
-    'Resensi Film': [
+    'Video Dakwah': [
       {
-        'type': 'movie_review',
-        'username': 'Movie Critic',
-        'title': 'Spider-Man: No Way Home - Review Lengkap',
-        'imageUrl': 'https://images.unsplash.com/photo-1594736797933-d0803ba2fe65?w=500&h=300&fit=crop',
-        'rating': 4.7,
+        'type': 'video',
+        'username': 'Ustadz Muhammad Hafiz',
+        'title': 'Ceramah: Berbakti Kepada Orang Tua',
+        'imageUrl': 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&h=300&fit=crop',
+        'rating': 4.9,
         'comments': 156,
-        'category': 'Resensi Film',
-        'description': 'Review mendalam tentang film Spider-Man terbaru dengan multiverse yang spektakuler dan nostalgia yang mengena.',
+        'category': 'Video Dakwah',
+        'description': 'Video ceramah tentang pentingnya berbakti kepada orang tua dalam ajaran Islam.',
       },
     ],
   };
@@ -281,7 +446,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           });
         });
       } else if (index == 3) {
-        // Corrected navigation to VideoScreen
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const VideoScreen()),
@@ -391,6 +555,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 fontWeight: FontWeight.w600,
                 color: Colors.white,
               ),
+              textAlign: TextAlign.center,
             ),
             if (item['count'] > 0) ...[
               const SizedBox(height: 4),
@@ -409,7 +574,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildBookReviewCard(Map<String, dynamic> item) {
+  Widget _buildContentCard(Map<String, dynamic> item) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -433,291 +598,114 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ],
         ),
-        child: Row(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              flex: 3,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFF3E0),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      item['category'] ?? 'Resensi Buku',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFFFF9800),
-                      ),
-                    ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: item['type'] == 'video'
+                    ? const Color(0xFFFFEBEE)
+                    : const Color(0xFFFFF3E0),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                item['category'] ?? 'Artikel',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: item['type'] == 'video'
+                      ? const Color(0xFFE53935)
+                      : const Color(0xFFFF9800),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              item['title'],
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+                height: 1.3,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 12,
+                  backgroundImage: NetworkImage(
+                    item['username'] == 'Ustadz Ahmad Abdullah'
+                        ? 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face'
+                        : 'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face',
                   ),
-                  const SizedBox(height: 12),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  item['username'],
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[700],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Row(
+                  children: List.generate(5, (index) {
+                    return Icon(
+                      Icons.star,
+                      size: 16,
+                      color: index < (item['rating'] ?? 0) ? Colors.amber : Colors.grey[300],
+                    );
+                  }),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.chat_bubble_outline,
+                  size: 16,
+                  color: Colors.grey[600],
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  '${item['comments'] ?? 0}',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                if (item['type'] == 'video') ...[
+                  const Spacer(),
+                  Icon(
+                    Icons.play_circle_outline,
+                    size: 16,
+                    color: Colors.grey[600],
+                  ),
+                  const SizedBox(width: 4),
                   Text(
-                    item['title'],
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                      height: 1.3,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 12,
-                        backgroundImage: NetworkImage(
-                          'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face',
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        item['username'],
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[700],
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Row(
-                        children: List.generate(5, (index) {
-                          return Icon(
-                            Icons.star,
-                            size: 16,
-                            color: index < (item['rating'] ?? 0) ? Colors.amber : Colors.grey[300],
-                          );
-                        }),
-                      ),
-                      const SizedBox(width: 8),
-                      Icon(
-                        Icons.chat_bubble_outline,
-                        size: 16,
-                        color: Colors.grey[600],
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${item['comments'] ?? 0}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    item['description'] ?? '',
+                    item['duration'] ?? '10 min',
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 14,
                       color: Colors.grey[600],
-                      height: 1.3,
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
-              ),
+              ],
             ),
-            const SizedBox(width: 16),
-            Container(
-              width: 80,
-              height: 120,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+            const SizedBox(height: 8),
+            Text(
+              item['description'] ?? '',
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.grey[600],
+                height: 1.3,
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  item['imageUrl'] ?? '',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[200],
-                      child: const Icon(Icons.book, color: Colors.grey),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTipsCard(Map<String, dynamic> item) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ArticleDetailScreen(article: item),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE8F5E8),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        item['category'] ?? 'Tips & Trik',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF2E7D32),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      item['title'],
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                        height: 1.3,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 12,
-                          backgroundImage: NetworkImage(
-                            'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          item['username'],
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[700],
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Row(
-                          children: List.generate(5, (index) {
-                            return Icon(
-                              Icons.star,
-                              size: 16,
-                              color: index < (item['rating'] ?? 0) ? Colors.amber : Colors.grey[300],
-                            );
-                          }),
-                        ),
-                        const SizedBox(width: 8),
-                        Icon(
-                          Icons.chat_bubble_outline,
-                          size: 16,
-                          color: Colors.grey[600],
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${item['comments'] ?? 0}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      item['description'] ?? '',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey[600],
-                        height: 1.3,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              width: 120,
-              height: 120,
-              margin: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: const Color(0xFF7ED6A8),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  item['imageUrl'] ?? '',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            const Color(0xFF7ED6A8),
-                            const Color(0xFF4CAF50),
-                          ],
-                        ),
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.sports_tennis,
-                          color: Colors.white,
-                          size: 40,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
@@ -741,9 +729,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
+                        const Row(
                           children: [
-                            const Text(
+                            Text(
                               'Selamat Pagi, Deewi',
                               style: TextStyle(
                                 fontSize: 18,
@@ -751,15 +739,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(width: 6),
-                            Container(
-                              width: 8,
-                              height: 8,
-                              decoration: const BoxDecoration(
-                                color: Color(0xFFFFC107),
-                                shape: BoxShape.circle,
-                              ),
-                            ),
+                            SizedBox(width: 6),
+                            Text('🌟', style: TextStyle(fontSize: 18)),
                           ],
                         ),
                         Row(
@@ -819,7 +800,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         controller: _searchController,
                         onChanged: _onSearchChanged,
                         decoration: InputDecoration(
-                          hintText: 'Cari Artikel',
+                          hintText: 'Cari Konten Akhlak',
                           hintStyle: TextStyle(
                             color: Colors.grey[500],
                             fontSize: 15,
@@ -873,78 +854,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 24),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          'Kategori',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      SizedBox(
-                        height: 80,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          itemCount: categoryItems.length,
-                          itemBuilder: (context, index) {
-                            return _buildCategoryItem(categoryItems[index], index);
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 20),
                       Expanded(
                         child: ListView.builder(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           itemCount: filteredArticles.length,
                           itemBuilder: (context, index) {
                             final article = filteredArticles[index];
-
-                            if (article['type'] == 'book_review') {
-                              return _buildBookReviewCard(article);
-                            } else if (article['type'] == 'tips') {
-                              return _buildTipsCard(article);
-                            } else {
-                              return Container(
-                                margin: const EdgeInsets.only(bottom: 16),
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      article['title'] ?? '',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      article['description'] ?? '',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey[600],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
+                            return _buildContentCard(article);
                           },
                         ),
                       ),
@@ -1032,7 +948,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          title: const Text('Filter Artikel'),
+          title: const Text('Filter Konten'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
