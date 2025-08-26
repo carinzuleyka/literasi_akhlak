@@ -1,5 +1,323 @@
 import 'package:flutter/material.dart';
-import 'profile_screen.dart'; // Make sure this file exists
+
+// Placeholder classes to prevent compilation errors
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Profil')),
+      body: const Center(child: Text('Halaman Profil (Placeholder)')),
+    );
+  }
+}
+
+class CategoryScreen extends StatelessWidget {
+  const CategoryScreen({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Kategori')),
+      body: const Center(child: Text('Halaman Kategori (Placeholder)')),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Home')),
+      body: const Center(child: Text('Halaman Home (Placeholder)')),
+    );
+  }
+}
+
+class CreatePostBottomSheet extends StatelessWidget {
+  const CreatePostBottomSheet({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 300,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      child: const Center(
+        child: Text('Create Post Modal (Placeholder)'),
+      ),
+    );
+  }
+}
+
+class VideoCommentsModal extends StatefulWidget {
+  final String username;
+  final String description;
+  final int comments;
+  final VoidCallback onAddComment;
+
+  const VideoCommentsModal({
+    Key? key,
+    required this.username,
+    required this.description,
+    required this.comments,
+    required this.onAddComment,
+  }) : super(key: key);
+
+  @override
+  State<VideoCommentsModal> createState() => _VideoCommentsModalState();
+}
+
+class _VideoCommentsModalState extends State<VideoCommentsModal> {
+  final TextEditingController _commentController = TextEditingController();
+  final List<Map<String, dynamic>> _commentsList = [
+    {
+      'username': 'Andi Pratama',
+      'comment': 'Video yang sangat informatif! Terima kasih sudah berbagi',
+      'time': '2 jam',
+      'likes': 12,
+      'isLiked': false,
+      'userAvatar': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
+    },
+    {
+      'username': 'Sari Indah',
+      'comment': 'Keren banget! Bisa dicoba nih tipsnya',
+      'time': '1 jam',
+      'likes': 8,
+      'isLiked': false,
+      'userAvatar': 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+    },
+    {
+      'username': 'Rio Ahmad',
+      'comment': 'Mantap! Ditunggu video selanjutnya',
+      'time': '30 menit',
+      'likes': 5,
+      'isLiked': false,
+      'userAvatar': 'https://images.unsplash.com/photo-1544723795-3fb6469f5b89?w=150&h=150&fit=crop&crop=face',
+    },
+  ];
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
+
+  void _addComment() {
+    if (_commentController.text.trim().isNotEmpty) {
+      setState(() {
+        _commentsList.insert(0, {
+          'username': 'You',
+          'comment': _commentController.text.trim(),
+          'time': 'Sekarang',
+          'likes': 0,
+          'isLiked': false,
+          'userAvatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+        });
+      });
+      _commentController.clear();
+      widget.onAddComment();
+    }
+  }
+
+  void _toggleCommentLike(int index) {
+    setState(() {
+      _commentsList[index]['isLiked'] = !_commentsList[index]['isLiked'];
+      if (_commentsList[index]['isLiked']) {
+        _commentsList[index]['likes']++;
+      } else {
+        _commentsList[index]['likes']--;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.85 > 600
+          ? 600
+          : MediaQuery.of(context).size.height * 0.85,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(20),
+            child: Text(
+              '${widget.comments} Komentar',
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemCount: _commentsList.length,
+              itemBuilder: (context, index) {
+                final comment = _commentsList[index];
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
+                        radius: 18,
+                        backgroundImage: comment['userAvatar'] != null
+                            ? NetworkImage(comment['userAvatar']) as ImageProvider
+                            : const AssetImage('assets/placeholder_avatar.png'),
+                        child: comment['userAvatar'] == null
+                            ? const Icon(Icons.person)
+                            : null,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              comment['username'] ?? 'Unknown',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              comment['comment'] ?? '',
+                              style: TextStyle(
+                                color: Colors.grey[700],
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Text(
+                                  comment['time'] ?? '',
+                                  style: TextStyle(
+                                    color: Colors.grey[500],
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                GestureDetector(
+                                  onTap: () => _toggleCommentLike(index),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        comment['isLiked'] ? Icons.favorite : Icons.favorite_border,
+                                        size: 16,
+                                        color: comment['isLiked'] ? Colors.red : Colors.grey[500],
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        comment['likes']?.toString() ?? '0',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey[500],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                top: BorderSide(color: Colors.grey[200]!),
+              ),
+            ),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 16,
+                  backgroundImage: const NetworkImage(
+                    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+                  ),
+                  onBackgroundImageError: (exception, stackTrace) =>
+                      const Icon(Icons.person),
+                  backgroundColor: Colors.grey[200],
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextField(
+                    controller: _commentController,
+                    decoration: InputDecoration(
+                      hintText: 'Tambahkan komentar...',
+                      hintStyle: TextStyle(color: Colors.grey[500]),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: BorderSide(color: Colors.grey[300]!),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: BorderSide(color: Colors.grey[300]!),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: const BorderSide(color: Color(0xFF7ED6A8)),
+                      ),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: _addComment,
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF7ED6A8),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.send,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class VideoScreen extends StatefulWidget {
   const VideoScreen({Key? key}) : super(key: key);
@@ -11,15 +329,14 @@ class VideoScreen extends StatefulWidget {
 class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-  int _selectedIndex = 3; // Set to 3 since this is the Video tab
-  
-  // Sample video data
+  int _selectedIndex = 3; // Video tab
+
   final List<Map<String, dynamic>> videos = [
     {
       'id': 'video1',
       'username': 'Michael',
       'userAvatar': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-      'description': 'Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit, Sed Do Eiusmod Tempor Incididunt Ut Labore Et Dolore Magna Aliqua. Ut Enim Ad Minim Veniam, Quis Nostrud Exercitation Ullamco Laboris Nisi Ut Aliquip Ex Ea Commodo Consequat.',
+      'description': 'Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit...',
       'audioId': 'Audio00090001',
       'thumbnailUrl': 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=500&h=800&fit=crop',
       'likes': 1200,
@@ -32,7 +349,7 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
       'id': 'video2',
       'username': 'Sarah Johnson',
       'userAvatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
-      'description': 'Review buku "Atomic Habits" yang sangat menginspirasi! Tips membangun kebiasaan baik yang bisa diterapkan sehari-hari. Sangat recommended untuk yang ingin self improvement! 📚✨',
+      'description': 'Review buku "Atomic Habits" yang sangat menginspirasi!...',
       'audioId': 'Audio00090002',
       'thumbnailUrl': 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=500&h=800&fit=crop',
       'likes': 856,
@@ -45,7 +362,7 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
       'id': 'video3',
       'username': 'Ahmad Fajar',
       'userAvatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-      'description': 'Tutorial teknik smash bola voli untuk pemula! Pelajari posisi tubuh yang benar, timing yang tepat, dan cara menghasilkan pukulan yang powerful. Practice makes perfect! 🏐💪',
+      'description': 'Tutorial teknik smash bola voli untuk pemula!...',
       'audioId': 'Audio00090003',
       'thumbnailUrl': 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=500&h=800&fit=crop',
       'likes': 2341,
@@ -57,12 +374,12 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
   ];
 
   int currentVideoIndex = 0;
-  late PageController _pageController; // Add late keyword
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(); // Initialize in initState
+    _pageController = PageController();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -104,16 +421,23 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => VideoCommentsModal(
-        username: video['username'],
-        description: video['description'],
-        comments: video['comments'],
+        username: video['username'] ?? 'Unknown',
+        description: video['description'] ?? '',
+        comments: video['comments'] ?? 0,
         onAddComment: () {
           setState(() {
             videos[index]['comments']++;
           });
         },
       ),
-    );
+    ).catchError((e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error opening comments: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    });
   }
 
   void _showShareModal(int index) {
@@ -158,7 +482,14 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
           ],
         ),
       ),
-    );
+    ).catchError((e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error opening share modal: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    });
   }
 
   void _onItemTapped(int index) {
@@ -166,22 +497,38 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
       _showCreatePostDialog();
       return;
     }
-    
+
     if (index == 3) {
       return;
     }
-    
+
     setState(() {
       _selectedIndex = index;
     });
-    
-    if (index == 0) {
-      Navigator.pop(context);
-    } else if (index == 4) {
-      // Make sure ProfileScreen exists and is imported correctly
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const ProfileScreen()), // Fixed class name
+
+    try {
+      if (index == 0) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      } else if (index == 1) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const CategoryScreen()),
+        );
+      } else if (index == 4) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ProfileScreen()),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Navigation error: $e'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -191,115 +538,15 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.6,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
+      builder: (BuildContext context) => const CreatePostBottomSheet(),
+    ).catchError((e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error opening create post: $e'),
+          backgroundColor: Colors.red,
         ),
-        child: Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(top: 8),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(20),
-              child: Text(
-                'Buat Postingan',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                padding: const EdgeInsets.all(20),
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                children: [
-                  _buildCreatePostOption(
-                    icon: Icons.article_outlined,
-                    title: 'Artikel',
-                    subtitle: 'Tulis artikel atau review',
-                    color: const Color(0xFF4A90E2),
-                  ),
-                  _buildCreatePostOption(
-                    icon: Icons.menu_book_outlined,
-                    title: 'Resensi Buku',
-                    subtitle: 'Review buku favorit',
-                    color: const Color(0xFF34C759),
-                  ),
-                  _buildCreatePostOption(
-                    icon: Icons.movie_outlined,
-                    title: 'Resensi Film',
-                    subtitle: 'Review film terbaru',
-                    color: const Color(0xFFFF9500),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCreatePostOption({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required Color color,
-  }) {
-    return InkWell(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.3)),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 32, color: color),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
+      );
+    });
   }
 
   String _formatNumber(int number) {
@@ -328,19 +575,21 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
             final video = videos[index];
             return Stack(
               children: [
-                // Video background/thumbnail
                 Container(
                   width: double.infinity,
                   height: double.infinity,
                   decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(video['thumbnailUrl']),
-                      fit: BoxFit.cover,
-                    ),
+                    image: video['thumbnailUrl'] != null
+                        ? DecorationImage(
+                            image: NetworkImage(video['thumbnailUrl']),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
                   ),
+                  child: video['thumbnailUrl'] == null
+                      ? const Center(child: Icon(Icons.broken_image, color: Colors.grey))
+                      : null,
                 ),
-                
-                // Dark overlay for better text visibility
                 Container(
                   width: double.infinity,
                   height: double.infinity,
@@ -356,8 +605,6 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                     ),
                   ),
                 ),
-
-                // Top status bar area
                 SafeArea(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -395,14 +642,11 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                     ),
                   ),
                 ),
-
-                // Right side action buttons
                 Positioned(
                   right: 16,
                   bottom: 160,
                   child: Column(
                     children: [
-                      // Like button
                       GestureDetector(
                         onTap: () => _toggleLike(index),
                         child: Container(
@@ -416,7 +660,7 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                _formatNumber(video['likes']),
+                                _formatNumber(video['likes'] ?? 0),
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -427,10 +671,7 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                           ),
                         ),
                       ),
-                      
                       const SizedBox(height: 16),
-                      
-                      // Comment button
                       GestureDetector(
                         onTap: () => _showCommentsModal(index),
                         child: Container(
@@ -444,7 +685,7 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                _formatNumber(video['comments']),
+                                _formatNumber(video['comments'] ?? 0),
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -455,10 +696,7 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                           ),
                         ),
                       ),
-                      
                       const SizedBox(height: 16),
-                      
-                      // Share button
                       GestureDetector(
                         onTap: () => _showShareModal(index),
                         child: Container(
@@ -472,7 +710,7 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                _formatNumber(video['shares']),
+                                _formatNumber(video['shares'] ?? 0),
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -486,8 +724,6 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                     ],
                   ),
                 ),
-
-                // Bottom content area
                 Positioned(
                   left: 16,
                   right: 80,
@@ -496,16 +732,17 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // User info
                       Row(
                         children: [
                           CircleAvatar(
                             radius: 20,
-                            backgroundImage: NetworkImage(video['userAvatar']),
+                            backgroundImage: NetworkImage(
+                              video['userAvatar'] ?? '',
+                            ),
                           ),
                           const SizedBox(width: 12),
                           Text(
-                            video['username'],
+                            video['username'] ?? 'Unknown',
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
@@ -514,12 +751,9 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                           ),
                         ],
                       ),
-                      
                       const SizedBox(height: 12),
-                      
-                      // Description
                       Text(
-                        video['description'],
+                        video['description'] ?? '',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 14,
@@ -528,10 +762,7 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      
                       const SizedBox(height: 8),
-                      
-                      // Audio ID
                       Row(
                         children: [
                           const Icon(
@@ -541,7 +772,7 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            video['audioId'],
+                            video['audioId'] ?? 'Unknown',
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 12,
@@ -571,7 +802,7 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
           type: BottomNavigationBarType.fixed,
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
-          selectedItemColor: const Color(0xFF4A90E2),
+          selectedItemColor: const Color(0xFF7ED6A8),
           unselectedItemColor: Colors.grey,
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
           elevation: 0,
@@ -583,9 +814,9 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.menu_book_outlined),
-              activeIcon: Icon(Icons.menu_book),
-              label: 'Buku',
+              icon: Icon(Icons.apps),
+              activeIcon: Icon(Icons.apps),
+              label: 'Kategori',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.add_circle_outline, size: 32),
@@ -604,262 +835,6 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class VideoCommentsModal extends StatefulWidget {
-  final String username;
-  final String description;
-  final int comments;
-  final VoidCallback onAddComment;
-
-  const VideoCommentsModal({
-    Key? key,
-    required this.username,
-    required this.description,
-    required this.comments,
-    required this.onAddComment,
-  }) : super(key: key);
-
-  @override
-  State<VideoCommentsModal> createState() => _VideoCommentsModalState();
-}
-
-class _VideoCommentsModalState extends State<VideoCommentsModal> {
-  final TextEditingController _commentController = TextEditingController();
-  final List<Map<String, dynamic>> _commentsList = [
-    {
-      'username': 'Andi Pratama',
-      'comment': 'Video yang sangat informatif! Terima kasih sudah berbagi',
-      'time': '2 jam',
-      'likes': 12,
-      'isLiked': false,
-    },
-    {
-      'username': 'Sari Indah',
-      'comment': 'Keren banget! Bisa dicoba nih tipsnya',
-      'time': '1 jam',
-      'likes': 8,
-      'isLiked': false,
-    },
-    {
-      'username': 'Rio Ahmad',
-      'comment': 'Mantap! Ditunggu video selanjutnya',
-      'time': '30 menit',
-      'likes': 5,
-      'isLiked': false,
-    },
-  ];
-
-  @override
-  void dispose() {
-    _commentController.dispose();
-    super.dispose();
-  }
-
-  void _addComment() {
-    if (_commentController.text.trim().isNotEmpty) {
-      setState(() {
-        _commentsList.insert(0, {
-          'username': 'You',
-          'comment': _commentController.text.trim(),
-          'time': 'Sekarang',
-          'likes': 0,
-          'isLiked': false,
-        });
-      });
-      _commentController.clear();
-      widget.onAddComment();
-    }
-  }
-
-  void _toggleCommentLike(int index) {
-    setState(() {
-      _commentsList[index]['isLiked'] = !_commentsList[index]['isLiked'];
-      if (_commentsList[index]['isLiked']) {
-        _commentsList[index]['likes']++;
-      } else {
-        _commentsList[index]['likes']--;
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.85,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      child: Column(
-        children: [
-          // Handle bar
-          Container(
-            margin: const EdgeInsets.only(top: 8),
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          // Header
-          Container(
-            padding: const EdgeInsets.all(20),
-            child: Text(
-              '${widget.comments} Komentar',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          // Comments list
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: _commentsList.length,
-              itemBuilder: (context, index) {
-                final comment = _commentsList[index];
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const CircleAvatar(
-                        radius: 18,
-                        backgroundImage: NetworkImage(
-                          'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              comment['username'],
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              comment['comment'],
-                              style: TextStyle(
-                                color: Colors.grey[700],
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Text(
-                                  comment['time'],
-                                  style: TextStyle(
-                                    color: Colors.grey[500],
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                GestureDetector(
-                                  onTap: () => _toggleCommentLike(index),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        comment['isLiked'] ? Icons.favorite : Icons.favorite_border,
-                                        size: 16,
-                                        color: comment['isLiked'] ? Colors.red : Colors.grey[500],
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        comment['likes'].toString(),
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey[500],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-          // Comment input
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border(
-                top: BorderSide(color: Colors.grey[200]!),
-              ),
-            ),
-            child: Row(
-              children: [
-                const CircleAvatar(
-                  radius: 16,
-                  backgroundImage: NetworkImage(
-                    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextField(
-                    controller: _commentController,
-                    decoration: InputDecoration(
-                      hintText: 'Tambahkan komentar...',
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide(color: Colors.grey[300]!),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide(color: Colors.grey[300]!),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: const BorderSide(color: Color(0xFF4A90E2)),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: _addComment,
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF4A90E2),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.send,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
