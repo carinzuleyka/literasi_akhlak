@@ -1,19 +1,11 @@
 import 'package:flutter/material.dart';
 
-// Import statements for other screens
-import 'profile_screen.dart'; // Make sure this points to your actual ProfileScreen file
+// Import screens lainnya
+import 'profile_screen.dart'; // Sesuaikan jika nama file berbeda
+import 'article_detail_screen.dart'; // Sesuaikan jika nama file berbeda
+import 'notification_screen.dart'; // Sesuaikan jika nama file berbeda
 
-class NotificationScreen extends StatelessWidget {
-  const NotificationScreen({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Notifikasi')),
-      body: const Center(child: Text('Halaman Notifikasi (Placeholder)')),
-    );
-  }
-}
-
+// Placeholder screens
 class VideoScreen extends StatelessWidget {
   const VideoScreen({Key? key}) : super(key: key);
   @override
@@ -167,18 +159,6 @@ class CategoryScreen extends StatelessWidget {
           },
         ),
       ),
-    );
-  }
-}
-
-class ArticleDetailScreen extends StatelessWidget {
-  final Map<String, dynamic> article;
-  const ArticleDetailScreen({Key? key, required this.article}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(article['title'])),
-      body: Center(child: Text('Detail Artikel (Placeholder) untuk: ${article['title']}')),
     );
   }
 }
@@ -344,7 +324,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'duration': '15 min',
       },
     ],
-    'Artikel Akhlak': [
+    'Artikel': [
       {
         'type': 'article',
         'username': 'Dr. Siti Aisyah',
@@ -378,6 +358,30 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'comments': 156,
         'category': 'Video Dakwah',
         'description': 'Video ceramah tentang pentingnya berbakti kepada orang tua dalam ajaran Islam.',
+      },
+    ],
+    'Resensi Buku': [
+      {
+        'type': 'article',
+        'username': 'Ustadz Muhammad Hafiz',
+        'title': 'Resensi Buku "Menjadi Hamba yang Dicintai Allah"',
+        'imageUrl': 'https://images.unsplash.com/photo-1518717758063-470487561841?w=500&h=300&fit=crop',
+        'rating': 4.7,
+        'comments': 67,
+        'category': 'Resensi Buku',
+        'description': 'Ulasan mendalam tentang buku yang memberikan panduan praktis untuk mendekatkan diri kepada Allah SWT.',
+      },
+    ],
+    'Resensi Film': [
+      {
+        'type': 'video',
+        'username': 'Dr. Siti Aisyah',
+        'title': 'Analisis Film "Sang Pencerah" dari Sudut Pandang Akhlak',
+        'imageUrl': 'https://images.unsplash.com/photo-1627993208754-08a90623a137?w=500&h=300&fit=crop',
+        'rating': 5.0,
+        'comments': 112,
+        'category': 'Resensi Film',
+        'description': 'Kupas tuntas film inspiratif tentang perjuangan pendiri Muhammadiyah.',
       },
     ],
   };
