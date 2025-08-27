@@ -1,12 +1,5 @@
 import 'package:flutter/material.dart';
-import 'profile_screen.dart';
 
-
-// HAPUS class ProfileScreen placeholder yang ada di file ini
-// dan TAMBAHKAN import ke file ProfileScreen yang asli:
-import 'profile_screen.dart'; // sesuaikan dengan nama file ProfileScreen kamu
-
-// Placeholder classes lainnya tetap di sini
 // Import statements for other screens
 import 'profile_screen.dart'; // Make sure this points to your actual ProfileScreen file
 
@@ -37,30 +30,30 @@ class CategoryScreen extends StatelessWidget {
 
   final List<Map<String, dynamic>> categories = const [
     {
-      'title': 'Akhlak Mahmudah',
+      'title': 'Artikel Akhlak',
       'count': '245 artikel',
-      'description': 'Artikel tentang akhlak mulia dan karakter islami',
+      'description': 'Artikel menarik seputar nilai, sikap, dan pembelajaran kehidupan sehari-hari',
       'icon': Icons.article,
       'color': Colors.blue,
     },
     {
-      'title': 'Akhlak Kepada Allah',
+      'title': 'Kisah Teladan',
       'count': '156 kisah',
-      'description': 'Panduan akhlak dalam beribadah kepada Allah',
+      'description': 'Cerita inspiratif dari tokoh, sejarah, dan pengalaman yang bisa diambil hikmahnya',
       'icon': Icons.book,
       'color': Colors.orange,
     },
     {
-      'title': 'Akhlak Kepada Sesama',
+      'title': 'Video Dakwah',
       'count': '89 artikel',
-      'description': 'Cara berinteraksi dengan sesama manusia',
+      'description': 'Konten video edukatif dan motivasi yang mudah dipahami dan menyenangkan',
       'icon': Icons.people,
       'color': Colors.green,
     },
     {
-      'title': 'Kisah Teladan',
+      'title': 'Tips & Panduan',
       'count': '134 kisah',
-      'description': 'Kisah para nabi, sahabat dan ulama teladan',
+      'description': 'Tips sederhana dan panduan praktis untuk kehidupan sehari-hari',
       'icon': Icons.auto_stories,
       'color': Colors.purple,
     },
@@ -298,13 +291,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final List<Map<String, dynamic>> categoryItems = [
     {
       'icon': Icons.article,
-      'title': 'Akhlak\nMahmudah',
+      'title': 'Artikel\nAkhlak',
       'count': 89,
       'color': const Color(0xFF4CAF50),
     },
     {
       'icon': Icons.favorite,
-      'title': 'Akhlak\nKepada Allah',
+      'title': 'Kisah\nTeladan',
       'count': 45,
       'color': const Color(0xFF4CAF50),
     },
@@ -432,7 +425,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
-  // INI YANG DIPERBAIKI - Navigasi ke ProfileScreen yang asli
   void _onItemTapped(int index) {
     if (index == 2) {
       _showCreatePostDialog();
@@ -463,8 +455,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           });
         });
       } else if (index == 4) {
-        // NAVIGASI KE PROFILESCREEN YANG ASLI
-        // Pastikan ProfileScreen sudah diimport dari file yang benar
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const ProfileScreen()),
@@ -742,7 +732,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         const Row(
                           children: [
                             Text(
-                              'Selamat Pagi, Deewi',
+                              'BacainSebelas',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,

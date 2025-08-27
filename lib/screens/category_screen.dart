@@ -369,35 +369,35 @@ class HomeScreen extends StatelessWidget {
 
 class CategoriesScreen extends StatelessWidget {
   final List<Map<String, dynamic>> categories = [
-    {
-      'title': 'Artikel Akhlak',
-      'count': '245 artikel',
-      'description': 'Artikel tentang akhlak mulia dan karakter islami',
-      'icon': Icons.article,
-      'color': Colors.blue,
-    },
-    {
-      'title': 'Kisah Teladan',
-      'count': '156 kisah',
-      'description': 'Kisah para nabi, sahabat dan ulama teladan',
-      'icon': Icons.book,
-      'color': Colors.orange,
-    },
-    {
-      'title': 'Video Dakwah',
-      'count': '89 video',
-      'description': 'Video ceramah dan pembelajaran akhlak',
-      'icon': Icons.play_circle,
-      'color': Colors.red,
-    },
-    {
-      'title': 'Tips & Panduan',
-      'count': '134 tips',
-      'description': 'Tips berguna untuk kehidupan sehari-hari',
-      'icon': Icons.lightbulb,
-      'color': Colors.green,
-    },
-  ];
+  {
+    'title': 'Artikel Akhlak',
+    'count': '245 artikel',
+    'description': 'Artikel menarik seputar nilai, sikap, dan pembelajaran kehidupan sehari-hari',
+    'icon': Icons.article,
+    'color': Colors.blue,
+  },
+  {
+    'title': 'Kisah Teladan',
+    'count': '156 kisah',
+    'description': 'Cerita inspiratif dari tokoh, sejarah, dan pengalaman yang bisa diambil hikmahnya',
+    'icon': Icons.book,
+    'color': Colors.orange,
+  },
+  {
+    'title': 'Video Dakwah',
+    'count': '89 video',
+    'description': 'Konten video edukatif dan motivasi yang mudah dipahami dan menyenangkan',
+    'icon': Icons.people,
+    'color': Colors.green,
+  },
+  {
+    'title': 'Tips & Panduan',
+    'count': '134 panduan',
+    'description': 'Tips sederhana dan panduan praktis untuk kehidupan sehari-hari',
+    'icon': Icons.auto_stories,
+    'color': Colors.purple,
+  },
+];
 
   @override
   Widget build(BuildContext context) {

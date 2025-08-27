@@ -327,7 +327,7 @@ class _AuthScreenState extends State<AuthScreen>
           children: [
             const SizedBox(height: 32),
             CustomTextField(
-              label: 'Nama lengkap',
+              label: 'Nama Lengkap',
               hint: 'Masukkan nama',
               controller: _signUpNameController,
               validator: (value) {
