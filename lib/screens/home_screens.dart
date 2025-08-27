@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 // Import statements for other screens
 import 'profile_screen.dart'; // Make sure this points to your actual ProfileScreen file
+import 'create_post_screen.dart'; // Add this import for the new CreatePostScreen
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({Key? key}) : super(key: key);
@@ -245,26 +246,6 @@ class CategoryDetailScreen extends StatelessWidget {
   }
 }
 
-class CreatePostBottomSheet extends StatelessWidget {
-  const CreatePostBottomSheet({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 300,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      child: const Center(
-        child: Text('Create Post Modal (Placeholder)'),
-      ),
-    );
-  }
-}
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -427,7 +408,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   void _onItemTapped(int index) {
     if (index == 2) {
-      _showCreatePostDialog();
+      _navigateToCreatePost();
       return;
     }
 
@@ -474,14 +455,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
-  void _showCreatePostDialog() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return const CreatePostBottomSheet();
-      },
+  void _navigateToCreatePost() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CreatePostScreen(),
+      ),
     ).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
