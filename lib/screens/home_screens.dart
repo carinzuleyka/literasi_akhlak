@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'profile_screen.dart'; // Sesuaikan jika nama file berbeda
 import 'article_detail_screen.dart'; // Sesuaikan jika nama file berbeda
 import 'notification_screen.dart'; // Sesuaikan jika nama file berbeda
+import 'create_post_screen.dart'; // Sesuaikan jika nama file berbeda
 
-// Placeholder screens
 class VideoScreen extends StatelessWidget {
   const VideoScreen({Key? key}) : super(key: key);
   @override
@@ -220,26 +220,6 @@ class CategoryDetailScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class CreatePostBottomSheet extends StatelessWidget {
-  const CreatePostBottomSheet({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 300,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      child: const Center(
-        child: Text('Create Post Modal (Placeholder)'),
       ),
     );
   }
@@ -484,7 +464,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return const CreatePostBottomSheet();
+        return const CreatePostScreen();
       },
     ).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -518,61 +498,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             fontWeight: FontWeight.w600,
             fontSize: 14,
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCategoryItem(Map<String, dynamic> item, int index) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CategoryDetailScreen(
-              categoryName: item['title'],
-              categoryIcon: item['icon'],
-              categoryColor: item['color'],
-            ),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(right: 16),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: const Color(0xFF7ED6A8),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          children: [
-            Icon(
-              item['icon'],
-              color: Colors.white,
-              size: 24,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              item['title'],
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            if (item['count'] > 0) ...[
-              const SizedBox(height: 4),
-              Text(
-                '${item['count']}',
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ],
         ),
       ),
     );
@@ -999,6 +924,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         );
       },
+    );
+  }
+}
+
+class CreatePostScreen extends StatelessWidget {
+  const CreatePostScreen({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Buat Postingan'),
+      ),
+      body: const Center(
+        child: Text('Halaman Buat Postingan'),
+      ),
     );
   }
 }
