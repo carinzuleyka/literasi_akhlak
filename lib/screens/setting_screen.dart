@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'edit_profile_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -9,12 +10,11 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool notificationsEnabled = true;
-  bool darkModeEnabled = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         title: const Text(
           'Pengaturan',
@@ -49,27 +49,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: 'Edit Profil',
             subtitle: 'Ubah informasi profil Anda',
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Fitur edit profil'),
-                  backgroundColor: Color(0xFF7ED6A8),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EditProfileScreen(),
                 ),
               );
             },
           ),
-          _buildSettingsItem(
+          /* _buildSettingsItem(
             icon: Icons.lock,
             title: 'Ubah Password',
             subtitle: 'Ganti password akun Anda',
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Fitur ubah password'),
-                  backgroundColor: Color(0xFF7ED6A8),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ChangePasswordScreen(),
                 ),
               );
             },
-          ),
+          ), */
           
           const SizedBox(height: 24),
           
@@ -92,30 +92,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               setState(() {
                 notificationsEnabled = value;
               });
-            },
-          ),
-          _buildSwitchItem(
-            icon: Icons.dark_mode,
-            title: 'Mode Gelap',
-            subtitle: 'Gunakan tema gelap',
-            value: darkModeEnabled,
-            onChanged: (value) {
-              setState(() {
-                darkModeEnabled = value;
-              });
-            },
-          ),
-          _buildSettingsItem(
-            icon: Icons.language,
-            title: 'Bahasa',
-            subtitle: 'Indonesia',
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Fitur pengaturan bahasa'),
-                  backgroundColor: Color(0xFF7ED6A8),
-                ),
-              );
             },
           ),
           
@@ -207,7 +183,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     required VoidCallback onTap,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -220,16 +196,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
       child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: const Color(0xFF7ED6A8).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+            color: const Color(0xFF7ED6A8).withOpacity(0.15),
+            borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(
             icon,
             color: const Color(0xFF7ED6A8),
-            size: 20,
+            size: 22,
           ),
         ),
         title: Text(
@@ -237,13 +214,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
           style: const TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 16,
+            color: Colors.black87,
           ),
         ),
-        subtitle: Text(
-          subtitle,
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 14,
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(
+            subtitle,
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 13,
+            ),
           ),
         ),
         trailing: const Icon(
@@ -264,7 +245,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     required ValueChanged<bool> onChanged,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -277,16 +258,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
       child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: const Color(0xFF7ED6A8).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+            color: const Color(0xFF7ED6A8).withOpacity(0.15),
+            borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(
             icon,
             color: const Color(0xFF7ED6A8),
-            size: 20,
+            size: 22,
           ),
         ),
         title: Text(
@@ -294,19 +276,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
           style: const TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 16,
+            color: Colors.black87,
           ),
         ),
-        subtitle: Text(
-          subtitle,
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 14,
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(
+            subtitle,
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 13,
+            ),
           ),
         ),
         trailing: Switch(
           value: value,
           onChanged: onChanged,
           activeColor: const Color(0xFF7ED6A8),
+          activeTrackColor: const Color(0xFF7ED6A8).withOpacity(0.3),
         ),
       ),
     );
@@ -377,10 +364,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text(
+              child: Text(
                 'Batal',
                 style: TextStyle(
-                  color: Colors.grey,
+                  color: Colors.grey[600],
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -394,6 +381,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     backgroundColor: Color(0xFF7ED6A8),
                   ),
                 );
+                // Add actual logout logic here
+                // For example: navigate to login screen
+                // Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
               },
               child: const Text(
                 'Keluar',
