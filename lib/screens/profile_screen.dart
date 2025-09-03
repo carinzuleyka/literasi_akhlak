@@ -282,7 +282,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-// Settings Screen
+// Settings Screen - Updated without Language and Dark Mode
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
 
@@ -292,7 +292,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool notificationsEnabled = true;
-  bool darkModeEnabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -375,30 +374,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               setState(() {
                 notificationsEnabled = value;
               });
-            },
-          ),
-          _buildSwitchItem(
-            icon: Icons.dark_mode,
-            title: 'Mode Gelap',
-            subtitle: 'Gunakan tema gelap',
-            value: darkModeEnabled,
-            onChanged: (value) {
-              setState(() {
-                darkModeEnabled = value;
-              });
-            },
-          ),
-          _buildSettingsItem(
-            icon: Icons.language,
-            title: 'Bahasa',
-            subtitle: 'Indonesia',
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Fitur pengaturan bahasa'),
-                  backgroundColor: Color(0xFF7ED6A8),
-                ),
-              );
             },
           ),
           
