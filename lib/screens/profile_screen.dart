@@ -10,17 +10,9 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final List<Map<String, dynamic>> myPosts = [
     {
-      'title': 'Tips Belajar Efektif di Era Digital',
-      'category': 'Tips & Trik',
-      'likes': 45,
-      'comments': 12,
-      'views': 234,
-      'date': '2 hari lalu',
-    },
-    {
       'title': 'Review: The Psychology of Money',
       'category': 'Resensi Buku',
-      'likes': 78,
+      'rating': 4.5,
       'comments': 23,
       'views': 456,
       'date': '1 minggu lalu',
@@ -28,10 +20,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     {
       'title': 'Panduan Lengkap Menulis Artikel SEO',
       'category': 'Artikel',
-      'likes': 123,
+      'rating': 3.5,
       'comments': 34,
       'views': 789,
       'date': '2 minggu lalu',
+    },
+    {
+      'title': 'Tips Belajar Efektif di Era Digital',
+      'category': 'Video',
+      'likes': 100,
+      'comments': 12,
+      'views': 234,
+      'date': '2 hari lalu',
     },
   ];
 
@@ -197,9 +197,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF7ED6A8).withOpacity(0.1),
+                                    color: const Color(0xFF7ED6A8)
+                                        .withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
@@ -222,15 +224,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 const SizedBox(height: 12),
                                 Row(
                                   children: [
-                                    Icon(Icons.favorite, size: 16, color: Colors.grey[600]),
-                                    const SizedBox(width: 4),
-                                    Text('${post['likes']}'),
+                                    // Conditional icon based on category
+                                    if (post['category'] == 'Video') ...[
+                                      Icon(Icons.favorite, // Changed to favorite icon for Video
+                                          size: 17, color: Colors.grey), // Red color for love icon
+                                      const SizedBox(width: 4),
+                                      Text('${post['likes']}'), // Show likes for video
+                                    ] else ...[
+                                      Icon(Icons.star, // Keep star icon for other categories
+                                          size: 17, color: Colors.grey[600]),
+                                      const SizedBox(width: 4),
+                                      Text('${post['rating']}'), // Show rating for other categories
+                                    ],
                                     const SizedBox(width: 16),
-                                    Icon(Icons.chat_bubble, size: 16, color: Colors.grey[600]),
+                                    Icon(Icons.chat_bubble,
+                                        size: 16, color: Colors.grey[600]),
                                     const SizedBox(width: 4),
                                     Text('${post['comments']}'),
                                     const SizedBox(width: 16),
-                                    Icon(Icons.visibility, size: 16, color: Colors.grey[600]),
+                                    Icon(Icons.visibility,
+                                        size: 16, color: Colors.grey[600]),
                                     const SizedBox(width: 4),
                                     Text('${post['views']}'),
                                     const Spacer(),
@@ -352,9 +365,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               );
             },
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Preferences Section
           const Text(
             'Preferensi',
@@ -376,9 +389,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               });
             },
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Support Section
           const Text(
             'Bantuan & Dukungan',
@@ -423,9 +436,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               _showAboutDialog();
             },
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Logout Button
           Container(
             width: double.infinity,
@@ -451,7 +464,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
           ),
-          
+
           const SizedBox(height: 40),
         ],
       ),
@@ -683,15 +696,18 @@ class _FAQScreenState extends State<FAQScreen> {
       'questions': [
         {
           'question': 'Apa itu BacainSebelas?',
-          'answer': 'BacainSebelas adalah platform digital untuk berbagi artikel, review buku, dan tips menarik. Kami memfasilitasi komunitas penulis dan pembaca untuk saling berinteraksi dan berbagi pengetahuan.',
+          'answer':
+              'BacainSebelas adalah platform digital untuk berbagi artikel, review buku, dan tips menarik. Kami memfasilitasi komunitas penulis dan pembaca untuk saling berinteraksi dan berbagi pengetahuan.',
         },
         {
           'question': 'Bagaimana cara bergabung dengan BacainSebelas?',
-          'answer': 'Anda dapat bergabung dengan mudah melalui proses registrasi di aplikasi. Cukup masukkan email, buat password yang kuat, dan verifikasi akun Anda melalui email konfirmasi.',
+          'answer':
+              'Anda dapat bergabung dengan mudah melalui proses registrasi di aplikasi. Cukup masukkan email, buat password yang kuat, dan verifikasi akun Anda melalui email konfirmasi.',
         },
         {
           'question': 'Apakah BacainSebelas gratis?',
-          'answer': 'Ya, BacainSebelas gratis untuk digunakan. Anda dapat membaca, menulis, dan berinteraksi dengan konten tanpa biaya berlangganan.',
+          'answer':
+              'Ya, BacainSebelas gratis untuk digunakan. Anda dapat membaca, menulis, dan berinteraksi dengan konten tanpa biaya berlangganan.',
         },
       ],
     },
@@ -700,15 +716,18 @@ class _FAQScreenState extends State<FAQScreen> {
       'questions': [
         {
           'question': 'Bagaimana cara mengubah informasi profil?',
-          'answer': 'Pergi ke menu Pengaturan > Edit Profil. Di sana Anda dapat mengubah nama, username, bio, dan foto profil Anda.',
+          'answer':
+              'Pergi ke menu Pengaturan > Edit Profil. Di sana Anda dapat mengubah nama, username, bio, dan foto profil Anda.',
         },
         {
           'question': 'Bagaimana cara mengubah password?',
-          'answer': 'Buka menu Pengaturan > Ubah Password. Masukkan password lama, lalu password baru yang memenuhi syarat keamanan (minimal 8 karakter dengan kombinasi huruf besar, kecil, dan angka).',
+          'answer':
+              'Buka menu Pengaturan > Ubah Password. Masukkan password lama, lalu password baru yang memenuhi syarat keamanan (minimal 8 karakter dengan kombinasi huruf besar, kecil, dan angka).',
         },
         {
           'question': 'Lupa password, bagaimana cara reset?',
-          'answer': 'Klik "Lupa Password?" di halaman login, masukkan email Anda, dan ikuti instruksi yang dikirim ke email untuk mereset password.',
+          'answer':
+              'Klik "Lupa Password?" di halaman login, masukkan email Anda, dan ikuti instruksi yang dikirim ke email untuk mereset password.',
         },
       ],
     },
@@ -717,19 +736,23 @@ class _FAQScreenState extends State<FAQScreen> {
       'questions': [
         {
           'question': 'Bagaimana cara membuat postingan baru?',
-          'answer': 'Tekan tombol "+" di beranda, pilih jenis konten (artikel, review buku, atau tips), tulis konten Anda, tambahkan kategori, dan publikasikan.',
+          'answer':
+              'Tekan tombol "+" di beranda, pilih jenis konten (artikel, review buku, atau tips), tulis konten Anda, tambahkan kategori, dan publikasikan.',
         },
         {
           'question': 'Apakah ada batasan panjang artikel?',
-          'answer': 'Tidak ada batasan maksimal untuk panjang artikel. Namun, kami menyarankan artikel minimal 300 kata untuk memberikan nilai yang baik kepada pembaca.',
+          'answer':
+              'Tidak ada batasan maksimal untuk panjang artikel. Namun, kami menyarankan artikel minimal 300 kata untuk memberikan nilai yang baik kepada pembaca.',
         },
         {
           'question': 'Bagaimana cara mengedit atau menghapus postingan?',
-          'answer': 'Buka profil Anda, pilih postingan yang ingin diedit, lalu tekan ikon titik tiga di pojok kanan atas untuk opsi edit atau hapus.',
+          'answer':
+              'Buka profil Anda, pilih postingan yang ingin diedit, lalu tekan ikon titik tiga di pojok kanan atas untuk opsi edit atau hapus.',
         },
         {
           'question': 'Bisakah saya menjadwalkan postingan?',
-          'answer': 'Fitur penjadwalan postingan saat ini sedang dalam pengembangan dan akan segera tersedia dalam update mendatang.',
+          'answer':
+              'Fitur penjadwalan postingan saat ini sedang dalam pengembangan dan akan segera tersedia dalam update mendatang.',
         },
       ],
     },
@@ -738,15 +761,18 @@ class _FAQScreenState extends State<FAQScreen> {
       'questions': [
         {
           'question': 'Bagaimana cara memberikan like dan komentar?',
-          'answer': 'Tekan ikon hati untuk memberikan like, dan tekan ikon komentar untuk menambahkan komentar pada postingan yang Anda baca.',
+          'answer':
+              'Tekan ikon hati untuk memberikan like, dan tekan ikon komentar untuk menambahkan komentar pada postingan yang Anda baca.',
         },
         {
           'question': 'Bagaimana cara mengikuti penulis lain?',
-          'answer': 'Kunjungi profil penulis yang ingin Anda ikuti, lalu tekan tombol "Ikuti". Anda akan mendapat notifikasi ketika mereka memposting konten baru.',
+          'answer':
+              'Kunjungi profil penulis yang ingin Anda ikuti, lalu tekan tombol "Ikuti". Anda akan mendapat notifikasi ketika mereka memposting konten baru.',
         },
         {
           'question': 'Bagaimana cara melaporkan konten yang tidak pantas?',
-          'answer': 'Tekan ikon titik tiga pada postingan, pilih "Laporkan", dan pilih kategori pelanggaran. Tim moderasi akan meninjau laporan dalam 24 jam.',
+          'answer':
+              'Tekan ikon titik tiga pada postingan, pilih "Laporkan", dan pilih kategori pelanggaran. Tim moderasi akan meninjau laporan dalam 24 jam.',
         },
       ],
     },
@@ -755,15 +781,18 @@ class _FAQScreenState extends State<FAQScreen> {
       'questions': [
         {
           'question': 'Aplikasi sering crash, bagaimana solusinya?',
-          'answer': 'Pastikan aplikasi Anda sudah versi terbaru. Jika masih bermasalah, coba restart aplikasi atau restart perangkat Anda. Jika masalah berlanjut, hubungi tim support.',
+          'answer':
+              'Pastikan aplikasi Anda sudah versi terbaru. Jika masih bermasalah, coba restart aplikasi atau restart perangkat Anda. Jika masalah berlanjut, hubungi tim support.',
         },
         {
           'question': 'Tidak bisa login ke akun saya',
-          'answer': 'Periksa koneksi internet, pastikan email dan password benar. Jika lupa password, gunakan fitur "Lupa Password". Jika masih tidak bisa, hubungi customer service.',
+          'answer':
+              'Periksa koneksi internet, pastikan email dan password benar. Jika lupa password, gunakan fitur "Lupa Password". Jika masih tidak bisa, hubungi customer service.',
         },
         {
           'question': 'Konten tidak ter-load dengan baik',
-          'answer': 'Periksa koneksi internet Anda. Jika koneksi baik, coba refresh halaman dengan menarik ke bawah. Jika masalah berlanjut, tutup dan buka kembali aplikasi.',
+          'answer':
+              'Periksa koneksi internet Anda. Jika koneksi baik, coba refresh halaman dengan menarik ke bawah. Jika masalah berlanjut, tutup dan buka kembali aplikasi.',
         },
       ],
     },
@@ -773,8 +802,9 @@ class _FAQScreenState extends State<FAQScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> categories = ['Semua'] + faqData.map((e) => e['category'] as String).toList();
-    
+    List<String> categories =
+        ['Semua'] + faqData.map((e) => e['category'] as String).toList();
+
     List<Map<String, dynamic>> filteredQuestions = [];
     if (selectedCategory == 'Semua') {
       for (var category in faqData) {
@@ -787,7 +817,8 @@ class _FAQScreenState extends State<FAQScreen> {
         }
       }
     } else {
-      var categoryData = faqData.firstWhere((e) => e['category'] == selectedCategory);
+      var categoryData =
+          faqData.firstWhere((e) => e['category'] == selectedCategory);
       for (var question in categoryData['questions']) {
         filteredQuestions.add({
           'category': selectedCategory,
@@ -871,7 +902,7 @@ class _FAQScreenState extends State<FAQScreen> {
               ],
             ),
           ),
-          
+
           // Category Filter
           Container(
             height: 60,
@@ -883,7 +914,7 @@ class _FAQScreenState extends State<FAQScreen> {
               itemBuilder: (context, index) {
                 final category = categories[index];
                 final isSelected = selectedCategory == category;
-                
+
                 return Container(
                   margin: const EdgeInsets.only(right: 12),
                   child: FilterChip(
@@ -898,7 +929,8 @@ class _FAQScreenState extends State<FAQScreen> {
                     selectedColor: const Color(0xFF7ED6A8),
                     labelStyle: TextStyle(
                       color: isSelected ? Colors.white : Colors.grey[700],
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.normal,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -908,7 +940,7 @@ class _FAQScreenState extends State<FAQScreen> {
               },
             ),
           ),
-          
+
           // FAQ List
           Expanded(
             child: ListView.builder(
@@ -924,7 +956,7 @@ class _FAQScreenState extends State<FAQScreen> {
               },
             ),
           ),
-          
+
           // Contact Support
           Container(
             padding: const EdgeInsets.all(16),
@@ -952,7 +984,8 @@ class _FAQScreenState extends State<FAQScreen> {
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Membuka chat dengan customer service'),
+                              content:
+                                  Text('Membuka chat dengan customer service'),
                               backgroundColor: Color(0xFF7ED6A8),
                             ),
                           );
@@ -975,7 +1008,8 @@ class _FAQScreenState extends State<FAQScreen> {
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Mengirim email ke support@bacainsebelas.com'),
+                              content: Text(
+                                  'Mengirim email ke support@bacainsebelas.com'),
                               backgroundColor: Color(0xFF7ED6A8),
                             ),
                           );
@@ -1090,7 +1124,8 @@ class _FAQItemState extends State<FAQItem> with SingleTickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     color: Colors.grey[100],
                     borderRadius: BorderRadius.circular(12),
@@ -1164,7 +1199,8 @@ class _FAQItemState extends State<FAQItem> with SingleTickerProviderStateMixin {
                           );
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey[300]!),
                             borderRadius: BorderRadius.circular(16),
@@ -1194,14 +1230,16 @@ class _FAQItemState extends State<FAQItem> with SingleTickerProviderStateMixin {
                         onTap: () {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Feedback Anda membantu kami berkembang'),
+                              content: Text(
+                                  'Feedback Anda membantu kami berkembang'),
                               backgroundColor: Colors.orange,
                               duration: Duration(seconds: 2),
                             ),
                           );
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey[300]!),
                             borderRadius: BorderRadius.circular(16),
@@ -1251,7 +1289,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _nameController = TextEditingController(text: 'Deewi');
   final _usernameController = TextEditingController(text: 'deewi_writer');
   final _bioController = TextEditingController(
-    text: 'Penulis artikel dan reviewer buku. Suka berbagi tips menulis dan membaca.',
+    text:
+        'Penulis artikel dan reviewer buku. Suka berbagi tips menulis dan membaca.',
   );
   final _emailController = TextEditingController(text: 'deewi@email.com');
 
@@ -1266,171 +1305,170 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: Colors.white,
-    appBar: AppBar(
-      title: const Text(
-        'Edit Profil',
-        style: TextStyle(
-          color: Colors.black87,
-          fontWeight: FontWeight.bold,
-          fontSize: 18,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text(
+          'Edit Profil',
+          style: TextStyle(
+            color: Colors.black87,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
-      backgroundColor: Colors.white,
-      elevation: 0,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.black87),
-        onPressed: () => Navigator.pop(context),
-      ),
-    ),
-    body: Form(
-      key: _formKey,
-      child: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          // Profile Picture
-          Center(
-            child: Stack(
-              children: [
-                CircleAvatar(
-                  radius: 60,
-                  backgroundColor: const Color(0xFF7ED6A8).withOpacity(0.1),
-                  child: const Icon(
-                    Icons.person,
-                    size: 70,
-                    color: Color(0xFF7ED6A8),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF7ED6A8),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: const EdgeInsets.all(8),
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            // Profile Picture
+            Center(
+              child: Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 60,
+                    backgroundColor: const Color(0xFF7ED6A8).withOpacity(0.1),
                     child: const Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
-                      size: 20,
+                      Icons.person,
+                      size: 70,
+                      color: Color(0xFF7ED6A8),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Name Field
-          _buildInputField(
-            controller: _nameController,
-            label: 'Nama Lengkap',
-            icon: Icons.person,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Nama tidak boleh kosong';
-              }
-              return null;
-            },
-          ),
-
-          const SizedBox(height: 16),
-
-          // Username Field
-          _buildInputField(
-            controller: _usernameController,
-            label: 'Username',
-            icon: Icons.alternate_email,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Username tidak boleh kosong';
-              }
-              if (!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(value)) {
-                return 'Username hanya boleh mengandung huruf, angka, dan underscore';
-              }
-              return null;
-            },
-          ),
-
-          const SizedBox(height: 16),
-
-          // Email Field
-          _buildInputField(
-            controller: _emailController,
-            label: 'Email',
-            icon: Icons.email,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Email tidak boleh kosong';
-              }
-              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                  .hasMatch(value)) {
-                return 'Format email tidak valid';
-              }
-              return null;
-            },
-          ),
-
-          const SizedBox(height: 16),
-
-          // Bio Field
-          _buildInputField(
-            controller: _bioController,
-            label: 'Bio',
-            icon: Icons.info,
-            maxLines: 3,
-            validator: (value) {
-              if (value != null && value.length > 150) {
-                return 'Bio maksimal 150 karakter';
-              }
-              return null;
-            },
-          ),
-
-          const SizedBox(height: 32),
-
-          // Save Button
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: _isLoading ? null : _saveProfile,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF7ED6A8),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 2,
-              ),
-              child: _isLoading
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF7ED6A8),
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                    )
-                  : const Text(
-                      'Simpan Perubahan',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
+                      padding: const EdgeInsets.all(8),
+                      child: const Icon(
+                        Icons.camera_alt,
+                        color: Colors.white,
+                        size: 20,
                       ),
                     ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+
+            // Name Field
+            _buildInputField(
+              controller: _nameController,
+              label: 'Nama Lengkap',
+              icon: Icons.person,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Nama tidak boleh kosong';
+                }
+                return null;
+              },
+            ),
+
+            const SizedBox(height: 16),
+
+            // Username Field
+            _buildInputField(
+              controller: _usernameController,
+              label: 'Username',
+              icon: Icons.alternate_email,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Username tidak boleh kosong';
+                }
+                if (!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(value)) {
+                  return 'Username hanya boleh mengandung huruf, angka, dan underscore';
+                }
+                return null;
+              },
+            ),
+
+            const SizedBox(height: 16),
+
+            // Email Field
+            _buildInputField(
+              controller: _emailController,
+              label: 'Email',
+              icon: Icons.email,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Email tidak boleh kosong';
+                }
+                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                    .hasMatch(value)) {
+                  return 'Format email tidak valid';
+                }
+                return null;
+              },
+            ),
+
+            const SizedBox(height: 16),
+
+            // Bio Field
+            _buildInputField(
+              controller: _bioController,
+              label: 'Bio',
+              icon: Icons.info,
+              maxLines: 3,
+              validator: (value) {
+                if (value != null && value.length > 150) {
+                  return 'Bio maksimal 150 karakter';
+                }
+                return null;
+              },
+            ),
+
+            const SizedBox(height: 32),
+
+            // Save Button
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: _isLoading ? null : _saveProfile,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF7ED6A8),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 2,
+                ),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text(
+                        'Simpan Perubahan',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                      ),
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildInputField({
     required TextEditingController controller,
@@ -1499,21 +1537,34 @@ Widget build(BuildContext context) {
         _isLoading = true;
       });
 
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      try {
+        // Simulate API call
+        await Future.delayed(const Duration(seconds: 2));
 
-      setState(() {
-        _isLoading = false;
-      });
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profil berhasil diperbarui'),
-            backgroundColor: Color(0xFF7ED6A8),
-          ),
-        );
-        Navigator.pop(context);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Profil berhasil diperbarui'),
+              backgroundColor: Color(0xFF7ED6A8),
+            ),
+          );
+          Navigator.pop(context);
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Terjadi kesalahan: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       }
     }
   }
@@ -1580,11 +1631,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               ),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.info,
-                    color: const Color(0xFF7ED6A8),
-                    size: 20,
-                  ),
+                  const Icon(Icons.info, color: Color(0xFF7ED6A8), size: 20),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -1611,9 +1658,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Current Password
             _buildPasswordField(
               controller: _currentPasswordController,
@@ -1631,9 +1678,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 return null;
               },
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // New Password
             _buildPasswordField(
               controller: _newPasswordController,
@@ -1651,15 +1698,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 if (value.length < 8) {
                   return 'Password minimal 8 karakter';
                 }
-                if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
+                if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)')
+                    .hasMatch(value)) {
                   return 'Password harus mengandung huruf besar, kecil, dan angka';
                 }
                 return null;
               },
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Confirm Password
             _buildPasswordField(
               controller: _confirmPasswordController,
@@ -1680,9 +1728,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 return null;
               },
             ),
-            
+
             const SizedBox(height: 32),
-            
+
             // Change Password Button
             SizedBox(
               width: double.infinity,
@@ -1715,9 +1763,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       ),
               ),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Forgot Password Link
             Center(
               child: TextButton(
@@ -1768,10 +1816,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           obscureText: obscureText,
           validator: validator,
           decoration: InputDecoration(
-            prefixIcon: const Icon(
-              Icons.lock,
-              color: Color(0xFF7ED6A8),
-            ),
+            prefixIcon: const Icon(Icons.lock, color: Color(0xFF7ED6A8)),
             suffixIcon: IconButton(
               icon: Icon(
                 obscureText ? Icons.visibility : Icons.visibility_off,
@@ -1849,7 +1894,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context); // Close dialog
-                    Navigator.pop(context); // Go back to settings
+                    Navigator.pop(context); // Go back
                   },
                   child: const Text(
                     'OK',
