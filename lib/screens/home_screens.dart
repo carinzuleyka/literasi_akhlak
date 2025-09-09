@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'profile_screen.dart'; // Sesuaikan jika nama file berbeda
 import 'article_detail_screen.dart'; // Sesuaikan jika nama file berbeda
 import 'notification_screen.dart'; // Sesuaikan jika nama file berbeda
-import 'create_post_screen.dart'; // Sesuaikan jika nama file berbeda
+import 'create_post_screen.dart'; // Import CreatePostScreen dari file terpisah
 
 class VideoScreen extends StatelessWidget {
   const VideoScreen({Key? key}) : super(key: key);
@@ -464,9 +464,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return const CreatePostScreen();
+        return const CreatePostScreen(); // Sekarang menggunakan CreatePostScreen dari file terpisah
       },
-    ).catchError((e) {
+    ).then((_) {
+      // Callback setelah modal ditutup
+      setState(() {
+        _selectedIndex = 0; // Reset ke tab Home
+      });
+    }).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error opening create post: $e'),
@@ -607,22 +612,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     color: Colors.grey[600],
                   ),
                 ),
-                if (item['type'] == 'video') ...[
-                  const Spacer(),
-                  Icon(
-                    Icons.play_circle_outline,
-                    size: 16,
-                    color: Colors.grey[600],
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    item['duration'] ?? '10 min',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
+
               ],
             ),
             const SizedBox(height: 8),
@@ -905,21 +895,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         );
       },
-    );
-  }
-}
-
-class CreatePostScreen extends StatelessWidget {
-  const CreatePostScreen({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Buat Postingan'),
-      ),
-      body: const Center(
-        child: Text('Halaman Buat Postingan'),
-      ),
     );
   }
 }
