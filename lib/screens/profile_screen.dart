@@ -226,15 +226,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   children: [
                                     // Conditional icon based on category
                                     if (post['category'] == 'Video') ...[
-                                      Icon(Icons.favorite, // Changed to favorite icon for Video
-                                          size: 17, color: Colors.grey), // Red color for love icon
+                                      Icon(
+                                          Icons
+                                              .favorite, // Changed to favorite icon for Video
+                                          size: 17,
+                                          color: Colors
+                                              .grey), // Red color for love icon
                                       const SizedBox(width: 4),
-                                      Text('${post['likes']}'), // Show likes for video
+                                      Text(
+                                          '${post['likes']}'), // Show likes for video
                                     ] else ...[
-                                      Icon(Icons.star, // Keep star icon for other categories
-                                          size: 17, color: Colors.grey[600]),
+                                      Icon(
+                                          Icons
+                                              .star, // Keep star icon for other categories
+                                          size: 17,
+                                          color: Colors.grey[600]),
                                       const SizedBox(width: 4),
-                                      Text('${post['rating']}'), // Show rating for other categories
+                                      Text(
+                                          '${post['rating']}'), // Show rating for other categories
                                     ],
                                     const SizedBox(width: 16),
                                     Icon(Icons.chat_bubble,
