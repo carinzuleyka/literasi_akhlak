@@ -1,229 +1,12 @@
 import 'package:flutter/material.dart';
 
 // Import screens lainnya
-import 'profile_screen.dart'; // Sesuaikan jika nama file berbeda
-import 'article_detail_screen.dart'; // Sesuaikan jika nama file berbeda
-import 'notification_screen.dart'; // Sesuaikan jika nama file berbeda
-import 'create_post_screen.dart'; // Import CreatePostScreen dari file terpisah
-
-class VideoScreen extends StatelessWidget {
-  const VideoScreen({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Video')),
-      body: const Center(child: Text('Halaman Video (Placeholder)')),
-    );
-  }
-}
-
-class CategoryScreen extends StatelessWidget {
-  const CategoryScreen({Key? key}) : super(key: key);
-
-  final List<Map<String, dynamic>> categories = const [
-    {
-      'title': 'Artikel Akhlak',
-      'count': '245 artikel',
-      'description': 'Artikel menarik seputar nilai, sikap, dan pembelajaran kehidupan sehari-hari',
-      'icon': Icons.article,
-      'color': Colors.blue,
-    },
-    {
-      'title': 'Kisah Teladan',
-      'count': '156 kisah',
-      'description': 'Cerita inspiratif dari tokoh, sejarah, dan pengalaman yang bisa diambil hikmahnya',
-      'icon': Icons.book,
-      'color': Colors.orange,
-    },
-    {
-      'title': 'Video Dakwah',
-      'count': '89 artikel',
-      'description': 'Konten video edukatif dan motivasi yang mudah dipahami dan menyenangkan',
-      'icon': Icons.people,
-      'color': Colors.green,
-    },
-    {
-      'title': 'Tips & Panduan',
-      'count': '134 kisah',
-      'description': 'Tips sederhana dan panduan praktis untuk kehidupan sehari-hari',
-      'icon': Icons.auto_stories,
-      'color': Colors.purple,
-    },
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'Semua Kategori',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 0.85,
-          ),
-          itemCount: categories.length,
-          itemBuilder: (context, index) {
-            final category = categories[index];
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CategoryDetailScreen(
-                      categoryName: category['title'],
-                      categoryIcon: category['icon'],
-                      categoryColor: category['color'],
-                    ),
-                  ),
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: (category['color'] as Color).withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        category['icon'],
-                        color: category['color'],
-                        size: 28,
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    Text(
-                      category['title'],
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      category['count'],
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      category['description'],
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.grey[500],
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class CategoryDetailScreen extends StatelessWidget {
-  final String categoryName;
-  final IconData categoryIcon;
-  final Color categoryColor;
-  const CategoryDetailScreen({
-    Key? key,
-    required this.categoryName,
-    required this.categoryIcon,
-    required this.categoryColor,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(categoryName),
-        backgroundColor: categoryColor.withOpacity(0.1),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: categoryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                children: [
-                  Icon(
-                    categoryIcon,
-                    size: 48,
-                    color: categoryColor,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    categoryName,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Konten dalam kategori ini sedang dalam pengembangan',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+import 'profile_screen.dart';
+import 'article_detail_screen.dart';
+import 'notification_screen.dart';
+import 'create_post_screen.dart';
+// Import RatingDialog yang baru dibuat
+import 'rating_dialog.dart'; // Sesuaikan path file
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -240,6 +23,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+
+  // Map untuk menyimpan rating yang diberikan user
+  Map<String, double> userRatings = {};
 
   final List<String> categories = [
     'Semua',
@@ -269,34 +55,32 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     },
   ];
 
+  // Data artikel tanpa rating default
   final Map<String, List<Map<String, dynamic>>> categoryData = {
     'Semua': [
       {
+        'id': 'article_1',
         'type': 'article',
         'username': 'Ustadz Ahmad Abdullah',
         'title': 'Akhlak Mulia Rasulullah SAW - Teladan Terbaik Umat Manusia',
-        'imageUrl': 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=500&h=300&fit=crop',
-        'rating': 5.0,
         'comments': 56,
         'category': 'Kisah Teladan',
         'description': 'Mempelajari akhlak mulia Rasulullah SAW sebagai teladan dalam kehidupan sehari-hari.',
       },
       {
+        'id': 'article_2',
         'type': 'article',
         'username': 'Dr. Siti Aisyah',
         'title': 'Pentingnya Adab Dalam Islam - Panduan Praktis',
-        'imageUrl': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=300&fit=crop',
-        'rating': 4.8,
         'comments': 34,
         'category': 'Artikel Akhlak',
         'description': 'Panduan lengkap tentang adab dan etika dalam Islam untuk kehidupan yang lebih berkah.',
       },
       {
+        'id': 'video_1',
         'type': 'video',
         'username': 'Ustadz Muhammad Hafiz',
         'title': 'Ceramah: Berbakti Kepada Orang Tua',
-        'imageUrl': 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&h=300&fit=crop',
-        'rating': 4.9,
         'time': '2 jam lalu',
         'description': 'Video ceramah tentang pentingnya berbakti kepada orang tua dalam ajaran Islam.',
         'likes': 89,
@@ -306,11 +90,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     ],
     'Artikel': [
       {
+        'id': 'article_2',
         'type': 'article',
         'username': 'Dr. Siti Aisyah',
         'title': 'Pentingnya Adab Dalam Islam - Panduan Praktis',
-        'imageUrl': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=300&fit=crop',
-        'rating': 4.8,
         'comments': 42,
         'category': 'Artikel Akhlak',
         'description': 'Panduan lengkap tentang adab dan etika dalam Islam untuk kehidupan yang lebih berkah.',
@@ -318,11 +101,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     ],
     'Kisah Teladan': [
       {
+        'id': 'article_1',
         'type': 'article',
         'username': 'Ustadz Ahmad Abdullah',
         'title': 'Akhlak Mulia Rasulullah SAW - Teladan Terbaik Umat Manusia',
-        'imageUrl': 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=500&h=300&fit=crop',
-        'rating': 5.0,
         'comments': 78,
         'category': 'Kisah Teladan',
         'description': 'Mempelajari akhlak mulia Rasulullah SAW sebagai teladan dalam kehidupan sehari-hari.',
@@ -330,11 +112,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     ],
     'Video Dakwah': [
       {
+        'id': 'video_1',
         'type': 'video',
         'username': 'Ustadz Muhammad Hafiz',
         'title': 'Ceramah: Berbakti Kepada Orang Tua',
-        'imageUrl': 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&h=300&fit=crop',
-        'rating': 4.9,
         'comments': 156,
         'category': 'Video Dakwah',
         'description': 'Video ceramah tentang pentingnya berbakti kepada orang tua dalam ajaran Islam.',
@@ -342,11 +123,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     ],
     'Resensi Buku': [
       {
+        'id': 'book_1',
         'type': 'article',
         'username': 'Ustadz Muhammad Hafiz',
         'title': 'Resensi Buku "Menjadi Hamba yang Dicintai Allah"',
-        'imageUrl': 'https://images.unsplash.com/photo-1518717758063-470487561841?w=500&h=300&fit=crop',
-        'rating': 4.7,
         'comments': 67,
         'category': 'Resensi Buku',
         'description': 'Ulasan mendalam tentang buku yang memberikan panduan praktis untuk mendekatkan diri kepada Allah SWT.',
@@ -354,11 +134,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     ],
     'Resensi Film': [
       {
+        'id': 'film_1',
         'type': 'video',
         'username': 'Dr. Siti Aisyah',
         'title': 'Analisis Film "Sang Pencerah" dari Sudut Pandang Akhlak',
-        'imageUrl': 'https://images.unsplash.com/photo-1627993208754-08a90623a137?w=500&h=300&fit=crop',
-        'rating': 5.0,
         'comments': 112,
         'category': 'Resensi Film',
         'description': 'Kupas tuntas film inspiratif tentang perjuangan pendiri Muhammadiyah.',
@@ -407,6 +186,34 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     setState(() {
       _searchQuery = value;
     });
+  }
+
+  // Method untuk menampilkan rating dialog
+  void _showRatingDialog(Map<String, dynamic> item) {
+    String itemId = item['id'] ?? '';
+    double currentRating = userRatings[itemId] ?? 0.0;
+    
+    context.showRatingDialog(
+      title: item['title'] ?? '',
+      currentRating: currentRating,
+      onRatingSubmitted: (double newRating) {
+        setState(() {
+          userRatings[itemId] = newRating;
+        });
+      },
+    );
+  }
+
+  // Method untuk cek apakah user sudah memberikan rating
+  bool _hasUserRating(Map<String, dynamic> item) {
+    String itemId = item['id'] ?? '';
+    return userRatings.containsKey(itemId) && userRatings[itemId]! > 0;
+  }
+
+  // Method untuk mendapatkan rating user
+  double _getUserRating(Map<String, dynamic> item) {
+    String itemId = item['id'] ?? '';
+    return userRatings[itemId] ?? 0.0;
   }
 
   void _onItemTapped(int index) {
@@ -464,12 +271,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return const CreatePostScreen(); // Sekarang menggunakan CreatePostScreen dari file terpisah
+        return const CreatePostScreen();
       },
     ).then((_) {
-      // Callback setelah modal ditutup
       setState(() {
-        _selectedIndex = 0; // Reset ke tab Home
+        _selectedIndex = 0;
       });
     }).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -509,6 +315,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildContentCard(Map<String, dynamic> item) {
+    bool hasUserRating = _hasUserRating(item);
+    double userRating = _getUserRating(item);
+    
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -569,10 +378,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               children: [
                 CircleAvatar(
                   radius: 12,
-                  backgroundImage: NetworkImage(
-                    item['username'] == 'Ustadz Ahmad Abdullah'
-                        ? 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face'
-                        : 'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face',
+                  child: Icon(
+                    Icons.person,
+                    size: 16,
+                    color: Colors.grey[600],
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -589,16 +398,68 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             const SizedBox(height: 12),
             Row(
               children: [
-                Row(
-                  children: List.generate(5, (index) {
-                    return Icon(
-                      Icons.star,
-                      size: 16,
-                      color: index < (item['rating'] ?? 0) ? Colors.amber : Colors.grey[300],
-                    );
-                  }),
-                ),
-                const SizedBox(width: 8),
+                if (hasUserRating) ...[
+                  // Rating Display - Langsung muncul tanpa tombol edit
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...List.generate(5, (index) {
+                        return GestureDetector(
+                          onTap: () => _showRatingDialog(item), // Bisa diklik untuk mengubah rating
+                          child: Icon(
+                            Icons.star,
+                            size: 20,
+                            color: index < userRating 
+                                ? const Color(0xFF7ED6A8)
+                                : Colors.grey[300],
+                          ),
+                        );
+                      }),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () => _showRatingDialog(item),
+                        child: Text(
+                          userRating.toStringAsFixed(1),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF7ED6A8),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 16),
+                ] else ...[
+                  // Rating action button - untuk memberikan rating pertama kali
+                  GestureDetector(
+                    onTap: () => _showRatingDialog(item),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ...List.generate(5, (index) {
+                          return Icon(
+                            Icons.star_border,
+                            size: 20,
+                            color: Colors.grey[400],
+                          );
+                        }),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Beri Rating',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                ],
+                
+                // Comments - selalu ada di kanan
                 Icon(
                   Icons.chat_bubble_outline,
                   size: 16,
@@ -612,7 +473,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     color: Colors.grey[600],
                   ),
                 ),
-
               ],
             ),
             const SizedBox(height: 8),
@@ -895,6 +755,226 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         );
       },
+    );
+  }
+}
+
+// Class lainnya tetap sama seperti sebelumnya
+class VideoScreen extends StatelessWidget {
+  const VideoScreen({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Video')),
+      body: const Center(child: Text('Halaman Video (Placeholder)')),
+    );
+  }
+}
+
+class CategoryScreen extends StatelessWidget {
+  const CategoryScreen({Key? key}) : super(key: key);
+
+  final List<Map<String, dynamic>> categories = const [
+    {
+      'title': 'Artikel Akhlak',
+      'count': '245 artikel',
+      'description': 'Artikel menarik seputar nilai, sikap, dan pembelajaran kehidupan sehari-hari',
+      'icon': Icons.article,
+      'color': Colors.blue,
+    },
+    {
+      'title': 'Kisah Teladan',
+      'count': '156 kisah',
+      'description': 'Cerita inspiratif dari tokoh, sejarah, dan pengalaman yang bisa diambil hikmahnya',
+      'icon': Icons.book,
+      'color': Colors.orange,
+    },
+    {
+      'title': 'Video Dakwah',
+      'count': '89 artikel',
+      'description': 'Konten video edukatif dan motivasi yang mudah dipahami dan menyenangkan',
+      'icon': Icons.people,
+      'color': Colors.green,
+    },
+    {
+      'title': 'Tips & Panduan',
+      'count': '134 kisah',
+      'description': 'Tips sederhana dan panduan praktis untuk kehidupan sehari-hari',
+      'icon': Icons.auto_stories,
+      'color': Colors.purple,
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Semua Kategori',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 0.85,
+          ),
+          itemCount: categories.length,
+          itemBuilder: (context, index) {
+            final category = categories[index];
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CategoryDetailScreen(
+                      categoryName: category['title'],
+                      categoryIcon: category['icon'],
+                      categoryColor: category['color'],
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: (category['color'] as Color).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        category['icon'],
+                        color: category['color'],
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    Text(
+                      category['title'],
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      category['count'],
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      category['description'],
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey[500],
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class CategoryDetailScreen extends StatelessWidget {
+  final String categoryName;
+  final IconData categoryIcon;
+  final Color categoryColor;
+  const CategoryDetailScreen({
+    Key? key,
+    required this.categoryName,
+    required this.categoryIcon,
+    required this.categoryColor,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(categoryName),
+        backgroundColor: categoryColor.withOpacity(0.1),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: categoryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  Icon(
+                    categoryIcon,
+                    size: 48,
+                    color: categoryColor,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    categoryName,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Konten dalam kategori ini sedang dalam pengembangan',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
