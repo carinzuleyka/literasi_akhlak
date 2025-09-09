@@ -1651,7 +1651,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 if (value.length < 8) {
                   return 'Password minimal 8 karakter';
                 }
-                if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
+                if (!RegExp(r'^(?=.[a-z])(?=.[A-Z])(?=.*\d)').hasMatch(value)) {
                   return 'Password harus mengandung huruf besar, kecil, dan angka';
                 }
                 return null;
