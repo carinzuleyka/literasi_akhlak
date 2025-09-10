@@ -1,324 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Placeholder classes to prevent compilation errors
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Profil')),
-      body: const Center(child: Text('Halaman Profil (Placeholder)')),
-    );
-  }
-}
-
-class CategoryScreen extends StatelessWidget {
-  const CategoryScreen({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Kategori')),
-      body: const Center(child: Text('Halaman Kategori (Placeholder)')),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
-      body: const Center(child: Text('Halaman Home (Placeholder)')),
-    );
-  }
-}
-
-class CreatePostBottomSheet extends StatelessWidget {
-  const CreatePostBottomSheet({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 300,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      child: const Center(
-        child: Text('Create Post Modal (Placeholder)'),
-      ),
-    );
-  }
-}
-
-class VideoCommentsModal extends StatefulWidget {
-  final String username;
-  final String description;
-  final int comments;
-  final VoidCallback onAddComment;
-
-  const VideoCommentsModal({
-    Key? key,
-    required this.username,
-    required this.description,
-    required this.comments,
-    required this.onAddComment,
-  }) : super(key: key);
-
-  @override
-  State<VideoCommentsModal> createState() => _VideoCommentsModalState();
-}
-
-class _VideoCommentsModalState extends State<VideoCommentsModal> {
-  final TextEditingController _commentController = TextEditingController();
-  final List<Map<String, dynamic>> _commentsList = [
-    {
-      'username': 'Andi Pratama',
-      'comment': 'Video yang sangat informatif! Terima kasih sudah berbagi',
-      'time': '2 jam',
-      'likes': 12,
-      'isLiked': false,
-      'userAvatar': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
-    },
-    {
-      'username': 'Sari Indah',
-      'comment': 'Keren banget! Bisa dicoba nih tipsnya',
-      'time': '1 jam',
-      'likes': 8,
-      'isLiked': false,
-      'userAvatar': 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-    },
-    {
-      'username': 'Rio Ahmad',
-      'comment': 'Mantap! Ditunggu video selanjutnya',
-      'time': '30 menit',
-      'likes': 5,
-      'isLiked': false,
-      'userAvatar': 'https://images.unsplash.com/photo-1544723795-3fb6469f5b89?w=150&h=150&fit=crop&crop=face',
-    },
-  ];
-
-  @override
-  void dispose() {
-    _commentController.dispose();
-    super.dispose();
-  }
-
-  void _addComment() {
-    if (_commentController.text.trim().isNotEmpty) {
-      setState(() {
-        _commentsList.insert(0, {
-          'username': 'You',
-          'comment': _commentController.text.trim(),
-          'time': 'Sekarang',
-          'likes': 0,
-          'isLiked': false,
-          'userAvatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-        });
-      });
-      _commentController.clear();
-      widget.onAddComment();
-    }
-  }
-
-  void _toggleCommentLike(int index) {
-    setState(() {
-      _commentsList[index]['isLiked'] = !_commentsList[index]['isLiked'];
-      if (_commentsList[index]['isLiked']) {
-        _commentsList[index]['likes']++;
-      } else {
-        _commentsList[index]['likes']--;
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.85 > 600
-          ? 600
-          : MediaQuery.of(context).size.height * 0.85,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      child: Column(
-        children: [
-          Container(
-            margin: const EdgeInsets.only(top: 8),
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(20),
-            child: Text(
-              '${widget.comments} Komentar',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: _commentsList.length,
-              itemBuilder: (context, index) {
-                final comment = _commentsList[index];
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CircleAvatar(
-                        radius: 18,
-                        backgroundImage: comment['userAvatar'] != null
-                            ? NetworkImage(comment['userAvatar']) as ImageProvider
-                            : const AssetImage('assets/placeholder_avatar.png'),
-                        child: comment['userAvatar'] == null
-                            ? const Icon(Icons.person)
-                            : null,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              comment['username'] ?? 'Unknown',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              comment['comment'] ?? '',
-                              style: TextStyle(
-                                color: Colors.grey[700],
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Text(
-                                  comment['time'] ?? '',
-                                  style: TextStyle(
-                                    color: Colors.grey[500],
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                GestureDetector(
-                                  onTap: () => _toggleCommentLike(index),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        comment['isLiked'] ? Icons.favorite : Icons.favorite_border,
-                                        size: 16,
-                                        color: comment['isLiked'] ? Colors.red : Colors.grey[500],
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        comment['likes']?.toString() ?? '0',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey[500],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border(
-                top: BorderSide(color: Colors.grey[200]!),
-              ),
-            ),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 16,
-                  backgroundImage: const NetworkImage(
-                    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-                  ),
-                  onBackgroundImageError: (exception, stackTrace) =>
-                      const Icon(Icons.person),
-                  backgroundColor: Colors.grey[200],
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextField(
-                    controller: _commentController,
-                    decoration: InputDecoration(
-                      hintText: 'Tambahkan komentar...',
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide(color: Colors.grey[300]!),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide(color: Colors.grey[300]!),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: const BorderSide(color: Color(0xFF7ED6A8)),
-                      ),
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: _addComment,
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF7ED6A8),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.send,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class VideoScreen extends StatefulWidget {
   const VideoScreen({Key? key}) : super(key: key);
 
@@ -329,57 +10,71 @@ class VideoScreen extends StatefulWidget {
 class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-  int _selectedIndex = 3; // Video tab
+  late AnimationController _likeAnimationController;
+  late Animation<double> _likeAnimation;
+
+  int _selectedIndex = 3; // default ke tab Video
+  Map<String, bool> _likedVideos = {};
+  Map<String, int> _likeCounts = {};
 
   final List<Map<String, dynamic>> videos = [
     {
       'id': 'video1',
-      'username': 'Michael',
-      'userAvatar': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-      'description': 'Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit...',
-      'audioId': 'Audio00090001',
-      'thumbnailUrl': 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=500&h=800&fit=crop',
-      'likes': 1200,
+      'username': 'Reading Expert',
+      'title': 'Tips Membaca Cepat dan Efektif - Tingkatkan Produktivitas Belajar Anda',
+      'views': 12543,
+      'time': '2 hari lalu',
+      'duration': '15:30',
+      'likes': 1247,
       'comments': 89,
-      'shares': 45,
-      'isLiked': false,
-      'isBookmarked': false,
+      'thumbnailUrl': 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=500&h=300&fit=crop',
+      'userAvatar': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
+      'isVerified': true,
     },
     {
       'id': 'video2',
-      'username': 'Sarah Johnson',
-      'userAvatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
-      'description': 'Review buku "Atomic Habits" yang sangat menginspirasi!...',
-      'audioId': 'Audio00090002',
-      'thumbnailUrl': 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=500&h=800&fit=crop',
-      'likes': 856,
-      'comments': 124,
-      'shares': 67,
-      'isLiked': false,
-      'isBookmarked': false,
+      'username': 'Book Summary',
+      'title': 'Review Buku: Atomic Habits dalam 10 Menit - Panduan Lengkap',
+      'views': 8547,
+      'time': '1 minggu lalu',
+      'duration': '10:45',
+      'likes': 892,
+      'comments': 156,
+      'thumbnailUrl': 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&h=300&fit=crop',
+      'userAvatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face',
+      'isVerified': false,
     },
     {
       'id': 'video3',
-      'username': 'Ahmad Fajar',
-      'userAvatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-      'description': 'Tutorial teknik smash bola voli untuk pemula!...',
-      'audioId': 'Audio00090003',
-      'thumbnailUrl': 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=500&h=800&fit=crop',
-      'likes': 2341,
-      'comments': 456,
-      'shares': 123,
-      'isLiked': false,
-      'isBookmarked': false,
+      'username': 'Motivation Speaker',
+      'title': 'Cara Membangun Kebiasaan Membaca yang Konsisten Setiap Hari',
+      'views': 15238,
+      'time': '3 hari lalu',
+      'duration': '12:20',
+      'likes': 1534,
+      'comments': 203,
+      'thumbnailUrl': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=300&fit=crop',
+      'userAvatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
+      'isVerified': true,
+    },
+    {
+      'id': 'video4',
+      'username': 'Study Hacks',
+      'title': 'Metode Cornell Notes: Teknik Mencatat yang Efektif untuk Mahasiswa',
+      'views': 7892,
+      'time': '5 hari lalu',
+      'duration': '8:15',
+      'likes': 654,
+      'comments': 78,
+      'thumbnailUrl': 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=500&h=300&fit=crop',
+      'userAvatar': 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face',
+      'isVerified': false,
     },
   ];
-
-  int currentVideoIndex = 0;
-  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -387,118 +82,76 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
+    
+    _likeAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _likeAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(parent: _likeAnimationController, curve: Curves.elasticOut),
+    );
+    
+    // Initialize like counts
+    for (var video in videos) {
+      _likeCounts[video['id']] = video['likes'];
+      _likedVideos[video['id']] = false;
+    }
+    
     _animationController.forward();
   }
 
   @override
   void dispose() {
     _animationController.dispose();
-    _pageController.dispose();
+    _likeAnimationController.dispose();
     super.dispose();
   }
 
-  void _toggleLike(int index) {
+  String _formatNumber(int number) {
+    if (number >= 1000000) {
+      return '${(number / 1000000).toStringAsFixed(1)}M';
+    } else if (number >= 1000) {
+      return '${(number / 1000).toStringAsFixed(1)}K';
+    }
+    return number.toString();
+  }
+
+  void _toggleLike(String videoId) {
     setState(() {
-      videos[index]['isLiked'] = !videos[index]['isLiked'];
-      if (videos[index]['isLiked']) {
-        videos[index]['likes']++;
+      bool currentLiked = _likedVideos[videoId] ?? false;
+      _likedVideos[videoId] = !currentLiked;
+      
+      if (!currentLiked) {
+        _likeCounts[videoId] = (_likeCounts[videoId] ?? 0) + 1;
+        _likeAnimationController.forward().then((_) {
+          _likeAnimationController.reverse();
+        });
       } else {
-        videos[index]['likes']--;
+        _likeCounts[videoId] = (_likeCounts[videoId] ?? 1) - 1;
       }
     });
-  }
 
-  void _toggleBookmark(int index) {
-    setState(() {
-      videos[index]['isBookmarked'] = !videos[index]['isBookmarked'];
-    });
-  }
-
-  void _showCommentsModal(int index) {
-    final video = videos[index];
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => VideoCommentsModal(
-        username: video['username'] ?? 'Unknown',
-        description: video['description'] ?? '',
-        comments: video['comments'] ?? 0,
-        onAddComment: () {
-          setState(() {
-            videos[index]['comments']++;
-          });
-        },
+    // Show feedback
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(_likedVideos[videoId]! ? 'Video disukai!' : 'Like dihapus'),
+        duration: const Duration(milliseconds: 800),
+        backgroundColor: _likedVideos[videoId]! ? const Color(0xFF7ED6A8) : Colors.grey[600],
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        margin: const EdgeInsets.all(16),
       ),
-    ).catchError((e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error opening comments: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    });
-  }
-
-  void _showShareModal(int index) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: 300,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        child: Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(top: 8),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(20),
-              child: Text(
-                'Bagikan Video',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const Expanded(
-              child: Center(
-                child: Text('Share options coming soon...'),
-              ),
-            ),
-          ],
-        ),
-      ),
-    ).catchError((e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error opening share modal: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    });
+    );
   }
 
   void _onItemTapped(int index) {
     if (index == 2) {
-      _showCreatePostDialog();
+      // Handle create post
       return;
     }
 
     if (index == 3) {
+      // Already on video screen
       return;
     }
 
@@ -508,20 +161,13 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
 
     try {
       if (index == 0) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context); // Balik ke home
+        }
       } else if (index == 1) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const CategoryScreen()),
-        );
+        // TODO: Navigate ke CategoryScreen
       } else if (index == 4) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const ProfileScreen()),
-        );
+        // TODO: Navigate ke ProfileScreen
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -533,268 +179,401 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
     }
   }
 
-  void _showCreatePostDialog() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext context) => const CreatePostBottomSheet(),
-    ).catchError((e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error opening create post: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    });
-  }
+  Widget _buildVideoCard(Map<String, dynamic> video) {
+    bool isLiked = _likedVideos[video['id']] ?? false;
+    int likeCount = _likeCounts[video['id']] ?? video['likes'];
 
-  String _formatNumber(int number) {
-    if (number >= 1000) {
-      return '${(number / 1000).toStringAsFixed(1)}k';
-    }
-    return number.toString();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: PageView.builder(
-          controller: _pageController,
-          scrollDirection: Axis.vertical,
-          itemCount: videos.length,
-          onPageChanged: (index) {
-            setState(() {
-              currentVideoIndex = index;
-            });
-          },
-          itemBuilder: (context, index) {
-            final video = videos[index];
-            return Stack(
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Thumbnail dengan gradient overlay
+          Container(
+            height: 220,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+              image: DecorationImage(
+                image: NetworkImage(video['thumbnailUrl']),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Stack(
               children: [
                 Container(
-                  width: double.infinity,
-                  height: double.infinity,
                   decoration: BoxDecoration(
-                    image: video['thumbnailUrl'] != null
-                        ? DecorationImage(
-                            image: NetworkImage(video['thumbnailUrl']),
-                            fit: BoxFit.cover,
-                          )
-                        : null,
-                  ),
-                  child: video['thumbnailUrl'] == null
-                      ? const Center(child: Icon(Icons.broken_image, color: Colors.grey))
-                      : null,
-                ),
-                Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
                         Colors.transparent,
                         Colors.black.withOpacity(0.3),
-                        Colors.black.withOpacity(0.7),
                       ],
                     ),
                   ),
                 ),
-                SafeArea(
+                Center(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Video',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
+                    width: 70,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.black.withOpacity(0.7),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 10,
+                          spreadRadius: 2,
                         ),
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.3),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Text(
-                                '9:41',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ],
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.play_arrow,
+                      color: Colors.white,
+                      size: 35,
+                    ),
+                  ),
+                ),
+                // Duration badge
+                Positioned(
+                  bottom: 12,
+                  right: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      video['duration'],
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                // Views badge
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF7ED6A8).withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.visibility, color: Colors.white, size: 12),
+                        const SizedBox(width: 4),
+                        Text(
+                          _formatNumber(video['views']),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                Positioned(
-                  right: 16,
-                  bottom: 160,
-                  child: Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () => _toggleLike(index),
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            children: [
-                              Icon(
-                                video['isLiked'] ? Icons.favorite : Icons.favorite_border,
-                                color: video['isLiked'] ? Colors.red : Colors.white,
-                                size: 28,
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                _formatNumber(video['likes'] ?? 0),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      GestureDetector(
-                        onTap: () => _showCommentsModal(index),
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            children: [
-                              const Icon(
-                                Icons.chat_bubble_outline,
-                                color: Colors.white,
-                                size: 28,
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                _formatNumber(video['comments'] ?? 0),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      GestureDetector(
-                        onTap: () => _showShareModal(index),
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            children: [
-                              const Icon(
-                                Icons.share_outlined,
-                                color: Colors.white,
-                                size: 28,
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                _formatNumber(video['shares'] ?? 0),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+              ],
+            ),
+          ),
+          
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title
+                Text(
+                  video['title'],
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
+                    height: 1.4,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                Positioned(
-                  left: 16,
-                  right: 80,
-                  bottom: 110,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
+                const SizedBox(height: 12),
+                
+                // User info
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: const Color(0xFF7ED6A8),
+                      backgroundImage: NetworkImage(video['userAvatar']),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CircleAvatar(
-                            radius: 20,
-                            backgroundImage: NetworkImage(
-                              video['userAvatar'] ?? '',
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                video['username'],
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              if (video['isVerified']) ...[
+                                const SizedBox(width: 4),
+                                const Icon(
+                                  Icons.verified,
+                                  color: Color(0xFF7ED6A8),
+                                  size: 16,
+                                ),
+                              ],
+                            ],
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(height: 2),
                           Text(
-                            video['username'] ?? 'Unknown',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        video['description'] ?? '',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          height: 1.4,
-                        ),
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.music_note,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            video['audioId'] ?? 'Unknown',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            video['time'],
+                            style: TextStyle(
                               fontSize: 12,
+                              color: Colors.grey[600],
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                    PopupMenuButton<String>(
+                      onSelected: (value) {
+                        // Handle menu actions
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('$value dipilih'),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                      },
+                      itemBuilder: (context) => [
+                        const PopupMenuItem(value: 'save', child: Text('Simpan')),
+                        const PopupMenuItem(value: 'share', child: Text('Bagikan')),
+                        const PopupMenuItem(value: 'report', child: Text('Laporkan')),
+                      ],
+                      child: Icon(Icons.more_vert, color: Colors.grey[600], size: 20),
+                    ),
+                  ],
+                ),
+                
+                const SizedBox(height: 16),
+                
+                // Interaction bar
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // Like button
+                      AnimatedBuilder(
+                        animation: _likeAnimation,
+                        builder: (context, child) {
+                          return Transform.scale(
+                            scale: isLiked ? _likeAnimation.value : 1.0,
+                            child: InkWell(
+                              onTap: () => _toggleLike(video['id']),
+                              borderRadius: BorderRadius.circular(8),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      isLiked ? Icons.favorite : Icons.favorite_border,
+                                      color: isLiked ? Colors.red : Colors.grey[600],
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      _formatNumber(likeCount),
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        color: isLiked ? Colors.red : Colors.grey[700],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      
+                      // Comment button
+                      InkWell(
+                        onTap: () {
+                          // TODO: Open comments
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Membuka komentar...'),
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(8),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.comment_outlined, color: Colors.grey[600], size: 20),
+                              const SizedBox(width: 6),
+                              Text(
+                                _formatNumber(video['comments']),
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      
+                      // Share button
+                      InkWell(
+                        onTap: () {
+                          // TODO: Share video
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Berbagi video...'),
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(8),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.share_outlined, color: Colors.grey[600], size: 20),
+                              const SizedBox(width: 6),
+                              Text(
+                                'Bagikan',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
               ],
-            );
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          onPressed: () {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            }
           },
+        ),
+        title: const Text(
+          'Video',
+          style: TextStyle(
+            color: Colors.black87,
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(Icons.search, color: Colors.grey[700], size: 20),
+            ),
+            onPressed: () {
+              // TODO: Handle search
+            },
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
+      body: FadeTransition(
+        opacity: _fadeAnimation,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await Future.delayed(const Duration(seconds: 1));
+            setState(() {});
+          },
+          color: const Color(0xFF7ED6A8),
+          child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: videos.length,
+            itemBuilder: (context, index) => _buildVideoCard(videos[index]),
+          ),
         ),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
+          color: Colors.white,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
+              blurRadius: 15,
+              offset: const Offset(0, -5),
             ),
           ],
         ),
@@ -803,10 +582,11 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
           selectedItemColor: const Color(0xFF7ED6A8),
-          unselectedItemColor: Colors.grey,
-          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
-          elevation: 0,
+          unselectedItemColor: Colors.grey[500],
           backgroundColor: Colors.white,
+          elevation: 0,
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+          unselectedLabelStyle: const TextStyle(fontSize: 12),
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
@@ -815,12 +595,11 @@ class _VideoScreenState extends State<VideoScreen> with TickerProviderStateMixin
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.apps),
-              activeIcon: Icon(Icons.apps),
               label: 'Kategori',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.add_circle_outline, size: 32),
-              activeIcon: Icon(Icons.add_circle, size: 32),
+              icon: Icon(Icons.add_circle_outline),
+              activeIcon: Icon(Icons.add_circle),
               label: 'Posting',
             ),
             BottomNavigationBarItem(

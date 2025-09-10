@@ -5,6 +5,7 @@ import 'profile_screen.dart';
 import 'article_detail_screen.dart';
 import 'notification_screen.dart';
 import 'create_post_screen.dart';
+import 'video_screen.dart'; 
 // Import RatingDialog yang baru dibuat
 import 'rating_dialog.dart'; // Sesuaikan path file
 
@@ -760,16 +761,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 }
 
 // Class lainnya tetap sama seperti sebelumnya
-class VideoScreen extends StatelessWidget {
-  const VideoScreen({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Video')),
-      body: const Center(child: Text('Halaman Video (Placeholder)')),
-    );
-  }
-}
+
+
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({Key? key}) : super(key: key);
