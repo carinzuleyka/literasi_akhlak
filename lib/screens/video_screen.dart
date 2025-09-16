@@ -7,6 +7,7 @@ class VideoScreen extends StatefulWidget {
   _VideoScreenState createState() => _VideoScreenState();
 }
 
+
 class _VideoScreenState extends State<VideoScreen> {
   // Data dummy untuk video, nantinya bisa diganti dengan data dari API
   final List<Map<String, dynamic>> _videos = [
@@ -40,10 +41,12 @@ class _VideoScreenState extends State<VideoScreen> {
   void initState() {
     super.initState();
     _pageController = PageController();
+
   }
 
   @override
   void dispose() {
+
     _pageController.dispose();
     super.dispose();
   }
@@ -192,6 +195,7 @@ class _VideoScreenState extends State<VideoScreen> {
           icon: Icons.share,
           label: _formatNumber(video['shares']),
           onTap: () { /* TODO: Logika share */ },
+
         ),
       ],
     );

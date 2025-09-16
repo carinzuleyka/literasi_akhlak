@@ -1,4 +1,3 @@
-// notification_screen.dart
 import 'package:flutter/material.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -182,6 +181,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         return Icons.notifications;
     }
   }
+
 }
 
 // category_screen.dart
@@ -951,4 +951,5 @@ class VideoPlayerScreen extends StatelessWidget {
       ],
     );
   }
+
 }

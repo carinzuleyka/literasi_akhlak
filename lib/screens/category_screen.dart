@@ -60,8 +60,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
   }
 
+
   Widget _buildCategoryCard(Kategori category) {
     final color = Colors.primaries[category.id % Colors.primaries.length];
+
 
     return GestureDetector(
       onTap: () {

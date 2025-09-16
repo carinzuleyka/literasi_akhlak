@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import '../models/artikel_model.dart';
@@ -11,6 +12,7 @@ import 'create_article_screen.dart';
 import 'video_screen.dart' as Video;
 import 'profile_screen.dart' as Profile;
 import 'article_detail_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -26,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _selectedCategory = 'Semua';
   int _selectedIndex = 0;
 
+
   static final List<Widget> _screens = <Widget>[
     const Placeholder(),
     const Category.CategoryScreen(),
@@ -33,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const Video.VideoScreen(),
     const Profile.ProfileScreen(),
   ];
+
 
   @override
   void initState() {
@@ -59,16 +63,20 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+
   void _handleLike(Artikel artikel) {
+
     setState(() {
       artikel.isLiked = !artikel.isLiked;
       artikel.isLiked ? artikel.jumlahSuka++ : artikel.jumlahSuka--;
     });
+
     ApiService.toggleInteraction(artikel.id, 'suka').catchError((e) {
       setState(() {
         artikel.isLiked = !artikel.isLiked;
         artikel.isLiked ? artikel.jumlahSuka++ : artikel.jumlahSuka--;
       });
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Gagal menyukai artikel'), backgroundColor: Colors.red),
       );
@@ -79,11 +87,13 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => artikel.isBookmarked = !artikel.isBookmarked);
     ApiService.toggleInteraction(artikel.id, 'bookmark').catchError((e) {
       setState(() => artikel.isBookmarked = !artikel.isBookmarked);
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Gagal menyimpan artikel'), backgroundColor: Colors.red),
       );
     });
   }
+
 
   String _formatDate(String dateString) {
     try {
@@ -98,6 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedIndex = index;
     });
+
   }
 
   @override
@@ -106,6 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF7ED6A8),
+
       body: _selectedIndex == 0
           ? SafeArea(
               child: Column(
@@ -114,6 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _buildCategoryFilters(),
                   _buildArticleTimeline(),
                 ],
+
               ),
             )
           : _screens[_selectedIndex],
@@ -419,6 +432,218 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () => _handleBookmark(item),
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Class lainnya tetap sama seperti sebelumnya
+
+
+
+class CategoryScreen extends StatelessWidget {
+  const CategoryScreen({Key? key}) : super(key: key);
+
+  final List<Map<String, dynamic>> categories = const [
+    {
+      'title': 'Artikel Akhlak',
+      'count': '245 artikel',
+      'description': 'Artikel menarik seputar nilai, sikap, dan pembelajaran kehidupan sehari-hari',
+      'icon': Icons.article,
+      'color': Colors.blue,
+    },
+    {
+      'title': 'Kisah Teladan',
+      'count': '156 kisah',
+      'description': 'Cerita inspiratif dari tokoh, sejarah, dan pengalaman yang bisa diambil hikmahnya',
+      'icon': Icons.book,
+      'color': Colors.orange,
+    },
+    {
+      'title': 'Video Dakwah',
+      'count': '89 artikel',
+      'description': 'Konten video edukatif dan motivasi yang mudah dipahami dan menyenangkan',
+      'icon': Icons.people,
+      'color': Colors.green,
+    },
+    {
+      'title': 'Tips & Panduan',
+      'count': '134 kisah',
+      'description': 'Tips sederhana dan panduan praktis untuk kehidupan sehari-hari',
+      'icon': Icons.auto_stories,
+      'color': Colors.purple,
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Semua Kategori',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 0.85,
+          ),
+          itemCount: categories.length,
+          itemBuilder: (context, index) {
+            final category = categories[index];
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CategoryDetailScreen(
+                      categoryName: category['title'],
+                      categoryIcon: category['icon'],
+                      categoryColor: category['color'],
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: (category['color'] as Color).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        category['icon'],
+                        color: category['color'],
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    Text(
+                      category['title'],
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      category['count'],
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      category['description'],
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey[500],
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class CategoryDetailScreen extends StatelessWidget {
+  final String categoryName;
+  final IconData categoryIcon;
+  final Color categoryColor;
+  const CategoryDetailScreen({
+    Key? key,
+    required this.categoryName,
+    required this.categoryIcon,
+    required this.categoryColor,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(categoryName),
+        backgroundColor: categoryColor.withOpacity(0.1),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: categoryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  Icon(
+                    categoryIcon,
+                    size: 48,
+                    color: categoryColor,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    categoryName,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Konten dalam kategori ini sedang dalam pengembangan',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
