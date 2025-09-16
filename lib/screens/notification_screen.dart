@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 class NotificationScreen extends StatefulWidget {
-  const NotificationScreen({Key? key}) : super(key: key);
+  const NotificationScreen({super.key});
 
   @override
   State<NotificationScreen> createState() => _NotificationScreenState();
@@ -186,7 +186,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
 // category_screen.dart
 class CategoryScreen extends StatelessWidget {
-  const CategoryScreen({Key? key}) : super(key: key);
+  const CategoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -367,11 +367,11 @@ class CategoryDetailScreen extends StatelessWidget {
   final Color categoryColor;
 
   const CategoryDetailScreen({
-    Key? key,
+    super.key,
     required this.categoryName,
     required this.categoryIcon,
     required this.categoryColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -532,7 +532,7 @@ class CategoryDetailScreen extends StatelessWidget {
 
 // video_screen.dart
 class VideoScreen extends StatefulWidget {
-  const VideoScreen({Key? key}) : super(key: key);
+  const VideoScreen({super.key});
 
   @override
   State<VideoScreen> createState() => _VideoScreenState();
@@ -780,7 +780,7 @@ class _VideoScreenState extends State<VideoScreen> {
 class VideoPlayerScreen extends StatelessWidget {
   final Map<String, dynamic> video;
 
-  const VideoPlayerScreen({Key? key, required this.video}) : super(key: key);
+  const VideoPlayerScreen({super.key, required this.video});
 
   @override
   Widget build(BuildContext context) {

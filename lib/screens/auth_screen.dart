@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_text_field.dart';
 import '../models/auth_model.dart';
+import '../screens/home_screens.dart'; // Pastikan path ini benar
 
 class AuthScreen extends StatefulWidget {
-  const AuthScreen({Key? key}) : super(key: key);
+  const AuthScreen({super.key});
 
   @override
   State<AuthScreen> createState() => _AuthScreenState();
@@ -16,11 +17,13 @@ class _AuthScreenState extends State<AuthScreen>
   final _signUpFormKey = GlobalKey<FormState>();
 
   // Sign In Controllers
-  final _signInNisController = TextEditingController();
+  final _signInController = TextEditingController();
   final _signInPasswordController = TextEditingController();
 
   // Sign Up Controllers
   final _signUpNameController = TextEditingController();
+  final _signUpNisController = TextEditingController();
+  final _signUpKelasController = TextEditingController();
   final _signUpEmailController = TextEditingController();
   final _signUpPasswordController = TextEditingController();
   final _signUpConfirmPasswordController = TextEditingController();
@@ -40,100 +43,76 @@ class _AuthScreenState extends State<AuthScreen>
   @override
   void dispose() {
     _tabController.dispose();
-    _signInNisController.dispose();
+    _signInController.dispose();
     _signInPasswordController.dispose();
     _signUpNameController.dispose();
+    _signUpNisController.dispose();
+    _signUpKelasController.dispose();
     _signUpEmailController.dispose();
     _signUpPasswordController.dispose();
     _signUpConfirmPasswordController.dispose();
     super.dispose();
   }
 
+  void _showErrorSnackBar(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
   Future<void> _handleSignIn() async {
     if (_signInFormKey.currentState!.validate()) {
-      setState(() {
-        _isSignInLoading = true;
-      });
-
+      setState(() => _isSignInLoading = true);
       try {
-        final success = await AuthService.signIn(
-          _signInNisController.text,
+        final response = await AuthService.signIn(
+          _signInController.text,
           _signInPasswordController.text,
         );
-
-        if (success && mounted) {
-          Navigator.of(context).pushReplacementNamed('/home');
-        } else if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('NIS/Email atau password salah'),
-              backgroundColor: Colors.red,
-            ),
+        if (response['success'] == true && mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
+        } else if (mounted) {
+          _showErrorSnackBar(response['message'] ?? 'Login gagal.');
         }
       } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Terjadi kesalahan. Coba lagi.'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
+        _showErrorSnackBar('Terjadi kesalahan: $e');
       } finally {
-        if (mounted) {
-          setState(() {
-            _isSignInLoading = false;
-          });
-        }
+        if (mounted) setState(() => _isSignInLoading = false);
       }
     }
   }
 
   Future<void> _handleSignUp() async {
     if (_signUpFormKey.currentState!.validate()) {
-      setState(() {
-        _isSignUpLoading = true;
-      });
-
+      setState(() => _isSignUpLoading = true);
       try {
-        final success = await AuthService.signUp(
+        final response = await AuthService.signUp(
           fullName: _signUpNameController.text,
           email: _signUpEmailController.text,
           password: _signUpPasswordController.text,
+          nis: _signUpNisController.text,
+          kelas: _signUpKelasController.text,
         );
-
-        if (success && mounted) {
+        if (response['success'] == true && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Akun berhasil dibuat! Silakan masuk.'),
               backgroundColor: Colors.green,
             ),
           );
-          _tabController.animateTo(0); // Switch to Sign In tab
+          _tabController.animateTo(0);
         } else if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Gagal membuat akun. Coba lagi.'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          _showErrorSnackBar(response['message'] ?? 'Gagal membuat akun.');
         }
       } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Terjadi kesalahan. Coba lagi.'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
+        _showErrorSnackBar('Terjadi kesalahan: $e');
       } finally {
-        if (mounted) {
-          setState(() {
-            _isSignUpLoading = false;
-          });
-        }
+        if (mounted) setState(() => _isSignUpLoading = false);
       }
     }
   }
@@ -148,69 +127,36 @@ class _AuthScreenState extends State<AuthScreen>
           child: Column(
             children: [
               const SizedBox(height: 40),
-
-              // Logo
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Container(
                     width: 12,
                     height: 12,
                     decoration: const BoxDecoration(
-                      color: Colors.blue,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'BacainSebelas',
+                        color: Colors.blue, shape: BoxShape.circle)),
+                const SizedBox(width: 8),
+                const Text('BacainSebelas',
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                ],
-              ),
-
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                        letterSpacing: 1.2)),
+              ]),
               const SizedBox(height: 40),
-
-              // Tab Bar
               Container(
                 decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: Colors.grey[300]!),
-                  ),
-                ),
+                    border: Border(bottom: BorderSide(color: Colors.grey[300]!))),
                 child: TabBar(
                   controller: _tabController,
                   labelColor: Colors.blue,
                   unselectedLabelColor: Colors.grey,
                   indicatorColor: Colors.blue,
-                  labelStyle: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
-                  unselectedLabelStyle: const TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 16,
-                  ),
-                  tabs: const [
-                    Tab(text: 'Sign In'),
-                    Tab(text: 'Sign Up'),
-                  ],
+                  tabs: const [Tab(text: 'Sign In'), Tab(text: 'Sign Up')],
                 ),
               ),
-
-              // Tab Views
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
-                  children: [
-                    _buildSignInTab(),
-                    _buildSignUpTab(),
-                  ],
+                  children: [_buildSignInTab(), _buildSignUpTab()],
                 ),
               ),
             ],
@@ -227,12 +173,12 @@ class _AuthScreenState extends State<AuthScreen>
         children: [
           const SizedBox(height: 32),
           CustomTextField(
-            label: 'NIS',
-            hint: 'Masukkan NIS',
-            controller: _signInNisController,
+            label: 'NIS / Email',
+            hint: 'Masukkan NIS atau Email',
+            controller: _signInController,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'NIS tidak boleh kosong';
+                return 'NIS/Email tidak boleh kosong';
               }
               return null;
             },
@@ -244,17 +190,11 @@ class _AuthScreenState extends State<AuthScreen>
             obscureText: !_isSignInPasswordVisible,
             controller: _signInPasswordController,
             suffixIcon: IconButton(
-              icon: Icon(
-                _isSignInPasswordVisible
-                    ? Icons.visibility
-                    : Icons.visibility_off,
-                color: Colors.grey,
-              ),
-              onPressed: () {
-                setState(() {
-                  _isSignInPasswordVisible = !_isSignInPasswordVisible;
-                });
-              },
+              icon: Icon(_isSignInPasswordVisible
+                  ? Icons.visibility
+                  : Icons.visibility_off),
+              onPressed: () => setState(
+                  () => _isSignInPasswordVisible = !_isSignInPasswordVisible),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -270,50 +210,12 @@ class _AuthScreenState extends State<AuthScreen>
             child: ElevatedButton(
               onPressed: _isSignInLoading ? null : _handleSignIn,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                elevation: 0,
-              ),
+                  backgroundColor: Colors.blue, foregroundColor: Colors.white),
               child: _isSignInLoading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : const Text(
-                      'Masuk',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2,))
+                  : const Text('Masuk', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             ),
           ),
-          const SizedBox(height: 16),
-          TextButton(
-            onPressed: () {
-              // Handle forgot password
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Fitur lupa password belum tersedia'),
-                ),
-              );
-            },
-            child: const Text(
-              'Lupa Passwod?',
-              style: TextStyle(
-                color: Colors.blue,
-                fontSize: 14,
-              ),
-            ),
-          ),
-          const Spacer(),
         ],
       ),
     );
@@ -330,26 +232,32 @@ class _AuthScreenState extends State<AuthScreen>
               label: 'Nama lengkap',
               hint: 'Masukkan nama',
               controller: _signUpNameController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Nama tidak boleh kosong';
-                }
-                return null;
-              },
+              validator: (v) => v!.isEmpty ? 'Nama tidak boleh kosong' : null,
             ),
             const SizedBox(height: 20),
             CustomTextField(
-              label: 'Email/No.Telp',
-              hint: 'Masukkan Email/No.Telp',
+              label: 'NIS',
+              hint: 'Masukkan NIS',
+              controller: _signUpNisController,
+              keyboardType: TextInputType.number,
+              validator: (v) => v!.isEmpty ? 'NIS tidak boleh kosong' : null,
+            ),
+            const SizedBox(height: 20),
+            CustomTextField(
+              label: 'Kelas',
+              hint: 'Contoh: XII RPL 1',
+              controller: _signUpKelasController,
+              validator: (v) => v!.isEmpty ? 'Kelas tidak boleh kosong' : null,
+            ),
+            const SizedBox(height: 20),
+            CustomTextField(
+              label: 'Email',
+              hint: 'Masukkan Email',
               controller: _signUpEmailController,
               keyboardType: TextInputType.emailAddress,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Email tidak boleh kosong';
-                }
-                if (!value.contains('@')) {
-                  return 'Format email tidak valid';
-                }
+              validator: (v) {
+                if (v!.isEmpty) return 'Email tidak boleh kosong';
+                if (!v.contains('@') || !v.contains('.')) return 'Format email tidak valid';
                 return null;
               },
             ),
@@ -360,52 +268,33 @@ class _AuthScreenState extends State<AuthScreen>
               obscureText: !_isSignUpPasswordVisible,
               controller: _signUpPasswordController,
               suffixIcon: IconButton(
-                icon: Icon(
-                  _isSignUpPasswordVisible
-                      ? Icons.visibility
-                      : Icons.visibility_off,
-                  color: Colors.grey,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _isSignUpPasswordVisible = !_isSignUpPasswordVisible;
-                  });
-                },
+                icon: Icon(_isSignUpPasswordVisible
+                    ? Icons.visibility
+                    : Icons.visibility_off),
+                onPressed: () => setState(() =>
+                    _isSignUpPasswordVisible = !_isSignUpPasswordVisible),
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Password tidak boleh kosong';
-                }
-                if (value.length < 6) {
-                  return 'Password minimal 6 karakter';
-                }
+              validator: (v) {
+                if (v!.isEmpty) return 'Password tidak boleh kosong';
+                if (v.length < 6) return 'Password minimal 6 karakter';
                 return null;
               },
             ),
             const SizedBox(height: 20),
             CustomTextField(
               label: 'Konfirmasi Password',
-              hint: 'Masukkan password',
+              hint: 'Masukkan ulang password',
               obscureText: !_isConfirmPasswordVisible,
               controller: _signUpConfirmPasswordController,
               suffixIcon: IconButton(
-                icon: Icon(
-                  _isConfirmPasswordVisible
-                      ? Icons.visibility
-                      : Icons.visibility_off,
-                  color: Colors.grey,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-                  });
-                },
+                icon: Icon(_isConfirmPasswordVisible
+                    ? Icons.visibility
+                    : Icons.visibility_off),
+                onPressed: () => setState(() => _isConfirmPasswordVisible =
+                    !_isConfirmPasswordVisible),
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Konfirmasi password tidak boleh kosong';
-                }
-                if (value != _signUpPasswordController.text) {
+              validator: (v) {
+                if (v != _signUpPasswordController.text) {
                   return 'Password tidak sama';
                 }
                 return null;
@@ -418,29 +307,11 @@ class _AuthScreenState extends State<AuthScreen>
               child: ElevatedButton(
                 onPressed: _isSignUpLoading ? null : _handleSignUp,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  elevation: 0,
-                ),
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white),
                 child: _isSignUpLoading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : const Text(
-                        'Masuk',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2,))
+                    : const Text('Daftar', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               ),
             ),
             const SizedBox(height: 32),

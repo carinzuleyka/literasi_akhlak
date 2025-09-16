@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CreatePostBottomSheet extends StatefulWidget {
-  const CreatePostBottomSheet({Key? key}) : super(key: key);
+  const CreatePostBottomSheet({super.key});
 
   @override
   State<CreatePostBottomSheet> createState() => _CreatePostBottomSheetState();
@@ -65,7 +65,7 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: DropdownButtonFormField<String>(
-                      value: selectedType,
+                      initialValue: selectedType,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),

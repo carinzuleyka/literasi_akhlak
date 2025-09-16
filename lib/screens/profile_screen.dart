@@ -1,271 +1,164 @@
 import 'package:flutter/material.dart';
-
-// Placeholder class to prevent compilation errors
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pengaturan'),
-      ),
-      body: const Center(
-        child: Text('Halaman Pengaturan (Placeholder)'),
-      ),
-    );
-  }
-}
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import '../models/user_model.dart';
+import '../models/artikel_model.dart';
+import '../services/api_service.dart';
+// import 'settings_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
-  final List<Map<String, dynamic>> myPosts = [
-    {
-      'title': 'Tips Belajar Efektif di Era Digital',
-      'category': 'Tips & Trik',
-      'likes': 45,
-      'comments': 12,
-      'views': 234,
-      'date': '2 hari lalu',
-    },
-    {
-      'title': 'Review: The Psychology of Money',
-      'category': 'Resensi Buku',
-      'likes': 78,
-      'comments': 23,
-      'views': 456,
-      'date': '1 minggu lalu',
-    },
-    {
-      'title': 'Panduan Lengkap Menulis Artikel SEO',
-      'category': 'Artikel',
-      'likes': 123,
-      'comments': 34,
-      'views': 789,
-      'date': '2 minggu lalu',
-    },
-  ];
+class _ProfileScreenState extends State<ProfileScreen>
+    with SingleTickerProviderStateMixin {
+  late Future<Map<String, dynamic>> _profileDataFuture;
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    initializeDateFormatting('id_ID', null);
+    _tabController = TabController(length: 3, vsync: this);
+    _profileDataFuture = _loadInitialProfileData();
+  }
+
+  Future<Map<String, dynamic>> _loadInitialProfileData() async {
+    try {
+      final user = await ApiService.getSavedUser();
+      final articles = await ApiService.fetchMyArticles();
+      return {'user': user, 'articles': articles};
+    } catch (e) {
+      throw Exception('Gagal memuat data profil: $e');
+    }
+  }
+
+  Future<void> _refreshProfile() async {
+    setState(() {
+      _profileDataFuture = _loadInitialProfileData();
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  String _formatDate(String dateString) {
+    try {
+      final dateTime = DateTime.parse(dateString).toLocal();
+      return DateFormat('d MMMM yyyy', 'id_ID').format(dateTime);
+    } catch (e) {
+      return dateString;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF7ED6A8),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  const Text(
-                    'Profil',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.settings, color: Colors.white),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SettingsScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-
-            // Profile Info
-            Container(
-              padding: const EdgeInsets.all(20),
+      body: FutureBuilder<Map<String, dynamic>>(
+        future: _profileDataFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator(color: Colors.white));
+          }
+          if (snapshot.hasError || !snapshot.hasData || snapshot.data?['user'] == null) {
+            return Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const CircleAvatar(
-                    radius: 50,
-                    backgroundImage: NetworkImage(
-                      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Deewi',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
                   Text(
-                    '@deewi_writer',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Penulis artikel dan reviewer buku. Suka berbagi tips menulis dan membaca.',
+                    snapshot.error?.toString() ?? "Gagal memuat profil",
+                    style: const TextStyle(color: Colors.white),
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
-                      fontSize: 14,
-                    ),
                   ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildStatItem('Postingan', '${myPosts.length}'),
-                      _buildStatItem('Pengikut', '2.5K'),
-                      _buildStatItem('Mengikuti', '186'),
-                    ],
-                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(onPressed: _refreshProfile, child: const Text('Coba Lagi'))
                 ],
               ),
-            ),
+            );
+          }
+          
+          final User user = snapshot.data!['user'];
+          final List<Artikel> myArticles = snapshot.data!['articles'];
 
-            // Content
-            Expanded(
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 24),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        children: [
-                          const Text(
-                            'Postingan Saya',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const Spacer(),
-                          TextButton(
-                            onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Fitur lihat semua postingan'),
-                                  backgroundColor: Color(0xFF7ED6A8),
-                                ),
-                              );
-                            },
-                            child: const Text(
-                              'Lihat Semua',
-                              style: TextStyle(
-                                color: Color(0xFF7ED6A8),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        itemCount: myPosts.length,
-                        itemBuilder: (context, index) {
-                          final post = myPosts[index];
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: 16),
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF7ED6A8).withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    post['category'],
-                                    style: const TextStyle(
-                                      color: Color(0xFF2E7D32),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  post['title'],
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 12),
-                                Row(
-                                  children: [
-                                    Icon(Icons.favorite, size: 16, color: Colors.grey[600]),
-                                    const SizedBox(width: 4),
-                                    Text('${post['likes']}'),
-                                    const SizedBox(width: 16),
-                                    Icon(Icons.chat_bubble, size: 16, color: Colors.grey[600]),
-                                    const SizedBox(width: 4),
-                                    Text('${post['comments']}'),
-                                    const SizedBox(width: 16),
-                                    Icon(Icons.visibility, size: 16, color: Colors.grey[600]),
-                                    const SizedBox(width: 4),
-                                    Text('${post['views']}'),
-                                    const Spacer(),
-                                    Text(
-                                      post['date'],
-                                      style: TextStyle(
-                                        color: Colors.grey[600],
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+          return _buildProfileView(user, myArticles);
+        },
+      ),
+    );
+  }
+
+  Widget _buildProfileView(User user, List<Artikel> myArticles) {
+    return NestedScrollView(
+      headerSliverBuilder: (context, innerBoxIsScrolled) {
+        return [
+          SliverAppBar(
+            backgroundColor: const Color(0xFF7ED6A8),
+            foregroundColor: Colors.white,
+            expandedHeight: 280.0,
+            floating: false,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: _buildProfileHeader(user, myArticles.length),
+              titlePadding: const EdgeInsets.only(bottom: 50),
+            ),
+            bottom: TabBar(
+              controller: _tabController,
+              indicatorColor: Colors.white,
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.white70,
+              tabs: const [
+                Tab(icon: Icon(Icons.grid_on), text: "Postingan"),
+                Tab(icon: Icon(Icons.favorite), text: "Disukai"),
+                Tab(icon: Icon(Icons.bookmark), text: "Disimpan"),
+              ],
+            ),
+          )
+        ];
+      },
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildArticleList(Future.value(myArticles)),
+          _buildArticleList(ApiService.fetchInteractedArticles('suka')),
+          _buildArticleList(ApiService.fetchInteractedArticles('bookmark')),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProfileHeader(User user, int postCount) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 40,
+              backgroundColor: Colors.white.withOpacity(0.3),
+              child: Text(
+                user.nama.isNotEmpty ? user.nama.substring(0, 1).toUpperCase() : 'S',
+                style: const TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold),
               ),
+            ),
+            const SizedBox(height: 12),
+            Text(user.nama, style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 4),
+            Text(user.email, style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 14)),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildStatItem('Postingan', postCount.toString()),
+                _buildStatItem('Pengikut', '0'),
+                _buildStatItem('Mengikuti', '0'),
+              ],
             ),
           ],
         ),
@@ -273,24 +166,84 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Widget _buildArticleList(Future<List<Artikel>> future) {
+    return FutureBuilder<List<Artikel>>(
+      future: future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text("Error: ${snapshot.error}"));
+        }
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text("Tidak ada postingan."));
+        }
+        final posts = snapshot.data!;
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: posts.length,
+          itemBuilder: (context, index) => _buildPostCard(posts[index]),
+        );
+      },
+    );
+  }
+
+  Widget _buildPostCard(Artikel post) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8)],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: (post.status == 'disetujui'
+                          ? Colors.green
+                          : post.status == 'ditolak'
+                              ? Colors.red
+                              : Colors.orange)
+                      .withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  post.status.toUpperCase(),
+                  style: TextStyle(
+                    color: post.status == 'disetujui'
+                        ? Colors.green[800]
+                        : post.status == 'ditolak'
+                            ? Colors.red[800]
+                            : Colors.orange[800],
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Text(_formatDate(post.createdAt), style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(post.judul, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+
   Widget _buildStatItem(String label, String value) {
     return Column(
       children: [
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.white.withOpacity(0.8),
-            fontSize: 14,
-          ),
-        ),
+        Text(value, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 4),
+        Text(label, style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 12)),
       ],
     );
   }
