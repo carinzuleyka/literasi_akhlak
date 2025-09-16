@@ -102,7 +102,7 @@ class _AuthScreenState extends State<AuthScreen>
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Akun berhasil dibuat! Silakan masuk.'),
-              backgroundColor: const Color(0xFF7ED6A8),
+              backgroundColor: Color(0xFF7ED6A8),
             ),
           );
           _tabController.animateTo(0);
@@ -120,21 +120,21 @@ class _AuthScreenState extends State<AuthScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF7ED6A8), // Background hijau sama seperti home
+      backgroundColor: const Color(0xFF7ED6A8), // Background hijau
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            children: [
-              const SizedBox(height: 40),
-              Row(
+        child: Column(
+          children: [
+            // Header dengan logo
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 40),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                     width: 12,
                     height: 12,
                     decoration: const BoxDecoration(
-                      color: Colors.blue,
+                      color: Colors.white,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -142,37 +142,122 @@ class _AuthScreenState extends State<AuthScreen>
                   const Text(
                     'BacainSebelas',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.blue,
+                      color: Colors.white,
                       letterSpacing: 1.2,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 40),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: Colors.grey[300]!),
+            ),
+            
+            // Container putih untuk form
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
                   ),
                 ),
-                child: TabBar(
-                  controller: _tabController,
-                  labelColor: Colors.blue,
-                  unselectedLabelColor: Colors.grey,
-                  indicatorColor: Colors.blue,
-                  tabs: const [Tab(text: 'Sign In'), Tab(text: 'Sign Up')],
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      
+                      // Custom Tab Bar
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.grey[200]!,
+                              width: 1,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () => _tabController.animateTo(0),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: _tabController.index == 0 
+                                            ? const Color(0xFF7ED6A8)
+                                            : Colors.transparent,
+                                        width: 2,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Sign In',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: _tabController.index == 0
+                                          ? const Color(0xFF7ED6A8)
+                                          : Colors.grey[400],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () => _tabController.animateTo(1),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: _tabController.index == 1 
+                                            ? const Color(0xFF7ED6A8)
+                                            : Colors.transparent,
+                                        width: 2,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Sign Up',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: _tabController.index == 1
+                                          ? const Color(0xFF7ED6A8)
+                                          : Colors.grey[400],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      
+                      Expanded(
+                        child: TabBarView(
+                          controller: _tabController,
+                          children: [
+                            _buildSignInTab(),
+                            _buildSignUpTab(),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [_buildSignInTab(), _buildSignUpTab()],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -181,71 +266,149 @@ class _AuthScreenState extends State<AuthScreen>
   Widget _buildSignInTab() {
     return Form(
       key: _signInFormKey,
-      child: Column(
-        children: [
-          const SizedBox(height: 32),
-          CustomTextField(
-            label: 'NIS / Email',
-            hint: 'Masukkan NIS atau Email',
-            controller: _signInController,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'NIS/Email tidak boleh kosong';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 20),
-          CustomTextField(
-            label: 'Password',
-            hint: 'Masukkan password',
-            obscureText: !_isSignInPasswordVisible,
-            controller: _signInPasswordController,
-            suffixIcon: IconButton(
-              icon: Icon(
-                _isSignInPasswordVisible
-                    ? Icons.visibility
-                    : Icons.visibility_off,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 40),
+            
+            // NIS Field
+            const Text(
+              'NIS',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
               ),
-              onPressed: () => setState(
-                  () => _isSignInPasswordVisible = !_isSignInPasswordVisible),
             ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Password tidak boleh kosong';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 32),
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: _isSignInLoading ? null : _handleSignIn,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
+            const SizedBox(height: 8),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[50],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
               ),
-              child: _isSignInLoading
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : const Text(
-                      'Masuk',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+              child: TextFormField(
+                controller: _signInController,
+                decoration: const InputDecoration(
+                  hintText: 'Masukkan NIS',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'NIS tidak boleh kosong';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            
+            const SizedBox(height: 24),
+            
+            // Password Field
+            const Text(
+              'Password',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[50],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: TextFormField(
+                controller: _signInPasswordController,
+                obscureText: !_isSignInPasswordVisible,
+                decoration: InputDecoration(
+                  hintText: 'Masukkan password',
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isSignInPasswordVisible
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: Colors.grey,
                     ),
+                    onPressed: () => setState(
+                        () => _isSignInPasswordVisible = !_isSignInPasswordVisible),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Password tidak boleh kosong';
+                  }
+                  return null;
+                },
+              ),
             ),
-          ),
-        ],
+            
+            const SizedBox(height: 40),
+            
+            // Login Button
+            SizedBox(
+              width: double.infinity,
+              height: 56,
+              child: ElevatedButton(
+                onPressed: _isSignInLoading ? null : _handleSignIn,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF7ED6A8),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 0,
+                ),
+                child: _isSignInLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text(
+                        'Masuk',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+              ),
+            ),
+            
+            const SizedBox(height: 24),
+            
+            // Forgot Password
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  // Handle forgot password
+                },
+                child: const Text(
+                  'Lupa Password?',
+                  style: TextStyle(
+                    color: Color(0xFF7ED6A8),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+            
+            const SizedBox(height: 20), // Extra space at bottom
+          ],
+        ),
       ),
     );
   }
@@ -253,108 +416,203 @@ class _AuthScreenState extends State<AuthScreen>
   Widget _buildSignUpTab() {
     return Form(
       key: _signUpFormKey,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: SingleChildScrollView(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 32),
-              CustomTextField(
-                label: 'Nama Lengkap',
-                hint: 'Masukkan nama',
-                controller: _signUpNameController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Nama tidak boleh kosong';
-                  }
-                  return null;
-                },
+              
+              // Nama Lengkap Field
+              const Text(
+                'Nama Lengkap',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
               ),
-              const SizedBox(height: 20),
-              CustomTextField(
-                label: 'Email/No.Telp',
-                hint: 'Masukkan Email/No.Telp',
-                controller: _signUpEmailController,
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Email tidak boleh kosong';
-                  }
-                  if (!value.contains('@')) {
-                    return 'Format email tidak valid';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              CustomTextField(
-                label: 'Password',
-                hint: 'Masukkan password',
-                obscureText: !_isSignUpPasswordVisible,
-                controller: _signUpPasswordController,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _isSignUpPasswordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    color: Colors.grey,
+              const SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[50],
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey[300]!),
+                ),
+                child: TextFormField(
+                  controller: _signUpNameController,
+                  decoration: const InputDecoration(
+                    hintText: 'Masukkan nama',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _isSignUpPasswordVisible = !_isSignUpPasswordVisible;
-                    });
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Nama tidak boleh kosong';
+                    }
+                    return null;
                   },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Password tidak boleh kosong';
-                  }
-                  if (value.length < 6) {
-                    return 'Password minimal 6 karakter';
-                  }
-                  return null;
-                },
               ),
+              
               const SizedBox(height: 20),
-              CustomTextField(
-                label: 'Konfirmasi Password',
-                hint: 'Masukkan password',
-                obscureText: !_isConfirmPasswordVisible,
-                controller: _signUpConfirmPasswordController,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _isConfirmPasswordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    color: Colors.grey,
+              
+              // Email Field
+              const Text(
+                'Email/No.Telp',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[50],
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey[300]!),
+                ),
+                child: TextFormField(
+                  controller: _signUpEmailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    hintText: 'Masukkan Email/No.Telp',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-                    });
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Email tidak boleh kosong';
+                    }
+                    if (!value.contains('@')) {
+                      return 'Format email tidak valid';
+                    }
+                    return null;
                   },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Konfirmasi password tidak boleh kosong';
-                  }
-                  if (value != _signUpPasswordController.text) {
-                    return 'Password tidak sama';
-                  }
-                  return null;
-                },
               ),
+              
+              const SizedBox(height: 20),
+              
+              // Password Field
+              const Text(
+                'Password',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[50],
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey[300]!),
+                ),
+                child: TextFormField(
+                  controller: _signUpPasswordController,
+                  obscureText: !_isSignUpPasswordVisible,
+                  decoration: InputDecoration(
+                    hintText: 'Masukkan password',
+                    hintStyle: const TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isSignUpPasswordVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isSignUpPasswordVisible = !_isSignUpPasswordVisible;
+                        });
+                      },
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Password tidak boleh kosong';
+                    }
+                    if (value.length < 6) {
+                      return 'Password minimal 6 karakter';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              
+              const SizedBox(height: 20),
+              
+              // Confirm Password Field
+              const Text(
+                'Konfirmasi Password',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[50],
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey[300]!),
+                ),
+                child: TextFormField(
+                  controller: _signUpConfirmPasswordController,
+                  obscureText: !_isConfirmPasswordVisible,
+                  decoration: InputDecoration(
+                    hintText: 'Masukkan password',
+                    hintStyle: const TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isConfirmPasswordVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                        });
+                      },
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Konfirmasi password tidak boleh kosong';
+                    }
+                    if (value != _signUpPasswordController.text) {
+                      return 'Password tidak sama';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              
               const SizedBox(height: 32),
+              
+              // Register Button
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 56,
                 child: ElevatedButton(
                   onPressed: _isSignUpLoading ? null : _handleSignUp,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF7ED6A8),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     elevation: 0,
                   ),
