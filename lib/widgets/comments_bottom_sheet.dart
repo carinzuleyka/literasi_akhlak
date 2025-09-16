@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CommentsBottomSheet extends StatefulWidget {
   final List<String> initialComments;
 
-  const CommentsBottomSheet({Key? key, required this.initialComments}) : super(key: key);
+  const CommentsBottomSheet({super.key, required this.initialComments});
 
   @override
   State<CommentsBottomSheet> createState() => _CommentsBottomSheetState();

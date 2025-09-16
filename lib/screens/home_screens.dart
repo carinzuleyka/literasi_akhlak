@@ -1,638 +1,135 @@
 import 'package:flutter/material.dart';
 
-// Import screens lainnya
-import 'profile_screen.dart';
-import 'article_detail_screen.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import '../models/artikel_model.dart';
+import '../models/user_model.dart';
+import '../models/kategori_model.dart';
+import '../services/api_service.dart';
 import 'notification_screen.dart';
-import 'create_post_screen.dart';
-import 'video_screen.dart'; 
-// Import RatingDialog yang baru dibuat
-import 'rating_dialog.dart'; // Sesuaikan path file
+import 'category_screen.dart' as Category;
+import 'create_article_screen.dart';
+import 'video_screen.dart' as Video;
+import 'profile_screen.dart' as Profile;
+import 'article_detail_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  int selectedCategoryIndex = 0;
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
+class _HomeScreenState extends State<HomeScreen> {
+  User? _user;
+  late Future<List<Artikel>> _timelineFuture;
+  late Future<List<Kategori>> _kategoriFuture;
+  String _selectedCategory = 'Semua';
   int _selectedIndex = 0;
 
-  final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
 
-  // Map untuk menyimpan rating yang diberikan user
-  Map<String, double> userRatings = {};
-
-  final List<String> categories = [
-    'Semua',
-    'Artikel',
-    'Resensi Buku',
-    'Resensi Film',
+  static final List<Widget> _screens = <Widget>[
+    const Placeholder(),
+    const Category.CategoryScreen(),
+    const CreateArticleScreen(),
+    const Video.VideoScreen(),
+    const Profile.ProfileScreen(),
   ];
 
-  final List<Map<String, dynamic>> categoryItems = [
-    {
-      'icon': Icons.article,
-      'title': 'Artikel\nAkhlak',
-      'count': 89,
-      'color': const Color(0xFF4CAF50),
-    },
-    {
-      'icon': Icons.favorite,
-      'title': 'Kisah\nTeladan',
-      'count': 45,
-      'color': const Color(0xFF4CAF50),
-    },
-    {
-      'icon': Icons.more_horiz,
-      'title': 'Lainnya',
-      'count': 0,
-      'color': const Color(0xFF4CAF50),
-    },
-  ];
-
-  // Data artikel tanpa rating default
-  final Map<String, List<Map<String, dynamic>>> categoryData = {
-    'Semua': [
-      {
-        'id': 'article_1',
-        'type': 'article',
-        'username': 'Ustadz Ahmad Abdullah',
-        'title': 'Akhlak Mulia Rasulullah SAW - Teladan Terbaik Umat Manusia',
-        'comments': 56,
-        'category': 'Kisah Teladan',
-        'description': 'Mempelajari akhlak mulia Rasulullah SAW sebagai teladan dalam kehidupan sehari-hari.',
-      },
-      {
-        'id': 'article_2',
-        'type': 'article',
-        'username': 'Dr. Siti Aisyah',
-        'title': 'Pentingnya Adab Dalam Islam - Panduan Praktis',
-        'comments': 34,
-        'category': 'Artikel Akhlak',
-        'description': 'Panduan lengkap tentang adab dan etika dalam Islam untuk kehidupan yang lebih berkah.',
-      },
-      {
-        'id': 'video_1',
-        'type': 'video',
-        'username': 'Ustadz Muhammad Hafiz',
-        'title': 'Ceramah: Berbakti Kepada Orang Tua',
-        'time': '2 jam lalu',
-        'description': 'Video ceramah tentang pentingnya berbakti kepada orang tua dalam ajaran Islam.',
-        'likes': 89,
-        'comments': 23,
-        'duration': '15 min',
-      },
-    ],
-    'Artikel': [
-      {
-        'id': 'article_2',
-        'type': 'article',
-        'username': 'Dr. Siti Aisyah',
-        'title': 'Pentingnya Adab Dalam Islam - Panduan Praktis',
-        'comments': 42,
-        'category': 'Artikel Akhlak',
-        'description': 'Panduan lengkap tentang adab dan etika dalam Islam untuk kehidupan yang lebih berkah.',
-      },
-    ],
-    'Kisah Teladan': [
-      {
-        'id': 'article_1',
-        'type': 'article',
-        'username': 'Ustadz Ahmad Abdullah',
-        'title': 'Akhlak Mulia Rasulullah SAW - Teladan Terbaik Umat Manusia',
-        'comments': 78,
-        'category': 'Kisah Teladan',
-        'description': 'Mempelajari akhlak mulia Rasulullah SAW sebagai teladan dalam kehidupan sehari-hari.',
-      },
-    ],
-    'Video Dakwah': [
-      {
-        'id': 'video_1',
-        'type': 'video',
-        'username': 'Ustadz Muhammad Hafiz',
-        'title': 'Ceramah: Berbakti Kepada Orang Tua',
-        'comments': 156,
-        'category': 'Video Dakwah',
-        'description': 'Video ceramah tentang pentingnya berbakti kepada orang tua dalam ajaran Islam.',
-      },
-    ],
-    'Resensi Buku': [
-      {
-        'id': 'book_1',
-        'type': 'article',
-        'username': 'Ustadz Muhammad Hafiz',
-        'title': 'Resensi Buku "Menjadi Hamba yang Dicintai Allah"',
-        'comments': 67,
-        'category': 'Resensi Buku',
-        'description': 'Ulasan mendalam tentang buku yang memberikan panduan praktis untuk mendekatkan diri kepada Allah SWT.',
-      },
-    ],
-    'Resensi Film': [
-      {
-        'id': 'film_1',
-        'type': 'video',
-        'username': 'Dr. Siti Aisyah',
-        'title': 'Analisis Film "Sang Pencerah" dari Sudut Pandang Akhlak',
-        'comments': 112,
-        'category': 'Resensi Film',
-        'description': 'Kupas tuntas film inspiratif tentang perjuangan pendiri Muhammadiyah.',
-      },
-    ],
-  };
-
-  List<Map<String, dynamic>> get filteredArticles {
-    String selectedCategory = categories[selectedCategoryIndex];
-    List<Map<String, dynamic>> articles = categoryData[selectedCategory] ?? [];
-
-    if (_searchQuery.isNotEmpty) {
-      articles = articles.where((article) {
-        String title = article['title']?.toLowerCase() ?? '';
-        String username = article['username']?.toLowerCase() ?? '';
-        String query = _searchQuery.toLowerCase();
-
-        return title.contains(query) || username.contains(query);
-      }).toList();
-    }
-
-    return articles;
-  }
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
-    _animationController.forward();
+    initializeDateFormatting('id_ID', null);
+    _loadInitialData();
   }
 
-  @override
-  void dispose() {
-    _animationController.dispose();
-    _searchController.dispose();
-    super.dispose();
+  Future<void> _loadInitialData() async {
+    final savedUser = await ApiService.getSavedUser();
+    if (mounted) {
+      setState(() {
+        _user = savedUser;
+        _timelineFuture = ApiService.fetchTimelineArticles();
+        _kategoriFuture = ApiService.fetchCategories();
+      });
+    }
   }
 
-  void _onSearchChanged(String value) {
+  Future<void> _refreshTimeline() async {
     setState(() {
-      _searchQuery = value;
+      _timelineFuture = ApiService.fetchTimelineArticles();
+      _kategoriFuture = ApiService.fetchCategories();
     });
   }
 
-  // Method untuk menampilkan rating dialog
-  void _showRatingDialog(Map<String, dynamic> item) {
-    String itemId = item['id'] ?? '';
-    double currentRating = userRatings[itemId] ?? 0.0;
-    
-    context.showRatingDialog(
-      title: item['title'] ?? '',
-      currentRating: currentRating,
-      onRatingSubmitted: (double newRating) {
-        setState(() {
-          userRatings[itemId] = newRating;
-        });
-      },
-    );
+
+  void _handleLike(Artikel artikel) {
+
+    setState(() {
+      artikel.isLiked = !artikel.isLiked;
+      artikel.isLiked ? artikel.jumlahSuka++ : artikel.jumlahSuka--;
+    });
+
+    ApiService.toggleInteraction(artikel.id, 'suka').catchError((e) {
+      setState(() {
+        artikel.isLiked = !artikel.isLiked;
+        artikel.isLiked ? artikel.jumlahSuka++ : artikel.jumlahSuka--;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Gagal menyukai artikel'), backgroundColor: Colors.red),
+      );
+    });
   }
 
-  // Method untuk cek apakah user sudah memberikan rating
-  bool _hasUserRating(Map<String, dynamic> item) {
-    String itemId = item['id'] ?? '';
-    return userRatings.containsKey(itemId) && userRatings[itemId]! > 0;
+  void _handleBookmark(Artikel artikel) {
+    setState(() => artikel.isBookmarked = !artikel.isBookmarked);
+    ApiService.toggleInteraction(artikel.id, 'bookmark').catchError((e) {
+      setState(() => artikel.isBookmarked = !artikel.isBookmarked);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Gagal menyimpan artikel'), backgroundColor: Colors.red),
+      );
+    });
   }
 
-  // Method untuk mendapatkan rating user
-  double _getUserRating(Map<String, dynamic> item) {
-    String itemId = item['id'] ?? '';
-    return userRatings[itemId] ?? 0.0;
+
+  String _formatDate(String dateString) {
+    try {
+      final dateTime = DateTime.parse(dateString).toLocal();
+      return DateFormat('d MMMM yyyy', 'id_ID').format(dateTime);
+    } catch (e) {
+      return dateString;
+    }
   }
 
   void _onItemTapped(int index) {
-    if (index == 2) {
-      _showCreatePostDialog();
-      return;
-    }
-
     setState(() {
       _selectedIndex = index;
     });
 
-    try {
-      if (index == 1) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const CategoryScreen()),
-        ).then((_) {
-          setState(() {
-            _selectedIndex = 0;
-          });
-        });
-      } else if (index == 3) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const VideoScreen()),
-        ).then((_) {
-          setState(() {
-            _selectedIndex = 0;
-          });
-        });
-      } else if (index == 4) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const ProfileScreen()),
-        ).then((_) {
-          setState(() {
-            _selectedIndex = 0;
-          });
-        });
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Navigation error: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
-  void _showCreatePostDialog() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return const CreatePostScreen();
-      },
-    ).then((_) {
-      setState(() {
-        _selectedIndex = 0;
-      });
-    }).catchError((e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error opening create post: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    });
-  }
-
-  Widget _buildCategoryChip(String label, int index) {
-    bool isSelected = selectedCategoryIndex == index;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedCategoryIndex = index;
-        });
-      },
-      child: Container(
-        margin: const EdgeInsets.only(right: 12),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.white.withOpacity(0.3),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? const Color(0xFF2E7D32) : Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildContentCard(Map<String, dynamic> item) {
-    bool hasUserRating = _hasUserRating(item);
-    double userRating = _getUserRating(item);
-    
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ArticleDetailScreen(article: item),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: item['type'] == 'video'
-                    ? const Color(0xFFFFEBEE)
-                    : const Color(0xFFFFF3E0),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                item['category'] ?? 'Artikel',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: item['type'] == 'video'
-                      ? const Color(0xFFE53935)
-                      : const Color(0xFFFF9800),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              item['title'],
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-                height: 1.3,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 12,
-                  child: Icon(
-                    Icons.person,
-                    size: 16,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  item['username'],
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[700],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                if (hasUserRating) ...[
-                  // Rating Display - Langsung muncul tanpa tombol edit
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ...List.generate(5, (index) {
-                        return GestureDetector(
-                          onTap: () => _showRatingDialog(item), // Bisa diklik untuk mengubah rating
-                          child: Icon(
-                            Icons.star,
-                            size: 20,
-                            color: index < userRating 
-                                ? const Color(0xFF7ED6A8)
-                                : Colors.grey[300],
-                          ),
-                        );
-                      }),
-                      const SizedBox(width: 8),
-                      GestureDetector(
-                        onTap: () => _showRatingDialog(item),
-                        child: Text(
-                          userRating.toStringAsFixed(1),
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF7ED6A8),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 16),
-                ] else ...[
-                  // Rating action button - untuk memberikan rating pertama kali
-                  GestureDetector(
-                    onTap: () => _showRatingDialog(item),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ...List.generate(5, (index) {
-                          return Icon(
-                            Icons.star_border,
-                            size: 20,
-                            color: Colors.grey[400],
-                          );
-                        }),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Beri Rating',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                ],
-                
-                // Comments - selalu ada di kanan
-                Icon(
-                  Icons.chat_bubble_outline,
-                  size: 16,
-                  color: Colors.grey[600],
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  '${item['comments'] ?? 0}',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              item['description'] ?? '',
-              style: TextStyle(
-                fontSize: 13,
-                color: Colors.grey[600],
-                height: 1.3,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final String greetingName = _user?.nama.split(' ').first ?? 'Siswa';
+
     return Scaffold(
       backgroundColor: const Color(0xFF7ED6A8),
-      body: SafeArea(
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Row(
-                          children: [
-                            Text(
-                              'BacainSebelas',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(width: 6),
-                            Text('🌟', style: TextStyle(fontSize: 18)),
-                          ],
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const NotificationScreen(),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            child: const Icon(
-                              Icons.notifications_none,
-                              color: Colors.white,
-                              size: 22,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(25),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: TextField(
-                        controller: _searchController,
-                        onChanged: _onSearchChanged,
-                        decoration: InputDecoration(
-                          hintText: 'Cari Konten Akhlak',
-                          hintStyle: TextStyle(
-                            color: Colors.grey[500],
-                            fontSize: 15,
-                          ),
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Colors.grey[500],
-                            size: 20,
-                          ),
-                          suffixIcon: GestureDetector(
-                            onTap: () {
-                              _showFilterDialog();
-                            },
-                            child: Icon(
-                              Icons.tune,
-                              color: Colors.grey[500],
-                              size: 20,
-                            ),
-                          ),
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      height: 40,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: categories.length,
-                        itemBuilder: (context, index) {
-                          return _buildCategoryChip(categories[index], index);
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
+
+      body: _selectedIndex == 0
+          ? SafeArea(
+              child: Column(
+                children: [
+                  _buildHeader(greetingName),
+                  _buildCategoryFilters(),
+                  _buildArticleTimeline(),
+                ],
+
               ),
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(24),
-                      topRight: Radius.circular(24),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 24),
-                      Expanded(
-                        child: ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          itemCount: filteredArticles.length,
-                          itemBuilder: (context, index) {
-                            final article = filteredArticles[index];
-                            return _buildContentCard(article);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+            )
+          : _screens[_selectedIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -701,61 +198,244 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  void _showFilterDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: const Text('Filter Konten'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
+  Widget _buildHeader(String greetingName) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+      child: Column(
+        children: [
+          Row(
             children: [
-              ListTile(
-                leading: const Icon(Icons.star, color: Color(0xFF7ED6A8)),
-                title: const Text('Rating Tertinggi'),
-                onTap: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Filter berdasarkan rating diterapkan'),
-                      backgroundColor: Color(0xFF7ED6A8),
-                    ),
-                  );
-                },
+              Text(
+                'Selamat Pagi, $greetingName 🌟',
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
               ),
-              ListTile(
-                leading: const Icon(Icons.access_time, color: Color(0xFF7ED6A8)),
-                title: const Text('Terbaru'),
-                onTap: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Filter terbaru diterapkan'),
-                      backgroundColor: Color(0xFF7ED6A8),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.trending_up, color: Color(0xFF7ED6A8)),
-                title: const Text('Terpopuler'),
-                onTap: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Filter terpopuler diterapkan'),
-                      backgroundColor: Color(0xFF7ED6A8),
-                    ),
-                  );
+              const Spacer(),
+              IconButton(
+                icon: const Icon(Icons.notifications_none, color: Colors.white),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationScreen()));
                 },
               ),
             ],
           ),
+          const SizedBox(height: 16),
+          TextField(
+            decoration: InputDecoration(
+              hintText: 'Cari Artikel',
+              hintStyle: TextStyle(color: Colors.grey[500]),
+              prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: EdgeInsets.zero,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCategoryFilters() {
+    return Container(
+      height: 60,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      child: FutureBuilder<List<Kategori>>(
+        future: _kategoriFuture,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return const SizedBox.shrink();
+
+          final allCategories = [Kategori(id: 0, nama: 'Semua', jumlahArtikel: 0, deskripsi: null), ...snapshot.data!];
+
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: allCategories.length,
+            itemBuilder: (context, index) {
+              final category = allCategories[index];
+              final isSelected = _selectedCategory == category.nama;
+              return Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: FilterChip(
+                  label: Text(category.nama),
+                  selected: isSelected,
+                  onSelected: (selected) {
+                    setState(() {
+                      _selectedCategory = category.nama;
+                      // TODO: Implement filter logic
+                    });
+                  },
+                  backgroundColor: Colors.white.withOpacity(0.3),
+                  selectedColor: Colors.white,
+                  labelStyle: TextStyle(
+                    color: isSelected ? const Color(0xFF2E7D32) : Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  checkmarkColor: const Color(0xFF2E7D32),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildArticleTimeline() {
+    return Expanded(
+      child: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
+        ),
+        child: RefreshIndicator(
+          onRefresh: _refreshTimeline,
+          child: FutureBuilder<List<Artikel>>(
+            future: _timelineFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('Belum ada artikel untuk ditampilkan.'));
+              }
+
+              final artikels = snapshot.data!;
+              return ListView.builder(
+                padding: const EdgeInsets.all(20),
+                itemCount: artikels.length,
+                itemBuilder: (context, index) {
+                  return _buildContentCard(artikels[index]);
+                },
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContentCard(Artikel item) {
+    final Map<String, dynamic> articleData = {
+      'title': item.judul,
+      'username': item.penulis.nama ?? 'Unknown',
+      'description': item.isi ?? 'Tidak ada konten tersedia',
+      'id': item.id,
+    };
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ArticleDetailScreen(article: articleData),
+          ),
         );
       },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 20),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 2,
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 16,
+                  backgroundColor: const Color(0xFF7ED6A8).withOpacity(0.2),
+                  child: Text(
+                    item.penulis.nama.isNotEmpty ? item.penulis.nama.substring(0, 1) : 'A',
+                    style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2E7D32)),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(item.penulis.nama, style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text(_formatDate(item.createdAt), style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (item.gambarUrl != null && item.gambarUrl!.isNotEmpty)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  item.gambarUrl!,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: 150,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      height: 150,
+                      color: Colors.grey[300],
+                      child: const Center(child: Text('Gambar tidak tersedia')),
+                    );
+                  },
+                ),
+              ),
+            const SizedBox(height: 12),
+            Text(item.judul, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
+            const SizedBox(height: 4),
+            Text(item.kategoriNama ?? 'Tanpa Kategori', style: const TextStyle(color: Color(0xFF7ED6A8), fontWeight: FontWeight.w500)),
+            const Divider(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      icon: Icon(item.isLiked ? Icons.favorite : Icons.favorite_border, color: item.isLiked ? Colors.red : Colors.grey),
+                      onPressed: () => _handleLike(item),
+                    ),
+                    const SizedBox(width: 4),
+                    Text('${item.jumlahSuka}'),
+                    const SizedBox(width: 16),
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      icon: const Icon(Icons.chat_bubble_outline, color: Colors.grey),
+                      onPressed: () { /* Buka halaman komentar */ },
+                    ),
+                  ],
+                ),
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: Icon(item.isBookmarked ? Icons.bookmark : Icons.bookmark_border, color: item.isBookmarked ? const Color(0xFF7ED6A8) : Colors.grey),
+                  onPressed: () => _handleBookmark(item),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

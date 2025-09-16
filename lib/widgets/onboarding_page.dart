@@ -6,10 +6,10 @@ class OnboardingPageWidget extends StatelessWidget {
   final bool isFirstPage;
 
   const OnboardingPageWidget({
-    Key? key,
+    super.key,
     required this.data,
     this.isFirstPage = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

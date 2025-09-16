@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'edit_profile_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({super.key});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -145,7 +145,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 24),
           
           // Logout Button
-          Container(
+          SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
@@ -292,8 +292,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         trailing: Switch(
           value: value,
           onChanged: onChanged,
-          activeColor: const Color(0xFF7ED6A8),
-          activeTrackColor: const Color(0xFF7ED6A8).withOpacity(0.3),
+
+          activeThumbColor: const Color(0xFF7ED6A8),
+
         ),
       ),
     );

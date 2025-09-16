@@ -1,4 +1,7 @@
+// lib/screens/onboarding_screen.dart
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/onboarding_data.dart';
 import '../widgets/onboarding_page.dart';
 import '../widgets/page_indicator.dart';
@@ -20,6 +23,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
+  // Fungsi ini dijalankan saat onboarding selesai
+  Future<void> _finishOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
+    // Simpan status bahwa onboarding telah selesai ditampilkan
+    await prefs.setBool('hasSeenOnboarding', true);
+    
+    if(mounted) {
+      // Arahkan ke halaman otentikasi
+      Navigator.of(context).pushReplacementNamed('/auth');
+    }
+  }
+
+  // Fungsi untuk tombol 'Selanjutnya' atau 'Masuk'
   void _nextPage() {
     if (_currentPage < onboardingPages.length - 1) {
       _pageController.nextPage(
@@ -27,13 +43,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      // Navigate to auth screen
-      Navigator.of(context).pushReplacementNamed('/auth');
+      // Jika ini adalah halaman terakhir, panggil _finishOnboarding
+      _finishOnboarding();
     }
   }
 
+  // Fungsi untuk tombol 'Skip'
   void _skipToEnd() {
-    Navigator.of(context).pushReplacementNamed('/auth');
+    _finishOnboarding();
   }
 
   @override
@@ -43,7 +60,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Top navigation (Skip button untuk halaman 1-3)
+            // Tombol Skip
             if (_currentPage < onboardingPages.length - 1)
               Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -54,19 +71,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       onPressed: _skipToEnd,
                       child: const Text(
                         'Skip',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                        ),
+                        style: TextStyle(color: Colors.grey, fontSize: 16),
                       ),
                     ),
                   ],
                 ),
               )
             else
-              const SizedBox(height: 56), // Placeholder space for last page
+              const SizedBox(height: 56), // Placeholder agar layout konsisten
             
-            // PageView
+            // PageView untuk halaman onboarding
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
@@ -85,20 +99,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
             
-            // Bottom section with indicator and button
+            // Indikator halaman dan tombol
             Padding(
               padding: const EdgeInsets.all(24.0),
               child: Column(
                 children: [
-                  // Page indicator
                   PageIndicator(
                     currentPage: _currentPage,
                     totalPages: onboardingPages.length,
                   ),
-                  
                   const SizedBox(height: 32),
-                  
-                  // Bottom button
                   SizedBox(
                     width: double.infinity,
                     height: 50,
@@ -110,16 +120,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        elevation: 0,
                       ),
                       child: Text(
                         _currentPage == onboardingPages.length - 1 
                             ? 'Masuk' 
                             : 'Selanjutnya',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),
