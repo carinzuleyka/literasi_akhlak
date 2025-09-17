@@ -30,17 +30,17 @@ class OnboardingPageWidget extends StatelessWidget {
                       width: 12,
                       height: 12,
                       decoration: const BoxDecoration(
-                        color: Colors.blue,
+                        color: Colors.green,
                         shape: BoxShape.circle,
                       ),
                     ),
                     const SizedBox(width: 8),
                     const Text(
-                      'BacainSebelas',
+                      'SiPena',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                        color: Colors.green,
                         letterSpacing: 1.2,
                       ),
                     ),
