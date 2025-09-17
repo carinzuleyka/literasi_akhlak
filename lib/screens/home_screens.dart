@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import '../models/artikel_model.dart';
@@ -13,7 +12,6 @@ import 'video_screen.dart' as Video;
 import 'profile_screen.dart' as Profile;
 import 'article_detail_screen.dart';
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -21,13 +19,16 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   User? _user;
   late Future<List<Artikel>> _timelineFuture;
   late Future<List<Kategori>> _kategoriFuture;
   String _selectedCategory = 'Semua';
   int _selectedIndex = 0;
-
+  
+  // Animation controller untuk smooth transitions
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
 
   static final List<Widget> _screens = <Widget>[
     const Placeholder(),
@@ -37,12 +38,29 @@ class _HomeScreenState extends State<HomeScreen> {
     const Profile.ProfileScreen(),
   ];
 
-
   @override
   void initState() {
     super.initState();
     initializeDateFormatting('id_ID', null);
+    _initializeAnimations();
     _loadInitialData();
+  }
+
+  void _initializeAnimations() {
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadInitialData() async {
@@ -63,9 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-
   void _handleLike(Artikel artikel) {
-
     setState(() {
       artikel.isLiked = !artikel.isLiked;
       artikel.isLiked ? artikel.jumlahSuka++ : artikel.jumlahSuka--;
@@ -94,7 +110,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-
   String _formatDate(String dateString) {
     try {
       final dateTime = DateTime.parse(dateString).toLocal();
@@ -108,7 +123,61 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedIndex = index;
     });
+  }
 
+  // Helper methods for design consistency
+  IconData _getIconByType(String? kategoriNama) {
+    if (kategoriNama == null) return Icons.article;
+    
+    switch (kategoriNama.toLowerCase()) {
+      case 'buku':
+      case 'resensi buku':
+        return Icons.menu_book;
+      case 'video':
+      case 'video dakwah':
+        return Icons.play_circle_fill;
+      case 'kisah':
+      case 'kisah teladan':
+        return Icons.auto_stories;
+      default:
+        return Icons.article;
+    }
+  }
+
+  Color _getCategoryColor(String? kategoriNama) {
+    if (kategoriNama == null) return const Color(0xFF2196F3);
+    
+    switch (kategoriNama.toLowerCase()) {
+      case 'buku':
+      case 'resensi buku':
+        return const Color(0xFF4CAF50);
+      case 'video':
+      case 'video dakwah':
+        return const Color(0xFFE53935);
+      case 'kisah':
+      case 'kisah teladan':
+        return const Color(0xFF9C27B0);
+      default:
+        return const Color(0xFF2196F3);
+    }
+  }
+
+  String _getCategoryLabel(String? kategoriNama) {
+    if (kategoriNama == null) return 'ARTIKEL';
+    
+    switch (kategoriNama.toLowerCase()) {
+      case 'buku':
+      case 'resensi buku':
+        return 'BUKU';
+      case 'video':
+      case 'video dakwah':
+        return 'VIDEO';
+      case 'kisah':
+      case 'kisah teladan':
+        return 'KISAH';
+      default:
+        return 'ARTIKEL';
+    }
   }
 
   @override
@@ -117,16 +186,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF7ED6A8),
-
       body: _selectedIndex == 0
           ? SafeArea(
-              child: Column(
-                children: [
-                  _buildHeader(greetingName),
-                  _buildCategoryFilters(),
-                  _buildArticleTimeline(),
-                ],
-
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: Column(
+                  children: [
+                    _buildHeader(greetingName),
+                    _buildCategoryFilters(),
+                    _buildArticleTimeline(),
+                  ],
+                ),
               ),
             )
           : _screens[_selectedIndex],
@@ -139,9 +209,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 20,
+              offset: const Offset(0, -5),
             ),
           ],
         ),
@@ -200,39 +270,95 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildHeader(String greetingName) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Column(
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Selamat Pagi, $greetingName 🌟',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
+                'Selamat Pagi, $greetingName',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  letterSpacing: -0.3,
+                ),
               ),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(Icons.notifications_none, color: Colors.white),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationScreen()));
-                },
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationScreen(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.notifications_none,
+                        color: Colors.white,
+                        size: 22,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.search,
+                      color: Colors.white,
+                      size: 22,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'Cari Artikel',
-              hintStyle: TextStyle(color: Colors.grey[500]),
-              prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25),
-                borderSide: BorderSide.none,
+          const SizedBox(height: 24),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Cari Artikel',
+                hintStyle: const TextStyle(
+                  color: Color(0xFF999999),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
+                prefixIcon: const Icon(
+                  Icons.search,
+                  color: Color(0xFF999999),
+                  size: 20,
+                ),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              contentPadding: EdgeInsets.zero,
             ),
           ),
+          const SizedBox(height: 20),
         ],
       ),
     );
@@ -247,7 +373,10 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, snapshot) {
           if (!snapshot.hasData) return const SizedBox.shrink();
 
-          final allCategories = [Kategori(id: 0, nama: 'Semua', jumlahArtikel: 0, deskripsi: null), ...snapshot.data!];
+          final allCategories = [
+            Kategori(id: 0, nama: 'Semua', jumlahArtikel: 0, deskripsi: null),
+            ...snapshot.data!
+          ];
 
           return ListView.builder(
             scrollDirection: Axis.horizontal,
@@ -256,23 +385,29 @@ class _HomeScreenState extends State<HomeScreen> {
               final category = allCategories[index];
               final isSelected = _selectedCategory == category.nama;
               return Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: FilterChip(
-                  label: Text(category.nama),
-                  selected: isSelected,
-                  onSelected: (selected) {
+                padding: const EdgeInsets.only(right: 12),
+                child: GestureDetector(
+                  onTap: () {
                     setState(() {
                       _selectedCategory = category.nama;
                       // TODO: Implement filter logic
                     });
                   },
-                  backgroundColor: Colors.white.withOpacity(0.3),
-                  selectedColor: Colors.white,
-                  labelStyle: TextStyle(
-                    color: isSelected ? const Color(0xFF2E7D32) : Colors.white,
-                    fontWeight: FontWeight.w600,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: isSelected ? Colors.white : Colors.white.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      category.nama,
+                      style: TextStyle(
+                        color: isSelected ? const Color(0xFF2E7D32) : Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                    ),
                   ),
-                  checkmarkColor: const Color(0xFF2E7D32),
                 ),
               );
             },
@@ -299,18 +434,73 @@ class _HomeScreenState extends State<HomeScreen> {
             future: _timelineFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF7ED6A8)),
+                  ),
+                );
               }
               if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: Colors.grey[400],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Terjadi kesalahan',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '${snapshot.error}',
+                        style: TextStyle(color: Colors.grey[500]),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                );
               }
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('Belum ada artikel untuk ditampilkan.'));
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.article_outlined,
+                        size: 64,
+                        color: Colors.grey[400],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Belum ada artikel',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Artikel akan muncul di sini',
+                        style: TextStyle(color: Colors.grey[500]),
+                      ),
+                    ],
+                  ),
+                );
               }
 
               final artikels = snapshot.data!;
               return ListView.builder(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
                 itemCount: artikels.length,
                 itemBuilder: (context, index) {
                   return _buildContentCard(artikels[index]);
@@ -341,312 +531,258 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 20),
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.only(bottom: 24),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 2,
-              blurRadius: 10,
-              offset: const Offset(0, 5),
+              spreadRadius: 0,
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
-        child: Column(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 16,
-                  backgroundColor: const Color(0xFF7ED6A8).withOpacity(0.2),
-                  child: Text(
-                    item.penulis.nama.isNotEmpty ? item.penulis.nama.substring(0, 1) : 'A',
-                    style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2E7D32)),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(item.penulis.nama, style: const TextStyle(fontWeight: FontWeight.bold)),
-                      Text(_formatDate(item.createdAt), style: const TextStyle(color: Colors.grey, fontSize: 12)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            if (item.gambarUrl != null && item.gambarUrl!.isNotEmpty)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  item.gambarUrl!,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: 150,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      height: 150,
-                      color: Colors.grey[300],
-                      child: const Center(child: Text('Gambar tidak tersedia')),
-                    );
-                  },
+            // Cover Image - Gramedia Style
+            Container(
+              width: 120,
+              height: 160,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  bottomLeft: Radius.circular(12),
                 ),
               ),
-            const SizedBox(height: 12),
-            Text(item.judul, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
-            const SizedBox(height: 4),
-            Text(item.kategoriNama ?? 'Tanpa Kategori', style: const TextStyle(color: Color(0xFF7ED6A8), fontWeight: FontWeight.w500)),
-            const Divider(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  bottomLeft: Radius.circular(12),
+                ),
+                child: Stack(
+                  fit: StackFit.expand,
                   children: [
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      icon: Icon(item.isLiked ? Icons.favorite : Icons.favorite_border, color: item.isLiked ? Colors.red : Colors.grey),
-                      onPressed: () => _handleLike(item),
-                    ),
-                    const SizedBox(width: 4),
-                    Text('${item.jumlahSuka}'),
-                    const SizedBox(width: 16),
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      icon: const Icon(Icons.chat_bubble_outline, color: Colors.grey),
-                      onPressed: () { /* Buka halaman komentar */ },
+                    // Cover image with fallback
+                    item.gambarUrl != null && item.gambarUrl!.isNotEmpty
+                        ? Image.network(
+                            item.gambarUrl!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return _buildDefaultCover(item.kategoriNama);
+                            },
+                          )
+                        : _buildDefaultCover(item.kategoriNama),
+                    
+                    // Category badge
+                    Positioned(
+                      top: 8,
+                      left: 6,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: _getCategoryColor(item.kategoriNama).withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          _getCategoryLabel(item.kategoriNama),
+                          style: const TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  icon: Icon(item.isBookmarked ? Icons.bookmark : Icons.bookmark_border, color: item.isBookmarked ? const Color(0xFF7ED6A8) : Colors.grey),
-                  onPressed: () => _handleBookmark(item),
-                ),
-              ],
+              ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Class lainnya tetap sama seperti sebelumnya
-
-
-
-class CategoryScreen extends StatelessWidget {
-  const CategoryScreen({Key? key}) : super(key: key);
-
-  final List<Map<String, dynamic>> categories = const [
-    {
-      'title': 'Artikel Akhlak',
-      'count': '245 artikel',
-      'description': 'Artikel menarik seputar nilai, sikap, dan pembelajaran kehidupan sehari-hari',
-      'icon': Icons.article,
-      'color': Colors.blue,
-    },
-    {
-      'title': 'Kisah Teladan',
-      'count': '156 kisah',
-      'description': 'Cerita inspiratif dari tokoh, sejarah, dan pengalaman yang bisa diambil hikmahnya',
-      'icon': Icons.book,
-      'color': Colors.orange,
-    },
-    {
-      'title': 'Video Dakwah',
-      'count': '89 artikel',
-      'description': 'Konten video edukatif dan motivasi yang mudah dipahami dan menyenangkan',
-      'icon': Icons.people,
-      'color': Colors.green,
-    },
-    {
-      'title': 'Tips & Panduan',
-      'count': '134 kisah',
-      'description': 'Tips sederhana dan panduan praktis untuk kehidupan sehari-hari',
-      'icon': Icons.auto_stories,
-      'color': Colors.purple,
-    },
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'Semua Kategori',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 0.85,
-          ),
-          itemCount: categories.length,
-          itemBuilder: (context, index) {
-            final category = categories[index];
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CategoryDetailScreen(
-                      categoryName: category['title'],
-                      categoryIcon: category['icon'],
-                      categoryColor: category['color'],
-                    ),
-                  ),
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
+            
+            // Content Area
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: (category['color'] as Color).withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        category['icon'],
-                        color: category['color'],
-                        size: 28,
-                      ),
-                    ),
-                    const SizedBox(height: 15),
+                    // Title
                     Text(
-                      category['title'],
+                      item.judul,
                       style: const TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      category['count'],
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      category['description'],
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.grey[500],
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF1a1a1a),
+                        height: 1.3,
+                        letterSpacing: -0.2,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    const SizedBox(height: 6),
+                    
+                    // Author and Date
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 12,
+                          backgroundColor: const Color(0xFF7ED6A8).withOpacity(0.2),
+                          child: Text(
+                            item.penulis.nama.isNotEmpty 
+                                ? item.penulis.nama.substring(0, 1).toUpperCase()
+                                : 'A',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF2E7D32),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                item.penulis.nama,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Color(0xFF666666),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                _formatDate(item.createdAt),
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: Color(0xFF888888),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    
+                    // Category
+                    if (item.kategoriNama != null)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF7ED6A8).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          item.kategoriNama!,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF7ED6A8),
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 12),
+                    
+                    // Action buttons
+                    Row(
+                      children: [
+                        // Like button
+                        GestureDetector(
+                          onTap: () => _handleLike(item),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                item.isLiked ? Icons.favorite : Icons.favorite_border,
+                                size: 16,
+                                color: item.isLiked ? Colors.red : Colors.grey[500],
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                '${item.jumlahSuka}',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[600],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        
+                        // Comment button
+                        Row(
+                         mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.mode_comment_outlined,
+                              size: 14,
+                              color: Colors.grey[500],
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '0', // Comment count placeholder
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        
+                        const Spacer(),
+                        
+                        // Bookmark button
+                        GestureDetector(
+                          onTap: () => _handleBookmark(item),
+                          child: Icon(
+                            item.isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                            size: 20,
+                            color: item.isBookmarked ? const Color(0xFF7ED6A8) : Colors.grey[500],
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class CategoryDetailScreen extends StatelessWidget {
-  final String categoryName;
-  final IconData categoryIcon;
-  final Color categoryColor;
-  const CategoryDetailScreen({
-    Key? key,
-    required this.categoryName,
-    required this.categoryIcon,
-    required this.categoryColor,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(categoryName),
-        backgroundColor: categoryColor.withOpacity(0.1),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: categoryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                children: [
-                  Icon(
-                    categoryIcon,
-                    size: 48,
-                    color: categoryColor,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    categoryName,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Konten dalam kategori ini sedang dalam pengembangan',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildDefaultCover(String? kategoriNama) {
+    return Container(
+      color: Colors.grey[200],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            _getIconByType(kategoriNama),
+            size: 32,
+            color: Colors.grey[400],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            _getCategoryLabel(kategoriNama),
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[600],
+              letterSpacing: 1,
+            ),
+          ),
+        ],
       ),
     );
   }
