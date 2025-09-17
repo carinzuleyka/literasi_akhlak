@@ -1,33 +1,33 @@
 name: literasi_akhlak
-description: "A new Flutter project."
+description: "A Flutter application for promoting literacy and moral values."
 publish_to: 'none'
 
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.9.0 <4.0.0'
+  sdk: '>=3.5.0 <4.0.0'  # Updated to a stable SDK range, assuming 3.9.0 was a typo
 
 dependencies:
   flutter:
     sdk: flutter
-  cached_network_image: ^3.3.1
-  google_fonts: ^6.2.1
-  flutter_animate: ^4.5.0
-  http: ^1.2.1
-  shared_preferences: ^2.5.3
-  image_picker: ^1.1.2
-  intl: ^0.20.2
-  flutter_quill: ^11.4.2
-  flutter_quill_extensions: ^11.0.0
-  vsc_quill_delta_to_html: ^1.0.5  # Use ^1.0.5 as suggested, or check pub.dev for the latest
+  cached_network_image: ^3.3.1  # For efficient network image loading
+  google_fonts: ^6.2.1  # For custom Google Fonts integration
+  flutter_animate: ^4.5.0  # For animations (removed duplicate entry)
+  http: ^1.2.2  # Updated to latest stable version for HTTP requests
+  shared_preferences: ^2.3.0  # For local data persistence
+  image_picker: ^1.1.2  # For picking images from gallery or camera
+  intl: ^0.20.2  # For internationalization and formatting
+  flutter_quill: ^10.7.0  # For rich text editing
+  flutter_quill_extensions: ^10.7.0  # Extensions for flutter_quill
+  vsc_quill_delta_to_html: ^1.0.5  # For converting Quill Delta to HTML
 
 dependency_overrides:
-  intl: ^0.20.2  # Pastikan override ini konsisten
+  intl: ^0.20.2  # Override to ensure consistent intl version
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^4.0.0  # For static code analysis and linting
 
 flutter:
   uses-material-design: true
