@@ -185,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final String greetingName = _user?.nama.split(' ').first ?? 'Siswa';
 
     return Scaffold(
-      backgroundColor: const Color(0xFF7ED6A8),
+      backgroundColor: const Color(0xFF4A90E2), // Changed to blue
       body: _selectedIndex == 0
           ? SafeArea(
               child: FadeTransition(
@@ -224,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             type: BottomNavigationBarType.fixed,
             currentIndex: _selectedIndex,
             onTap: _onItemTapped,
-            selectedItemColor: const Color(0xFF7ED6A8),
+            selectedItemColor: const Color(0xFF4A90E2), // Changed to blue
             unselectedItemColor: Colors.grey[500],
             backgroundColor: Colors.white,
             elevation: 0,
@@ -402,7 +402,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     child: Text(
                       category.nama,
                       style: TextStyle(
-                        color: isSelected ? const Color(0xFF2E7D32) : Colors.white,
+                        color: isSelected ? const Color(0xFF1976D2) : Colors.white, // Changed to blue
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
                       ),
@@ -436,7 +436,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
                   child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF7ED6A8)),
+                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4A90E2)), // Changed to blue
                   ),
                 );
               }
@@ -499,8 +499,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               }
 
               final artikels = snapshot.data!;
-              return ListView.builder(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+              return GridView.builder(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.7,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 16,
+                ),
                 itemCount: artikels.length,
                 itemBuilder: (context, index) {
                   return _buildContentCard(artikels[index]);
@@ -531,81 +537,104 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         );
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 24),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: Colors.grey.withOpacity(0.15),
               spreadRadius: 0,
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: Row(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Cover Image - Gramedia Style
-            Container(
-              width: 120,
-              height: 160,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  bottomLeft: Radius.circular(12),
+            // Cover Image
+            Expanded(
+              flex: 3,
+              child: Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
+                  ),
                 ),
-              ),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  bottomLeft: Radius.circular(12),
-                ),
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    // Cover image with fallback
-                    item.gambarUrl != null && item.gambarUrl!.isNotEmpty
-                        ? Image.network(
-                            item.gambarUrl!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return _buildDefaultCover(item.kategoriNama);
-                            },
-                          )
-                        : _buildDefaultCover(item.kategoriNama),
-                    
-                    // Category badge
-                    Positioned(
-                      top: 8,
-                      left: 6,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: _getCategoryColor(item.kategoriNama).withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          _getCategoryLabel(item.kategoriNama),
-                          style: const TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            letterSpacing: 0.5,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
+                  ),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      // Cover image with fallback
+                      item.gambarUrl != null && item.gambarUrl!.isNotEmpty
+                          ? Image.network(
+                              item.gambarUrl!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return _buildDefaultCover(item.kategoriNama);
+                              },
+                            )
+                          : _buildDefaultCover(item.kategoriNama),
+                      
+                      // Category badge
+                      Positioned(
+                        top: 8,
+                        left: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: _getCategoryColor(item.kategoriNama).withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            _getCategoryLabel(item.kategoriNama),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                              letterSpacing: 0.5,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      
+                      // Bookmark icon
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: GestureDetector(
+                          onTap: () => _handleBookmark(item),
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.9),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              item.isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                              size: 16,
+                              color: item.isBookmarked ? const Color(0xFF4A90E2) : Colors.grey[600],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
             
             // Content Area
             Expanded(
+              flex: 2,
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -613,84 +642,43 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     Text(
                       item.judul,
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.w700,
                         color: Color(0xFF1a1a1a),
-                        height: 1.3,
-                        letterSpacing: -0.2,
+                        height: 1.2,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 6),
                     
-                    // Author and Date
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 12,
-                          backgroundColor: const Color(0xFF7ED6A8).withOpacity(0.2),
-                          child: Text(
-                            item.penulis.nama.isNotEmpty 
-                                ? item.penulis.nama.substring(0, 1).toUpperCase()
-                                : 'A',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF2E7D32),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item.penulis.nama,
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  color: Color(0xFF666666),
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              Text(
-                                _formatDate(item.createdAt),
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  color: Color(0xFF888888),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    
-                    // Category
-                    if (item.kategoriNama != null)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF7ED6A8).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          item.kategoriNama!,
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF7ED6A8),
-                          ),
-                        ),
+                    // Author
+                    Text(
+                      item.penulis.nama,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF666666),
+                        fontWeight: FontWeight.w500,
                       ),
-                    const SizedBox(height: 12),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    
+                    // Date
+                    Text(
+                      _formatDate(item.createdAt),
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Color(0xFF888888),
+                      ),
+                    ),
+                    
+                    const Spacer(),
                     
                     // Action buttons
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         // Like button
                         GestureDetector(
@@ -700,14 +688,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             children: [
                               Icon(
                                 item.isLiked ? Icons.favorite : Icons.favorite_border,
-                                size: 16,
+                                size: 14,
                                 color: item.isLiked ? Colors.red : Colors.grey[500],
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 '${item.jumlahSuka}',
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 11,
                                   color: Colors.grey[600],
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -715,39 +703,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             ],
                           ),
                         ),
-                        const SizedBox(width: 16),
                         
-                        // Comment button
+                        // Comment count
                         Row(
-                         mainAxisSize: MainAxisSize.min,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
                               Icons.mode_comment_outlined,
-                              size: 14,
+                              size: 12,
                               color: Colors.grey[500],
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              '0', // Comment count placeholder
+                              '0',
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 11,
                                 color: Colors.grey[600],
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                           ],
-                        ),
-                        
-                        const Spacer(),
-                        
-                        // Bookmark button
-                        GestureDetector(
-                          onTap: () => _handleBookmark(item),
-                          child: Icon(
-                            item.isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                            size: 20,
-                            color: item.isBookmarked ? const Color(0xFF7ED6A8) : Colors.grey[500],
-                          ),
                         ),
                       ],
                     ),
@@ -763,22 +738,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildDefaultCover(String? kategoriNama) {
     return Container(
-      color: Colors.grey[200],
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            const Color(0xFF4A90E2).withOpacity(0.8),
+            const Color(0xFF64B5F6).withOpacity(0.6),
+          ],
+        ),
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             _getIconByType(kategoriNama),
             size: 32,
-            color: Colors.grey[400],
+            color: Colors.white,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           Text(
             _getCategoryLabel(kategoriNama),
-            style: TextStyle(
-              fontSize: 10,
+            style: const TextStyle(
+              fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: Colors.grey[600],
+              color: Colors.white,
               letterSpacing: 1,
             ),
           ),
