@@ -59,34 +59,90 @@ class _ProfileScreenState extends State<ProfileScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF4A90E2),
+      backgroundColor: const Color(0xFFF8FAFE),
       body: FutureBuilder<Map<String, dynamic>>(
         future: _profileDataFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(color: Colors.white),
+            return Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFF4A90E2),
+                    Color(0xFF6BA3E8),
+                  ],
+                ),
+              ),
+              child: const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2.5,
+                ),
+              ),
             );
           }
           
           if (snapshot.hasError || !snapshot.hasData || snapshot.data?['user'] == null) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      snapshot.error?.toString() ?? "Gagal memuat profil",
-                      style: const TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: _refreshProfile,
-                      child: const Text('Coba Lagi'),
-                    )
+            return Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFF4A90E2),
+                    Color(0xFF6BA3E8),
                   ],
+                ),
+              ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Icon(
+                          Icons.error_outline_rounded,
+                          size: 48,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        snapshot.error?.toString() ?? "Gagal memuat profil",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _refreshProfile,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: const Color(0xFF4A90E2),
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                        ),
+                        child: const Text(
+                          'Coba Lagi',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             );
@@ -105,18 +161,19 @@ class _ProfileScreenState extends State<ProfileScreen>
     return LayoutBuilder(
       builder: (context, constraints) {
         final isSmallScreen = constraints.maxWidth < 600;
-        final headerHeight = isSmallScreen ? 280.0 : 320.0;
+        final headerHeight = isSmallScreen ? 240.0 : 280.0; // Further reduced height
         
         return NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
               SliverAppBar(
-                backgroundColor: const Color(0xFF4A90E2),
+                backgroundColor: Colors.transparent,
                 foregroundColor: Colors.white,
                 expandedHeight: headerHeight,
                 floating: false,
                 pinned: false,
                 stretch: true,
+                elevation: 0,
                 flexibleSpace: FlexibleSpaceBar(
                   background: _buildProfileHeader(user, myArticles.length, isSmallScreen),
                   stretchModes: const [
@@ -127,34 +184,50 @@ class _ProfileScreenState extends State<ProfileScreen>
               ),
               SliverPersistentHeader(
                 delegate: _SliverAppBarDelegate(
-                  TabBar(
-                    controller: _tabController,
-                    indicatorColor: Colors.white,
-                    indicatorWeight: 3,
-                    labelColor: Colors.white,
-                    unselectedLabelColor: Colors.white70,
-                    labelStyle: TextStyle(
-                      fontSize: isSmallScreen ? 12 : 14,
-                      fontWeight: FontWeight.w600,
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        )
+                      ],
                     ),
-                    unselectedLabelStyle: TextStyle(
-                      fontSize: isSmallScreen ? 12 : 14,
-                      fontWeight: FontWeight.normal,
+                    child: TabBar(
+                      controller: _tabController,
+                      indicatorColor: const Color(0xFF4A90E2),
+                      indicatorWeight: 3,
+                      indicatorPadding: const EdgeInsets.symmetric(horizontal: 20),
+                      labelColor: const Color(0xFF4A90E2),
+                      unselectedLabelColor: Colors.grey[600],
+                      labelStyle: TextStyle(
+                        fontSize: isSmallScreen ? 13 : 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      unselectedLabelStyle: TextStyle(
+                        fontSize: isSmallScreen ? 13 : 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      tabs: [
+                        Tab(
+                          icon: Icon(Icons.grid_view_rounded, size: isSmallScreen ? 20 : 22),
+                          text: "Postingan",
+                          height: 65,
+                        ),
+                        Tab(
+                          icon: Icon(Icons.favorite_rounded, size: isSmallScreen ? 20 : 22),
+                          text: "Disukai",
+                          height: 65,
+                        ),
+                        Tab(
+                          icon: Icon(Icons.bookmark_rounded, size: isSmallScreen ? 20 : 22),
+                          text: "Disimpan",
+                          height: 65,
+                        ),
+                      ],
                     ),
-                    tabs: [
-                      Tab(
-                        icon: Icon(Icons.grid_on, size: isSmallScreen ? 18 : 20),
-                        text: "Postingan",
-                      ),
-                      Tab(
-                        icon: Icon(Icons.favorite, size: isSmallScreen ? 18 : 20),
-                        text: "Disukai",
-                      ),
-                      Tab(
-                        icon: Icon(Icons.bookmark, size: isSmallScreen ? 18 : 20),
-                        text: "Disimpan",
-                      ),
-                    ],
                   ),
                 ),
                 pinned: true,
@@ -162,7 +235,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             ];
           },
           body: Container(
-            color: Colors.grey[50],
+            color: const Color(0xFFF8FAFE),
             child: TabBarView(
               controller: _tabController,
               children: [
@@ -181,90 +254,111 @@ class _ProfileScreenState extends State<ProfileScreen>
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
-        color: Color(0xFF4A90E2),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF4A90E2),
+            Color(0xFF6BA3E8),
+            Color(0xFF5B9CE6),
+          ],
+          stops: [0.0, 0.6, 1.0],
+        ),
       ),
       child: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: isSmallScreen ? 16.0 : 24.0,
-            vertical: 8.0,
+            horizontal: isSmallScreen ? 20.0 : 32.0,
+            vertical: 16.0,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: isSmallScreen ? 16 : 24),
-              // Profile Picture
-              CircleAvatar(
-                radius: isSmallScreen ? 40 : 50,
-                backgroundColor: Colors.white.withOpacity(0.3),
-                child: Text(
-                  user.nama.isNotEmpty ? user.nama.substring(0, 1).toUpperCase() : 'A',
-                  style: TextStyle(
-                    fontSize: isSmallScreen ? 32 : 40,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+              SizedBox(height: isSmallScreen ? 20 : 32),
+              // Profile Picture with shadow
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    )
+                  ],
+                ),
+                child: CircleAvatar(
+                  radius: isSmallScreen ? 50 : 60,
+                  backgroundColor: Colors.white.withOpacity(0.25),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.white.withOpacity(0.3),
+                          Colors.white.withOpacity(0.1),
+                        ],
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        user.nama.isNotEmpty ? user.nama.substring(0, 1).toUpperCase() : 'A',
+                        style: TextStyle(
+                          fontSize: isSmallScreen ? 38 : 48,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
-              SizedBox(height: isSmallScreen ? 12 : 16),
-              // User name
+              SizedBox(height: isSmallScreen ? 16 : 24),
+              // User name with better typography
               Flexible(
                 child: Text(
                   user.nama,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: isSmallScreen ? 20 : 24,
-                    fontWeight: FontWeight.bold,
+                    fontSize: isSmallScreen ? 24 : 28,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.5,
+                    height: 1.2,
                   ),
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
               ),
-              const SizedBox(height: 4),
-              // User email
-              Flexible(
-                child: Text(
-                  user.email,
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.9),
-                    fontSize: isSmallScreen ? 14 : 16,
-                  ),
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
+              const SizedBox(height: 12),
+              // Username display
+              Text(
+                '@${user.email.split('@')[0]}',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.9),
+                  fontSize: isSmallScreen ? 16 : 18,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
                 ),
+                textAlign: TextAlign.center,
               ),
-              SizedBox(height: isSmallScreen ? 16 : 24),
-              // Stats Row - Responsive layout
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 400),
-                child: IntrinsicHeight(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: _buildStatItem(
-                          'Postingan',
-                          postCount.toString(),
-                          isSmallScreen,
-                        ),
-                      ),
-                      _buildVerticalDivider(),
-                      Expanded(
-                        child: _buildStatItem('Pengikut', '0', isSmallScreen),
-                      ),
-                      _buildVerticalDivider(),
-                      Expanded(
-                        child: _buildStatItem('Mengikuti', '0', isSmallScreen),
-                      ),
-                    ],
-                  ),
+              const SizedBox(height: 8),
+              // User email with better styling
+              Text(
+                user.email,
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.75),
+                  fontSize: isSmallScreen ? 14 : 16,
+                  fontWeight: FontWeight.w400,
                 ),
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
-              SizedBox(height: isSmallScreen ? 16 : 20),
+              SizedBox(height: isSmallScreen ? 20 : 28),
             ],
           ),
         ),
@@ -276,45 +370,28 @@ class _ProfileScreenState extends State<ProfileScreen>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Flexible(
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              value,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: isSmallScreen ? 18 : 22,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
+        Text(
+          value,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: isSmallScreen ? 20 : 24,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.5,
           ),
+          textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 4),
-        Flexible(
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              label,
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.9),
-                fontSize: isSmallScreen ? 12 : 14,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
-            ),
+        const SizedBox(height: 6),
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.9),
+            fontSize: isSmallScreen ? 12 : 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.2,
           ),
+          textAlign: TextAlign.center,
         ),
       ],
-    );
-  }
-
-  Widget _buildVerticalDivider() {
-    return Container(
-      height: 30,
-      width: 1,
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      color: Colors.white.withOpacity(0.3),
     );
   }
 
@@ -326,6 +403,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           return const Center(
             child: CircularProgressIndicator(
               color: Color(0xFF4A90E2),
+              strokeWidth: 2.5,
             ),
           );
         }
@@ -333,30 +411,37 @@ class _ProfileScreenState extends State<ProfileScreen>
         if (snapshot.hasError) {
           return Center(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(24.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: Colors.grey[400],
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Icon(
+                      Icons.error_outline_rounded,
+                      size: 48,
+                      color: Colors.red[400],
+                    ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
                   Text(
                     "Terjadi kesalahan",
                     style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.w500,
+                      fontSize: 18,
+                      color: Colors.grey[800],
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     "Error: ${snapshot.error}",
                     style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[500],
+                      fontSize: 14,
+                      color: Colors.grey[600],
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -369,30 +454,38 @@ class _ProfileScreenState extends State<ProfileScreen>
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return Center(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(24.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.article_outlined,
-                    size: 64,
-                    color: Colors.grey[400],
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF4A90E2).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Icon(
+                      Icons.article_rounded,
+                      size: 56,
+                      color: const Color(0xFF4A90E2).withOpacity(0.7),
+                    ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 24),
                   Text(
                     "Tidak ada postingan",
                     style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.w500,
+                      fontSize: 20,
+                      color: Colors.grey[800],
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     "Mulai berbagi artikel menarik",
                     style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[500],
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ],
@@ -408,10 +501,10 @@ class _ProfileScreenState extends State<ProfileScreen>
             
             if (crossAxisCount == 2) {
               return GridView.builder(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(20),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 3,
+                  childAspectRatio: 2.8,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
                 ),
@@ -421,7 +514,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             }
             
             return ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               itemCount: posts.length,
               itemBuilder: (context, index) => _buildPostCard(posts[index]),
             );
@@ -436,24 +529,33 @@ class _ProfileScreenState extends State<ProfileScreen>
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 8,
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 4,
             offset: const Offset(0, 2),
           )
         ],
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.08),
+          width: 1,
+        ),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           onTap: () {
             // Handle post tap
           },
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -463,59 +565,71 @@ class _ProfileScreenState extends State<ProfileScreen>
                   children: [
                     Flexible(
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color: _getStatusColor(post.status).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(16),
+                          color: _getStatusColor(post.status).withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: _getStatusColor(post.status).withOpacity(0.2),
+                            width: 1,
+                          ),
                         ),
                         child: Text(
                           post.status.toUpperCase(),
                           style: TextStyle(
                             color: _getStatusColor(post.status),
                             fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.5,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.8,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 12),
                     Flexible(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.access_time,
-                            size: 14,
-                            color: Colors.grey[500],
-                          ),
-                          const SizedBox(width: 4),
-                          Flexible(
-                            child: Text(
-                              _formatDate(post.createdAt),
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              overflow: TextOverflow.ellipsis,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.schedule_rounded,
+                              size: 16,
+                              color: Colors.grey[600],
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 6),
+                            Flexible(
+                              child: Text(
+                                _formatDate(post.createdAt),
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 // Post Title
                 Text(
                   post.judul,
                   style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
                     color: Colors.black87,
-                    height: 1.3,
+                    height: 1.4,
+                    letterSpacing: -0.2,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -531,13 +645,13 @@ class _ProfileScreenState extends State<ProfileScreen>
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'disetujui':
-        return const Color(0xFF4CAF50);
+        return const Color(0xFF10B981);
       case 'ditolak':
-        return const Color(0xFFF44336);
+        return const Color(0xFFEF4444);
       case 'menunggu':
-        return const Color(0xFFFF9800);
+        return const Color(0xFFF59E0B);
       default:
-        return const Color(0xFF9E9E9E);
+        return const Color(0xFF6B7280);
     }
   }
 }
@@ -546,20 +660,17 @@ class _ProfileScreenState extends State<ProfileScreen>
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate(this._tabBar);
 
-  final TabBar _tabBar;
+  final Widget _tabBar;
 
   @override
-  double get minExtent => _tabBar.preferredSize.height;
+  double get minExtent => 65.0;
 
   @override
-  double get maxExtent => _tabBar.preferredSize.height;
+  double get maxExtent => 65.0;
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      color: const Color(0xFF4A90E2),
-      child: _tabBar,
-    );
+    return _tabBar;
   }
 
   @override
