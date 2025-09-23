@@ -246,7 +246,7 @@ class _AuthScreenState extends State<AuthScreen>
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide:
-                    const BorderSide(color: Color(0xFF1565C0), width: 2),
+                    const BorderSide(color: Color(0xFF4A90E2), width: 2), // Changed to blue
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
@@ -257,7 +257,7 @@ class _AuthScreenState extends State<AuthScreen>
               prefixIcon: Container(
                 margin: const EdgeInsets.only(left: 16, right: 12),
                 child:
-                    Icon(prefixIcon, color: const Color(0xFF1565C0), size: 22),
+                    Icon(prefixIcon, color: const Color(0xFF4A90E2), size: 22), // Changed to blue
               ),
               suffixIcon: hasVisibilityToggle
                   ? Container(
@@ -294,7 +294,7 @@ class _AuthScreenState extends State<AuthScreen>
         borderRadius: BorderRadius.circular(16),
         gradient: LinearGradient(
           colors: onPressed != null
-              ? [const Color(0xFF1565C0), const Color(0xFF1976D2)]
+              ? [const Color(0xFF4A90E2), const Color(0xFF64B5F6)] // Changed to blue gradient
               : [Colors.grey[400]!, Colors.grey[500]!],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -302,7 +302,7 @@ class _AuthScreenState extends State<AuthScreen>
         boxShadow: onPressed != null
             ? [
                 BoxShadow(
-                  color: const Color(0xFF1565C0).withOpacity(0.3),
+                  color: const Color(0xFF4A90E2).withOpacity(0.3), // Changed to blue
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -343,7 +343,7 @@ class _AuthScreenState extends State<AuthScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF7ED6A8), // Background hijau
+      backgroundColor: const Color(0xFF4A90E2), // Changed from green to blue
       body: SafeArea(
         child: Column(
           children: [
@@ -393,8 +393,8 @@ class _AuthScreenState extends State<AuthScreen>
                     // Custom Tab Bar
                     TabBar(
                       controller: _tabController,
-                      indicatorColor: const Color(0xFF7ED6A8),
-                      labelColor: const Color(0xFF1565C0),
+                      indicatorColor: const Color(0xFF4A90E2), // Changed to blue
+                      labelColor: const Color(0xFF4A90E2), // Changed to blue
                       unselectedLabelColor: Colors.grey[600],
                       labelStyle: const TextStyle(
                         fontFamily: 'Poppins',
@@ -500,7 +500,7 @@ class _AuthScreenState extends State<AuthScreen>
                 child: const Text(
                   'Lupa Password?',
                   style: TextStyle(
-                    color: Color(0xFF1565C0),
+                    color: Color(0xFF4A90E2), // Changed to blue
                     fontFamily: 'Poppins',
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
