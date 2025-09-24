@@ -187,15 +187,46 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: const Color(0xFF4A90E2), // Changed to blue
       body: _selectedIndex == 0
-          ? SafeArea(
-              child: FadeTransition(
-                opacity: _fadeAnimation,
-                child: Column(
-                  children: [
-                    _buildHeader(greetingName),
-                    _buildCategoryFilters(),
-                    _buildArticleTimeline(),
-                  ],
+          ? Container(
+              color: const Color(0xFF4A90E2),
+              child: SafeArea(
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: RefreshIndicator(
+                    onRefresh: _refreshTimeline,
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: Column(
+                            children: [
+                              _buildHeader(greetingName),
+                              _buildCategoryFilters(),
+                            ],
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: Container(
+                            width: double.infinity,
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(24),
+                                topRight: Radius.circular(24),
+                              ),
+                            ),
+                            child: const SizedBox(height: 16),
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: Container(
+                            color: Colors.white,
+                            child: const SizedBox(height: 0),
+                          ),
+                        ),
+                        _buildArticleTimeline(),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             )
@@ -285,44 +316,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   letterSpacing: -0.3,
                 ),
               ),
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const NotificationScreen(),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(
-                        Icons.notifications_none,
-                        color: Colors.white,
-                        size: 22,
-                      ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NotificationScreen(),
                     ),
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(
-                      Icons.search,
-                      color: Colors.white,
-                      size: 22,
-                    ),
+                  child: const Icon(
+                    Icons.notifications_none,
+                    color: Colors.white,
+                    size: 22,
                   ),
-                ],
+                ),
               ),
             ],
           ),
@@ -418,30 +432,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildArticleTimeline() {
-    return Expanded(
-      child: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
-          ),
-        ),
-        child: RefreshIndicator(
-          onRefresh: _refreshTimeline,
-          child: FutureBuilder<List<Artikel>>(
-            future: _timelineFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
+    return FutureBuilder<List<Artikel>>(
+      future: _timelineFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return SliverList(
+            delegate: SliverChildListDelegate([
+              Container(
+                color: Colors.white,
+                height: 400,
+                child: const Center(
                   child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4A90E2)), // Changed to blue
+                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4A90E2)),
                   ),
-                );
-              }
-              if (snapshot.hasError) {
-                return Center(
+                ),
+              ),
+            ]),
+          );
+        }
+        if (snapshot.hasError) {
+          return SliverList(
+            delegate: SliverChildListDelegate([
+              Container(
+                color: Colors.white,
+                height: 400,
+                child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -467,10 +482,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                     ],
                   ),
-                );
-              }
-              if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Center(
+                ),
+              ),
+            ]),
+          );
+        }
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return SliverList(
+            delegate: SliverChildListDelegate([
+              Container(
+                color: Colors.white,
+                height: 400,
+                child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -495,12 +518,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                     ],
                   ),
-                );
-              }
+                ),
+              ),
+            ]),
+          );
+        }
 
-              final artikels = snapshot.data!;
-              return GridView.builder(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
+        final artikels = snapshot.data!;
+        return SliverList(
+          delegate: SliverChildListDelegate([
+            Container(
+              color: Colors.white,
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 0.7,
@@ -508,14 +540,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   mainAxisSpacing: 16,
                 ),
                 itemCount: artikels.length,
-                itemBuilder: (context, index) {
-                  return _buildContentCard(artikels[index]);
-                },
-              );
-            },
-          ),
-        ),
-      ),
+                itemBuilder: (context, index) => _buildContentCard(artikels[index]),
+              ),
+            ),
+          ]),
+        );
+      },
     );
   }
 
