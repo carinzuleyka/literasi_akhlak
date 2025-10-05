@@ -1,7 +1,8 @@
-import 'dart:ui'; // <— tambahkan ini untuk ImageFilter
+import 'dart:ui'; // <— untuk ImageFilter
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import '../screens/setting_screen.dart';
 import '../models/user_model.dart';
 import '../models/artikel_model.dart';
 import '../services/api_service.dart';
@@ -206,7 +207,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     return LayoutBuilder(
       builder: (context, constraints) {
         final isSmallScreen = constraints.maxWidth < 600;
-        final headerHeight = isSmallScreen ? 280.0 : 320.0; // ✅ REDUCED: 320/360 -> 280/320
+        final headerHeight = isSmallScreen ? 240.0 : 280.0;
 
         return NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -219,7 +220,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                 pinned: false,
                 stretch: true,
                 elevation: 0,
-                // ✅ ADD SETTINGS ICON
                 actions: [
                   Container(
                     margin: const EdgeInsets.only(right: 16, top: 8),
@@ -233,7 +233,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                     ),
                     child: IconButton(
                       onPressed: () {
-                        // Handle settings action
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                        );
                       },
                       icon: const Icon(
                         Icons.settings_rounded,
@@ -324,20 +327,20 @@ class _ProfileScreenState extends State<ProfileScreen>
           ),
           SafeArea(
             child: Center(
-              child: SingleChildScrollView(
+              child: Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: isSmallScreen ? 24.0 : 32.0,
-                  vertical: 16.0, // ✅ REDUCED: 20 -> 16
+                  vertical: 16.0,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min, // ✅ ADDED: Prevent overflow
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const SizedBox(height: 16), // ✅ REDUCED: 20 -> 16
-                    // Modern Avatar - SMALLER SIZE
+                    const SizedBox(height: 16),
+                    // Modern Avatar
                     Container(
-                      padding: const EdgeInsets.all(4), // ✅ REDUCED: 6 -> 4
+                      padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         gradient: LinearGradient(
@@ -349,14 +352,14 @@ class _ProfileScreenState extends State<ProfileScreen>
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withValues(alpha: 0.2),
-                            blurRadius: 20, // ✅ REDUCED: 30 -> 20
-                            offset: const Offset(0, 10), // ✅ REDUCED: 15 -> 10
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
                           ),
                         ],
                       ),
                       child: Container(
-                        width: isSmallScreen ? 100 : 120, // ✅ REDUCED: 120/140 -> 100/120
-                        height: isSmallScreen ? 100 : 120, // ✅ REDUCED: 120/140 -> 100/120
+                        width: isSmallScreen ? 100 : 120,
+                        height: isSmallScreen ? 100 : 120,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           gradient: LinearGradient(
@@ -372,7 +375,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                           child: Text(
                             user.nama.isNotEmpty ? user.nama.substring(0, 1).toUpperCase() : 'A',
                             style: TextStyle(
-                              fontSize: isSmallScreen ? 40 : 48, // ✅ REDUCED: 48/56 -> 40/48
+                              fontSize: isSmallScreen ? 40 : 48,
                               color: const Color(0xFF4A90E2),
                               fontWeight: FontWeight.w800,
                               letterSpacing: -1,
@@ -381,13 +384,13 @@ class _ProfileScreenState extends State<ProfileScreen>
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20), // ✅ REDUCED: 24 -> 20
-                    // ✅ NAMA - CENTERED
+                    const SizedBox(height: 20),
+                    // NAMA - CENTERED
                     Text(
                       user.nama,
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: isSmallScreen ? 24 : 28, // ✅ REDUCED: 28/32 -> 24/28
+                        fontSize: isSmallScreen ? 24 : 28,
                         fontWeight: FontWeight.w800,
                         letterSpacing: -1,
                         height: 1.1,
@@ -397,12 +400,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 8),
-                    // ✅ USERNAME - CENTERED
+                    // USERNAME - CENTERED
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6), // ✅ REDUCED padding
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(18), // ✅ REDUCED: 20 -> 18
+                        borderRadius: BorderRadius.circular(18),
                         border: Border.all(
                           color: Colors.white.withValues(alpha: 0.3),
                           width: 1,
@@ -412,19 +415,19 @@ class _ProfileScreenState extends State<ProfileScreen>
                         '@${user.email.split('@')[0]}',
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.95),
-                          fontSize: isSmallScreen ? 14 : 16, // ✅ REDUCED: 16/18 -> 14/16
+                          fontSize: isSmallScreen ? 14 : 16,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 0.5,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10), // ✅ REDUCED: 12 -> 10
-                    // ✅ EMAIL - CENTERED
+                    const SizedBox(height: 10),
+                    // EMAIL - CENTERED
                     Text(
                       user.email,
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.8),
-                        fontSize: isSmallScreen ? 12 : 14, // ✅ REDUCED: 14/16 -> 12/14
+                        fontSize: isSmallScreen ? 12 : 14,
                         fontWeight: FontWeight.w400,
                         letterSpacing: 0.3,
                       ),
@@ -432,55 +435,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
-                    const SizedBox(height: 24), // ✅ REDUCED: 32 -> 24
-
-                    /// ✅ Stats Card with BackdropFilter - CENTERED & SMALLER
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(18), // ✅ REDUCED: 20 -> 18
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20), // ✅ REDUCED padding
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(18), // ✅ REDUCED: 20 -> 18
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              width: 1,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.article_rounded,
-                                color: Colors.white.withValues(alpha: 0.9),
-                                size: 18, // ✅ REDUCED: 20 -> 18
-                              ),
-                              const SizedBox(width: 6), // ✅ REDUCED: 8 -> 6
-                              Text(
-                                '$postCount',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16, // ✅ REDUCED: 18 -> 16
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                'Artikel',
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.9),
-                                  fontSize: 14, // ✅ REDUCED: 16 -> 14
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16), // ✅ ADDED: Bottom spacing
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),
@@ -694,15 +649,14 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
-  // ✅ ARTIKEL GRID - UKURAN DIPERKECIL + LIKE/COMMENT/SAVE
   Widget _buildArticleGrid(List<Artikel> posts) {
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2, // ✅ CHANGED BACK: 3 -> 2 for better interaction buttons display
+        crossAxisCount: 2,
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
-        childAspectRatio: 0.75, // ✅ ADJUSTED: 0.85 -> 0.75 for interaction buttons
+        childAspectRatio: 0.75,
       ),
       itemCount: posts.length,
       itemBuilder: (context, index) {
@@ -724,11 +678,11 @@ class _ProfileScreenState extends State<ProfileScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ✅ IMAGE WITH CATEGORY LABEL
+                // IMAGE WITH CATEGORY LABEL
                 Stack(
                   children: [
                     Container(
-                      height: 110, // ✅ INCREASED: 90 -> 110 for better proportion
+                      height: 110,
                       width: double.infinity,
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
@@ -738,7 +692,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         ),
                       ),
                     ),
-                    // ✅ CATEGORY LABEL (TOP LEFT)
+                    // CATEGORY LABEL (TOP LEFT)
                     Positioned(
                       top: 8,
                       left: 8,
@@ -759,7 +713,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         ),
                       ),
                     ),
-                    // ✅ BOOKMARK ICON (TOP RIGHT)
+                    // BOOKMARK ICON (TOP RIGHT)
                     Positioned(
                       top: 8,
                       right: 8,
@@ -778,32 +732,32 @@ class _ProfileScreenState extends State<ProfileScreen>
                     ),
                   ],
                 ),
-                // ✅ CONTENT SECTION
+                // CONTENT SECTION
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // ✅ TITLE
+                        // TITLE
                         Expanded(
                           child: Text(
                             artikel.judul,
                             style: const TextStyle(
-                              fontSize: 13, // ✅ INCREASED: 12 -> 13
+                              fontSize: 13,
                               fontWeight: FontWeight.w700,
                               color: Color(0xFF333333),
                               height: 1.3,
                             ),
-                            maxLines: 3, // ✅ INCREASED: 2 -> 3
+                            maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         const SizedBox(height: 6),
                         
-                        // ✅ AUTHOR & DATE
+                        // AUTHOR & DATE
                         Text(
-                          'Andi', // You can replace with artikel.author if available
+                          'Andi',
                           style: TextStyle(
                             fontSize: 11,
                             color: Colors.grey[600],
@@ -821,7 +775,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         ),
                         const SizedBox(height: 8),
                         
-                        // ✅ INTERACTION BUTTONS ROW (LIKE, COMMENT, SAVE)
+                        // INTERACTION BUTTONS ROW
                         Row(
                           children: [
                             // LIKE BUTTON
@@ -841,7 +795,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
-                                      '0', // You can replace with actual like count
+                                      '0',
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.grey[600],
@@ -871,7 +825,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
-                                      '0', // You can replace with actual comment count
+                                      '0',
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.grey[600],

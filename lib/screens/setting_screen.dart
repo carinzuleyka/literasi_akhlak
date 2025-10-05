@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'edit_profile_screen.dart';
+import '../services/api_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -19,15 +19,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
         title: const Text(
           'Pengaturan',
           style: TextStyle(
-            color: Colors.black87,
-            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
             fontSize: 18,
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFF4A90E2),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -38,38 +38,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Text(
             'Akun',
             style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.black54,
+              letterSpacing: 0.5,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           _buildSettingsItem(
-            icon: Icons.person,
+            icon: Icons.person_outline,
+            iconColor: const Color(0xFF4A90E2),
             title: 'Edit Profil',
             subtitle: 'Ubah informasi profil Anda',
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const EditProfileScreen(),
-                ),
-              );
+              // Navigate to edit profile
+              Navigator.pushNamed(context, '/edit-profile');
             },
           ),
-          /* _buildSettingsItem(
-            icon: Icons.lock,
+          const SizedBox(height: 8),
+          _buildSettingsItem(
+            icon: Icons.lock_outline,
+            iconColor: const Color(0xFF4A90E2),
             title: 'Ubah Password',
             subtitle: 'Ganti password akun Anda',
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ChangePasswordScreen(),
-                ),
-              );
+              // Navigate to change password
+              Navigator.pushNamed(context, '/change-password');
             },
-          ), */
+          ),
           
           const SizedBox(height: 24),
           
@@ -77,14 +73,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Text(
             'Preferensi',
             style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.black54,
+              letterSpacing: 0.5,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           _buildSwitchItem(
-            icon: Icons.notifications,
+            icon: Icons.notifications_none,
+            iconColor: const Color(0xFF4A90E2),
             title: 'Notifikasi',
             subtitle: 'Terima notifikasi dari aplikasi',
             value: notificationsEnabled,
@@ -101,40 +99,46 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Text(
             'Bantuan & Dukungan',
             style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.black54,
+              letterSpacing: 0.5,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           _buildSettingsItem(
-            icon: Icons.help,
+            icon: Icons.help_outline,
+            iconColor: const Color(0xFF4A90E2),
             title: 'Pusat Bantuan',
             subtitle: 'FAQ dan panduan penggunaan',
             onTap: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Membuka pusat bantuan'),
-                  backgroundColor: Color(0xFF7ED6A8),
+                  backgroundColor: Color(0xFF4A90E2),
                 ),
               );
             },
           ),
+          const SizedBox(height: 8),
           _buildSettingsItem(
-            icon: Icons.feedback,
+            icon: Icons.feedback_outlined,
+            iconColor: const Color(0xFF4A90E2),
             title: 'Kirim Feedback',
             subtitle: 'Berikan masukan untuk aplikasi',
             onTap: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Fitur kirim feedback'),
-                  backgroundColor: Color(0xFF7ED6A8),
+                  backgroundColor: Color(0xFF4A90E2),
                 ),
               );
             },
           ),
+          const SizedBox(height: 8),
           _buildSettingsItem(
-            icon: Icons.info,
+            icon: Icons.info_outline,
+            iconColor: const Color(0xFF4A90E2),
             title: 'Tentang Aplikasi',
             subtitle: 'Versi 1.0.0',
             onTap: () {
@@ -142,30 +146,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
           
           // Logout Button
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
+            child: ElevatedButton.icon(
               onPressed: () {
                 _showLogoutDialog();
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[50],
-                foregroundColor: Colors.red,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
+              icon: const Icon(Icons.logout, size: 20),
+              label: const Text(
                 'Keluar',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
                 ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red[50],
+                foregroundColor: Colors.red[700],
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
               ),
             ),
           ),
@@ -178,18 +183,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildSettingsItem({
     required IconData icon,
+    required Color iconColor,
     required String title,
     required String subtitle,
     required VoidCallback onTap,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withOpacity(0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -198,14 +203,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: Container(
-          padding: const EdgeInsets.all(10),
+          width: 44,
+          height: 44,
           decoration: BoxDecoration(
-            color: const Color(0xFF7ED6A8).withOpacity(0.15),
+            color: iconColor.withOpacity(0.1),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(
             icon,
-            color: const Color(0xFF7ED6A8),
+            color: iconColor,
             size: 22,
           ),
         ),
@@ -213,7 +219,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title,
           style: const TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 16,
+            fontSize: 15,
             color: Colors.black87,
           ),
         ),
@@ -227,10 +233,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
         ),
-        trailing: const Icon(
-          Icons.arrow_forward_ios,
-          size: 16,
-          color: Colors.grey,
+        trailing: Icon(
+          Icons.chevron_right,
+          size: 20,
+          color: Colors.grey[400],
         ),
         onTap: onTap,
       ),
@@ -239,19 +245,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildSwitchItem({
     required IconData icon,
+    required Color iconColor,
     required String title,
     required String subtitle,
     required bool value,
     required ValueChanged<bool> onChanged,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withOpacity(0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -260,14 +266,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: Container(
-          padding: const EdgeInsets.all(10),
+          width: 44,
+          height: 44,
           decoration: BoxDecoration(
-            color: const Color(0xFF7ED6A8).withOpacity(0.15),
+            color: iconColor.withOpacity(0.1),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(
             icon,
-            color: const Color(0xFF7ED6A8),
+            color: iconColor,
             size: 22,
           ),
         ),
@@ -275,7 +282,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title,
           style: const TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 16,
+            fontSize: 15,
             color: Colors.black87,
           ),
         ),
@@ -292,9 +299,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         trailing: Switch(
           value: value,
           onChanged: onChanged,
-
-          activeThumbColor: const Color(0xFF7ED6A8),
-
+          activeColor: const Color(0xFF4A90E2),
         ),
       ),
     );
@@ -309,32 +314,59 @@ class _SettingsScreenState extends State<SettingsScreen> {
             borderRadius: BorderRadius.circular(16),
           ),
           title: const Text(
-            'Tentang BacainSebelas',
+            'Tentang Aplikasi',
             style: TextStyle(
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w700,
+              fontSize: 18,
             ),
           ),
-          content: const Column(
+          content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Versi: 1.0.0'),
-              SizedBox(height: 8),
+              const Text(
+                'BacainSebelas',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Versi: 1.0.0',
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 16),
               Text(
                 'BacainSebelas adalah platform untuk berbagi artikel, review buku, dan tips menarik.',
-                style: TextStyle(height: 1.4),
+                style: TextStyle(
+                  height: 1.5,
+                  color: Colors.grey[700],
+                  fontSize: 14,
+                ),
               ),
-              SizedBox(height: 8),
-              Text('© 2024 BacainSebelas Team'),
+              const SizedBox(height: 12),
+              Text(
+                '© 2024 BacainSebelas Team',
+                style: TextStyle(
+                  color: Colors.grey[500],
+                  fontSize: 12,
+                ),
+              ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF4A90E2),
+              ),
               child: const Text(
                 'Tutup',
                 style: TextStyle(
-                  color: Color(0xFF7ED6A8),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -356,40 +388,57 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: const Text(
             'Keluar',
             style: TextStyle(
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w700,
+              fontSize: 18,
             ),
           ),
           content: const Text(
             'Apakah Anda yakin ingin keluar dari aplikasi?',
+            style: TextStyle(fontSize: 14),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.grey[600],
+              ),
+              child: const Text(
                 'Batal',
                 style: TextStyle(
-                  color: Colors.grey[600],
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Berhasil keluar dari aplikasi'),
-                    backgroundColor: Color(0xFF7ED6A8),
-                  ),
-                );
-                // Add actual logout logic here
-                // For example: navigate to login screen
-                // Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                
+                try {
+                  await ApiService.logout();
+                  if (context.mounted) {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      '/login',
+                      (route) => false,
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Gagal logout: $e'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
               },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red[700],
+              ),
               child: const Text(
                 'Keluar',
                 style: TextStyle(
-                  color: Colors.red,
                   fontWeight: FontWeight.w600,
                 ),
               ),
