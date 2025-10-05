@@ -19,8 +19,14 @@ class _CreateArticleScreenState extends State<CreateArticleScreen> {
   String? _selectedKategori;
   File? _imageFile;
   bool _isLoading = false;
+  bool _hasContent = false;
 
   final ImagePicker _picker = ImagePicker();
+
+  // Color scheme to match home screen
+  static const Color primaryBlue = Color(0xFF5B9BD5);
+  static const Color lightBlue = Color(0xFF87CEEB);
+  static const Color backgroundBlue = Color(0xFFF0F8FF);
 
   static const Map<String, String> _contentTypes = {
     'bebas': 'Bebas',
@@ -30,10 +36,31 @@ class _CreateArticleScreenState extends State<CreateArticleScreen> {
   };
 
   @override
+  void initState() {
+    super.initState();
+    _titleController.addListener(_checkContent);
+    _contentController.addListener(_checkContent);
+  }
+
+  @override
   void dispose() {
+    _titleController.removeListener(_checkContent);
+    _contentController.removeListener(_checkContent);
     _titleController.dispose();
     _contentController.dispose();
     super.dispose();
+  }
+
+  void _checkContent() {
+    final hasTitle = _titleController.text.trim().length >= 5;
+    final hasContentText = _contentController.text.trim().length >= 50;
+    final shouldShow = hasTitle && hasContentText;
+    
+    if (shouldShow != _hasContent) {
+      setState(() {
+        _hasContent = shouldShow;
+      });
+    }
   }
 
   Future<void> _pickImage() async {
@@ -112,9 +139,11 @@ class _CreateArticleScreenState extends State<CreateArticleScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: isError ? Colors.red : Colors.green,
+        backgroundColor: isError ? Colors.red.shade400 : primaryBlue,
         behavior: SnackBarBehavior.floating,
         duration: Duration(seconds: isError ? 4 : 2),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.all(16),
       ),
     );
   }
@@ -122,91 +151,200 @@ class _CreateArticleScreenState extends State<CreateArticleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundBlue,
       appBar: AppBar(
-        title: const Text('Tulis Artikel Baru'),
-        elevation: 1,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: _isLoading
-                ? const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(12.0),
-                      child: SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 3,
-                        ),
-                      ),
-                    ),
-                  )
-                : IconButton(
-                    icon: const Icon(Icons.send_rounded),
-                    onPressed: _submitArticle,
-                    tooltip: 'Kirim Artikel',
-                  ),
+        title: const Center(
+          child: Text(
+            'Tulis Artikel Baru',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
-        ],
+        ),
+        backgroundColor: primaryBlue,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+        centerTitle: true,
       ),
       body: Form(
         key: _formKey,
         child: Column(
           children: [
-            _buildFormFields(),
-            const Divider(height: 1, thickness: 1),
-            Expanded(child: _buildContentEditor()),
+            _buildHeaderGradient(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: _buildFormContent(),
+              ),
+            ),
+            _buildSubmitButton(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildFormFields() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+  Widget _buildHeaderGradient() {
+    return Container(
+      height: 20,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            primaryBlue,
+            primaryBlue.withOpacity(0.1),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFormContent() {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: primaryBlue.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: Column(
         children: [
-          TextFormField(
-            controller: _titleController,
-            decoration: const InputDecoration(
-              labelText: 'Judul Artikel',
-              hintText: 'Tulis judul yang menarik...',
-              border: OutlineInputBorder(),
-              prefixIcon: Icon(Icons.title_rounded),
-              counterText: '',
-            ),
-            maxLength: 100,
-            textCapitalization: TextCapitalization.sentences,
-            validator: (value) {
-              if (value == null || value.trim().isEmpty) {
-                return 'Judul tidak boleh kosong';
-              }
-              if (value.trim().length < 5) {
-                return 'Judul terlalu pendek (minimal 5 karakter)';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 16),
-          DropdownButtonFormField<String>(
-            initialValue: _selectedJenis,
-            decoration: const InputDecoration(
-              labelText: 'Jenis Konten',
-              border: OutlineInputBorder(),
-              prefixIcon: Icon(Icons.category_rounded),
-            ),
-            items: _contentTypes.entries
-                .map(
-                  (e) => DropdownMenuItem(value: e.key, child: Text(e.value)),
-                )
-                .toList(),
-            onChanged: (v) => setState(() => _selectedJenis = v ?? 'bebas'),
-          ),
+          _buildFormFields(),
+          const Divider(height: 1, color: Colors.transparent),
+          _buildContentEditor(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFormFields() {
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle('Detail Artikel', Icons.edit_rounded),
+          const SizedBox(height: 20),
+          _buildTitleField(),
+          const SizedBox(height: 20),
+          _buildContentTypeField(),
+          const SizedBox(height: 24),
+          _buildSectionTitle('Gambar Sampul', Icons.image_rounded),
           const SizedBox(height: 16),
           _buildImagePicker(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title, IconData icon) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: primaryBlue.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, color: primaryBlue, size: 20),
+        ),
+        const SizedBox(width: 12),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF2C3E50),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTitleField() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: primaryBlue.withOpacity(0.2)),
+        color: backgroundBlue.withOpacity(0.3),
+      ),
+      child: TextFormField(
+        controller: _titleController,
+        decoration: InputDecoration(
+          labelText: 'Judul Artikel',
+          labelStyle: TextStyle(color: primaryBlue.withOpacity(0.8)),
+          hintText: 'Tulis judul yang menarik...',
+          hintStyle: TextStyle(color: Colors.grey.shade500),
+          border: InputBorder.none,
+          prefixIcon: Container(
+            margin: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: primaryBlue.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(Icons.title_rounded, color: primaryBlue, size: 20),
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          counterText: '',
+        ),
+        maxLength: 100,
+        textCapitalization: TextCapitalization.sentences,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        validator: (value) {
+          if (value == null || value.trim().isEmpty) {
+            return 'Judul tidak boleh kosong';
+          }
+          if (value.trim().length < 5) {
+            return 'Judul terlalu pendek (minimal 5 karakter)';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget _buildContentTypeField() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: primaryBlue.withOpacity(0.2)),
+        color: backgroundBlue.withOpacity(0.3),
+      ),
+      child: DropdownButtonFormField<String>(
+        value: _selectedJenis,
+        decoration: InputDecoration(
+          labelText: 'Jenis Konten',
+          labelStyle: TextStyle(color: primaryBlue.withOpacity(0.8)),
+          border: InputBorder.none,
+          prefixIcon: Container(
+            margin: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: primaryBlue.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(Icons.category_rounded, color: primaryBlue, size: 20),
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        ),
+        dropdownColor: Colors.white,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black87),
+        items: _contentTypes.entries
+            .map(
+              (e) => DropdownMenuItem(
+                value: e.key, 
+                child: Text(e.value),
+              ),
+            )
+            .toList(),
+        onChanged: (v) => setState(() => _selectedJenis = v ?? 'bebas'),
       ),
     );
   }
@@ -215,8 +353,9 @@ class _CreateArticleScreenState extends State<CreateArticleScreen> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: primaryBlue.withOpacity(0.2), width: 2),
+        borderRadius: BorderRadius.circular(15),
+        color: backgroundBlue.withOpacity(0.3),
       ),
       child: _imageFile != null
           ? _buildImagePreview()
@@ -227,29 +366,43 @@ class _CreateArticleScreenState extends State<CreateArticleScreen> {
   Widget _buildImagePlaceholder() {
     return InkWell(
       onTap: _pickImage,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(15),
       child: Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(32),
         child: Column(
           children: [
-            Icon(
-              Icons.add_photo_alternate_outlined,
-              size: 48,
-              color: Colors.grey.shade500,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Tambah Gambar Sampul',
-              style: TextStyle(
-                color: Colors.grey.shade700,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: primaryBlue.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.add_photo_alternate_outlined,
+                size: 40,
+                color: primaryBlue,
               ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              'Maksimal 5MB • JPG, PNG',
-              style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+            const SizedBox(height: 16),
+            const Text(
+              'Tambah Gambar Sampul',
+              style: TextStyle(
+                color: Color(0xFF2C3E50),
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: primaryBlue.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Text(
+                'Maksimal 5MB • JPG, PNG',
+                style: TextStyle(color: primaryBlue, fontSize: 12, fontWeight: FontWeight.w500),
+              ),
             ),
           ],
         ),
@@ -261,7 +414,7 @@ class _CreateArticleScreenState extends State<CreateArticleScreen> {
     return Stack(
       children: [
         ClipRRect(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(15),
           child: Image.file(
             _imageFile!,
             width: double.infinity,
@@ -270,18 +423,18 @@ class _CreateArticleScreenState extends State<CreateArticleScreen> {
           ),
         ),
         Positioned(
-          top: 8,
-          right: 8,
+          top: 12,
+          right: 12,
           child: Container(
-            decoration: const BoxDecoration(
-              color: Colors.black54,
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.7),
               shape: BoxShape.circle,
             ),
             child: IconButton(
-              icon: const Icon(Icons.close, color: Colors.white, size: 20),
+              icon: const Icon(Icons.close, color: Colors.white, size: 18),
               onPressed: _removeImage,
-              padding: const EdgeInsets.all(4),
-              constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+              padding: const EdgeInsets.all(8),
+              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
             ),
           ),
         ),
@@ -290,28 +443,126 @@ class _CreateArticleScreenState extends State<CreateArticleScreen> {
   }
 
   Widget _buildContentEditor() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: TextFormField(
-        controller: _contentController,
-        maxLines: null,
-        minLines: 10,
-        keyboardType: TextInputType.multiline,
-        decoration: const InputDecoration(
-          labelText: 'Isi Artikel',
-          hintText: 'Tulis isi artikel di sini...',
-          border: OutlineInputBorder(),
-          alignLabelWithHint: true,
+    return Container(
+      margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle('Isi Artikel', Icons.article_rounded),
+          const SizedBox(height: 16),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(color: primaryBlue.withOpacity(0.2)),
+              color: backgroundBlue.withOpacity(0.3),
+            ),
+            child: TextFormField(
+              controller: _contentController,
+              maxLines: null,
+              minLines: 12,
+              keyboardType: TextInputType.multiline,
+              style: const TextStyle(fontSize: 16, height: 1.5),
+              decoration: InputDecoration(
+                labelText: 'Tulis artikel Anda di sini...',
+                labelStyle: TextStyle(color: primaryBlue.withOpacity(0.8)),
+                hintText: 'Bagikan pemikiran, pengalaman, atau cerita menarik Anda...',
+                hintStyle: TextStyle(color: Colors.grey.shade500),
+                border: InputBorder.none,
+                alignLabelWithHint: true,
+                contentPadding: const EdgeInsets.all(20),
+              ),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Isi artikel tidak boleh kosong';
+                }
+                if (value.trim().length < 50) {
+                  return 'Artikel terlalu pendek (minimal 50 karakter)';
+                }
+                return null;
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSubmitButton() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: ElevatedButton(
+        onPressed: (_isLoading || !_hasContent) ? null : _submitArticle,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primaryBlue, // Selalu biru, bukan kondisional
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          elevation: 3,
+          // Opacity untuk disabled state
+        ).copyWith(
+          backgroundColor: WidgetStateProperty.resolveWith<Color>(
+            (Set<WidgetState> states) {
+              if (states.contains(WidgetState.disabled)) {
+                return primaryBlue.withOpacity(0.5); // Biru tapi agak transparan
+              }
+              return primaryBlue; // Biru penuh
+            },
+          ),
         ),
-        validator: (value) {
-          if (value == null || value.trim().isEmpty) {
-            return 'Isi artikel tidak boleh kosong';
-          }
-          if (value.trim().length < 50) {
-            return 'Artikel terlalu pendek (minimal 50 karakter)';
-          }
-          return null;
-        },
+        child: _isLoading
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Text(
+                    'Mengirim...',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.send_rounded, 
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    _hasContent ? 'Kirim Artikel' : 'Kirim',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }
