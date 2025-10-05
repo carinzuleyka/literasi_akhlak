@@ -30,7 +30,7 @@ class OnboardingPageWidget extends StatelessWidget {
                       width: 12,
                       height: 12,
                       decoration: const BoxDecoration(
-                        color: Colors.green,
+                        color: Color(0xFF5B9FED),
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -40,7 +40,7 @@ class OnboardingPageWidget extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Colors.green,
+                        color: Color(0xFF5B9FED),
                         letterSpacing: 1.2,
                       ),
                     ),
