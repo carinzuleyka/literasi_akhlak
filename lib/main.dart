@@ -6,6 +6,7 @@ import 'services/api_service.dart';
 import 'screens/auth_screen.dart';
 import 'screens/main_screen.dart';
 import 'screens/onboarding_screen.dart';
+import 'screens/change_password_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/auth': (context) => const AuthScreen(),
         '/main': (context) => const MainScreen(),
+        '/change-password': (context) => const ChangePasswordScreen(),
       },
       home: const CheckAuth(), // Mulai dari sini
     );

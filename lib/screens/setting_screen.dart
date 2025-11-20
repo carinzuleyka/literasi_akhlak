@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
+import 'edit_profile_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -14,7 +15,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           'Pengaturan',
@@ -34,7 +35,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Account Section
+          // Akun Section
           const Text(
             'Akun',
             style: TextStyle(
@@ -51,8 +52,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: 'Edit Profil',
             subtitle: 'Ubah informasi profil Anda',
             onTap: () {
-              // Navigate to edit profile
-              Navigator.pushNamed(context, '/edit-profile');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EditProfileScreen(),
+                ),
+              );
             },
           ),
           const SizedBox(height: 8),
@@ -62,14 +67,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: 'Ubah Password',
             subtitle: 'Ganti password akun Anda',
             onTap: () {
-              // Navigate to change password
               Navigator.pushNamed(context, '/change-password');
             },
           ),
           
           const SizedBox(height: 24),
           
-          // Preferences Section
+          // Preferensi Section
           const Text(
             'Preferensi',
             style: TextStyle(
@@ -95,7 +99,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           
           const SizedBox(height: 24),
           
-          // Support Section
+          // Bantuan & Dukungan Section
           const Text(
             'Bantuan & Dukungan',
             style: TextStyle(
@@ -449,3 +453,4 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 }
+
